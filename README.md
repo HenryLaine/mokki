@@ -1,0 +1,2 @@
+# mokki
+Mökkien hallinnointijärjestelmä
