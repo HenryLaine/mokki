@@ -1,21 +1,21 @@
--- Luodaan tietokantad
+-- Luodaan tietokanta
 CREATE DATABASE mokkikodit;
 USE mokkikodit;
 
--- Taulu: Mökkikodit oy (yksi yhtiö)
+-- Taulu: Mökkikodit oy
 CREATE TABLE MokkikoditOy (
     y_tunnus VARCHAR(20) PRIMARY KEY,
     sahkoposti VARCHAR(100),
     osoite VARCHAR(255)
 );
 
--- Taulu: Asiakas (geneerinen asiakastaulu)
+-- Taulu: Asiakas (asiakas superluokka)
 CREATE TABLE Asiakas (
     asiakasID INT AUTO_INCREMENT PRIMARY KEY,
     asiakastyyppi ENUM('yksityinen', 'yritys') NOT NULL
 );
 
--- Taulu: Yksityisasiakas (asiakasID viittaus Asiakas-tauluun)
+-- Taulu: Yksityisasiakas (alaluokka asiakkaalle, asiakasID viittaus Asiakas-tauluun)
 CREATE TABLE Yksityisasiakas (
     asiakasID INT PRIMARY KEY,
     nimi VARCHAR(100),
@@ -24,7 +24,7 @@ CREATE TABLE Yksityisasiakas (
     FOREIGN KEY (asiakasID) REFERENCES Asiakas(asiakasID) ON DELETE CASCADE
 );
 
--- Taulu: Yritysasiakas (asiakasID viittaus Asiakas-tauluun)
+-- Taulu: Yritysasiakas (alaluokka asiakkaalle, asiakasID viittaus Asiakas-tauluun)
 CREATE TABLE Yritysasiakas (
     asiakasID INT PRIMARY KEY,
     y_tunnus VARCHAR(20),
@@ -47,12 +47,12 @@ CREATE TABLE Laskut (
 );
 
 -- Taulu: Mökki
-CREATE TABLE Mokkis (
+CREATE TABLE Mokki (
     mokkiID INT AUTO_INCREMENT PRIMARY KEY,
     sijainti VARCHAR(100),
     hinta DECIMAL(10,2),
-    huoneala INT,
-    henkilo_maara INT
+    pinta-ala INT,
+    henkilomaara INT
 );
 
 -- Taulu: Varaus
