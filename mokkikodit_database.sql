@@ -2,13 +2,6 @@
 CREATE DATABASE mokkikodit;
 USE mokkikodit;
 
--- Taulu: Mökkikodit oy
-CREATE TABLE MokkikoditOy (
-    y_tunnus VARCHAR(20) PRIMARY KEY,
-    sahkoposti VARCHAR(100),
-    osoite VARCHAR(255)
-);
-
 -- Taulu: Asiakas (asiakas superluokka)
 CREATE TABLE Asiakas (
     asiakasID INT AUTO_INCREMENT PRIMARY KEY,
