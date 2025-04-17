@@ -1,4 +1,5 @@
 -- Luodaan tietokanta
+DROP DATABASE IF EXISTS mokkikodit;
 CREATE DATABASE mokkikodit;
 USE mokkikodit;
 
