@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
-import java.sql.Statement;
+
 
 public class Raportit {
 
@@ -17,7 +17,7 @@ public class Raportit {
 
     /** raportti kaikkien asiakkaiden ajamista varten
      */
-    private static void haeKaikkiAsiakkaat(Connection conn) {
+    public void haeKaikkiAsiakkaat() {
         String sql = "SELECT \n" +
                 "    a.sahkoposti,\n" +
                 "    a.asiakastyyppi,\n" +
@@ -64,11 +64,10 @@ public class Raportit {
     }
 
     /** metodi ajaa raportin mökeistä
-     * @param conn
      */
-    private static void tulostaMokit(Connection conn){
+    public void tulostaMokit(){
         String sql = "SELECT * FROM Mokki";
-        try (Statement stmt = conn.createStatement();
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery(sql)) {
 
             System.out.println("MÖKIT:");
@@ -91,12 +90,12 @@ public class Raportit {
     }
 
     /** ajaa raportin kaikista varauksista
-     * @param conn
+     *
      */
 
-    private static void tulostaVaraukset(Connection conn) {
+    public void tulostaVaraukset() {
         String sql = "SELECT * FROM Varaus";
-        try (Statement stmt = conn.createStatement();
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery(sql)) {
 
             System.out.println("VARAUKSET:");
@@ -119,11 +118,11 @@ public class Raportit {
     }
 
     /** ajaa raportin kaikista laskuista
-     * @param conn
+     *
      */
-    private static void tulostaLaskut(Connection conn) {
+    public void tulostaLaskut() {
         String sql = "SELECT * FROM Laskut";
-        try (Statement stmt = conn.createStatement();
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery(sql)) {
 
             System.out.println("LASKUT:");
@@ -155,9 +154,10 @@ public class Raportit {
     public static void main(String[] args) throws SQLException {
 
         Connection conn = DatabaseManager.getConnection();
-        haeKaikkiAsiakkaat(conn);
-        tulostaMokit(conn);
-        tulostaVaraukset(conn);
-        tulostaLaskut(conn);
+        Raportit raportti=new Raportit(conn);
+        raportti.haeKaikkiAsiakkaat();
+        raportti.tulostaMokit();
+        raportti.tulostaVaraukset();
+        raportti.tulostaLaskut();
     }
 }
