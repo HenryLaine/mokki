@@ -50,6 +50,7 @@ public class Raportit {
             System.err.println("Tietokantavirhe: " + e.getMessage());
         }
     }
+
     public static void main(String[] args) {
         Raportit raportti = new Raportit();
         raportti.haeKaikkiAsiakkaat();
