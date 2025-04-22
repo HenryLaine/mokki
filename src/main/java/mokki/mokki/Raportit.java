@@ -5,6 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
 
+/** Loin tämän luokan testitarkoituksessa, tätä ei ole tarkoitus jättää lopulliseen ohjelmaan.
+ * Halusin harjoitella, että kuinka yhteys muodostetaan ja kuinka tietoja haetaan tietokannasta.
+ */
 
 public class Raportit {
 
@@ -15,8 +18,8 @@ public class Raportit {
     }
 
 
-    /** raportti kaikkien asiakkaiden ajamista varten
-     */
+    // raportti kaikkien asiakkaiden ajamista varten
+
     public void haeKaikkiAsiakkaat() {
         String sql = "SELECT \n" +
                 "    a.sahkoposti,\n" +
@@ -63,8 +66,8 @@ public class Raportit {
         }
     }
 
-    /** metodi ajaa raportin mökeistä
-     */
+    // metodi ajaa raportin mökeistä
+
     public void tulostaMokit(){
         String sql = "SELECT * FROM Mokki";
         try (PreparedStatement stmt = conn.prepareStatement(sql);
@@ -89,9 +92,7 @@ public class Raportit {
         }
     }
 
-    /** ajaa raportin kaikista varauksista
-     *
-     */
+    // ajaa raportin kaikista varauksista
 
     public void tulostaVaraukset() {
         String sql = "SELECT * FROM Varaus";
@@ -117,9 +118,8 @@ public class Raportit {
         }
     }
 
-    /** ajaa raportin kaikista laskuista
-     *
-     */
+    // ajaa raportin kaikista laskuista
+
     public void tulostaLaskut() {
         String sql = "SELECT * FROM Laskut";
         try (PreparedStatement stmt = conn.prepareStatement(sql);
