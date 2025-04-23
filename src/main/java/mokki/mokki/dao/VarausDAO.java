@@ -1,4 +1,4 @@
-package mokki.mokki;
+package mokki.mokki.dao;
 
 import java.sql.*;
 import java.util.ArrayList;

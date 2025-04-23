@@ -1,4 +1,4 @@
-package mokki.mokki;
+package mokki.mokki.database;
 
 import java.io.*;
 import java.sql.*;
