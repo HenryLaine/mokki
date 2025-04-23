@@ -135,12 +135,13 @@ public class Raportit {
                 Date paiva = rs.getDate("paivamaara");
                 Date erapaiva = rs.getDate("erapaiva");
                 String status = rs.getString("status");
+                int viite= rs.getInt("viitenumero");
                 String sahkoposti = rs.getString("sahkoposti");
                 String osoite = rs.getString("osoite");
                 String nimi = rs.getString("nimi");
 
-                System.out.printf("ID: %d, Veroton: %.2f, ALV: %.2f, Päivä: %s, Eräpäivä: %s, Status: %s, Asiakas: %s, Osoite: %s, Nimi: %s%n",
-                        id, veroton, alv, paiva, erapaiva, status, sahkoposti, osoite, nimi);
+                System.out.printf("ID: %d, Veroton: %.2f, ALV: %.2f, Päivä: %s, Eräpäivä: %s, Status: %s, Viitenumero: %s, Asiakas: %s, Osoite: %s, Nimi: %s%n",
+                        id, veroton, alv, paiva, erapaiva, status, viite, sahkoposti, osoite, nimi);
             }
             System.out.println();
         }

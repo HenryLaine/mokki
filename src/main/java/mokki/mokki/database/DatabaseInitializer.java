@@ -8,7 +8,7 @@ import java.sql.*;
  */
 public class DatabaseInitializer {
     private static final String RAKENNE_SQL_FILE = "mokkikodit_database.sql";
-    private static final String TESTIDATA_SQL_FILE = "testiaineisto.sql";
+    private static final String TESTIDATA_SQL_FILE = "testidata.sql";
 
     public static void initializeDatabase() {
         try (Connection conn = DatabaseManager.getConnection()) {
