@@ -1,6 +1,5 @@
 -- Luodaan tietokanta
-DROP DATABASE IF EXISTS mokkikodit;
-CREATE DATABASE mokkikodit;
+CREATE DATABASE IF NOT EXISTS mokkikodit;
 USE mokkikodit;
 
 -- Taulu: Asiakas (geneerinen asiakastaulu)
@@ -29,7 +28,6 @@ CREATE TABLE Yritysasiakas (
 
 CREATE OR REPLACE VIEW AsiakasTiedotView AS
 SELECT 
-    a.asiakasID,
     a.sahkoposti,
     a.asiakastyyppi,
     y.nimi AS nimi,
@@ -40,7 +38,6 @@ JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti
 UNION
 
 SELECT 
-    a.asiakasID,
     a.sahkoposti,
     a.asiakastyyppi,
     yr.nimi AS nimi,
@@ -79,130 +76,9 @@ CREATE TABLE Laskut (
     osoite VARCHAR(100),
     nimi VARCHAR(100),
     status ENUM('Avoin', 'Maksettu', 'Myöhässä') NOT NULL,
+    viitenumero INT,
     sahkoposti VARCHAR(100),
     varaustunnus INT,
     FOREIGN KEY (sahkoposti) REFERENCES Asiakas(sahkoposti) ON DELETE SET NULL,
     FOREIGN KEY (varaustunnus) REFERENCES Varaus(varaustunnus) ON DELETE SET NULL
 );
-
--- MÖKIT
-INSERT INTO Mokki (sijainti, hinta, huoneala, henkilo_maara) VALUES
-('Levi', 150.00, 80, 6),
-('Ylläs', 200.00, 100, 8),
-('Ruka', 180.00, 90, 6),
-('Tahko', 160.00, 85, 5),
-('Vuokatti', 140.00, 75, 4),
-('Himos', 170.00, 95, 7),
-('Salla', 130.00, 70, 4),
-('Pyhä', 155.00, 82, 5),
-('Iso-Syöte', 165.00, 88, 6),
-('Koli', 175.00, 92, 7);
-
--- ASIAKKAAT: Yritykset
-INSERT INTO Asiakas (sahkoposti, asiakastyyppi) VALUES
-('yritys1@example.com', 'yritys'),
-('yritys2@example.com', 'yritys'),
-('yritys3@example.com', 'yritys'),
-('yritys4@example.com', 'yritys'),
-('yritys5@example.com', 'yritys'),
-('yritys6@example.com', 'yritys'),
-('yritys7@example.com', 'yritys'),
-('yritys8@example.com', 'yritys'),
-('yritys9@example.com', 'yritys'),
-('yritys10@example.com', 'yritys');
-
-INSERT INTO Yritysasiakas (sahkoposti, y_tunnus, osoite, nimi) VALUES
-('yritys1@example.com', '1234567-1', 'Yrityskatu 1, Helsinki', 'Yritys 1'),
-('yritys2@example.com', '1234567-2', 'Yrityskatu 2, Espoo', 'Yritys 2'),
-('yritys3@example.com', '1234567-3', 'Yrityskatu 3, Vantaa', 'Yritys 3'),
-('yritys4@example.com', '1234567-4', 'Yrityskatu 4, Turku', 'Yritys 4'),
-('yritys5@example.com', '1234567-5', 'Yrityskatu 5, Tampere', 'Yritys 5'),
-('yritys6@example.com', '1234567-6', 'Yrityskatu 6, Oulu', 'Yritys 6'),
-('yritys7@example.com', '1234567-7', 'Yrityskatu 7, Jyväskylä', 'Yritys 7'),
-('yritys8@example.com', '1234567-8', 'Yrityskatu 8, Kuopio', 'Yritys 8'),
-('yritys9@example.com', '1234567-9', 'Yrityskatu 9, Lahti', 'Yritys 9'),
-('yritys10@example.com', '1234567-10', 'Yrityskatu 10, Pori', 'Yritys 10');
-
--- ASIAKKAAT: Yksityiset
-INSERT INTO Asiakas (sahkoposti, asiakastyyppi) VALUES
-('matti@example.com', 'yksityinen'),
-('maija@example.com', 'yksityinen'),
-('kalle@example.com', 'yksityinen'),
-('laura@example.com', 'yksityinen'),
-('antti@example.com', 'yksityinen'),
-('elina@example.com', 'yksityinen'),
-('jari@example.com', 'yksityinen'),
-('tiina@example.com', 'yksityinen'),
-('pekka@example.com', 'yksityinen'),
-('sari@example.com', 'yksityinen');
-
-INSERT INTO Yksityisasiakas (sahkoposti, nimi, puhelinnumero, osoite) VALUES
-('matti@example.com', 'Matti Meikäläinen', '0401234567', 'Katuosoite 1, Helsinki'),
-('maija@example.com', 'Maija Virtanen', '0507654321', 'Katuosoite 2, Espoo'),
-('kalle@example.com', 'Kalle Korhonen', '0412345678', 'Katuosoite 3, Vantaa'),
-('laura@example.com', 'Laura Lahtinen', '0459876543', 'Katuosoite 4, Turku'),
-('antti@example.com', 'Antti Nieminen', '0461231234', 'Katuosoite 5, Tampere'),
-('elina@example.com', 'Elina Salonen', '0408765432', 'Katuosoite 6, Oulu'),
-('jari@example.com', 'Jari Heikkinen', '0506543210', 'Katuosoite 7, Jyväskylä'),
-('tiina@example.com', 'Tiina Lehtinen', '0443214567', 'Katuosoite 8, Kuopio'),
-('pekka@example.com', 'Pekka Mäkelä', '0432109876', 'Katuosoite 9, Lahti'),
-('sari@example.com', 'Sari Aalto', '0499999999', 'Katuosoite 10, Pori');
-
--- Varaus- ja laskutietojen lisäys
-
--- Esimerkki: lisätään 30 varausta ja niihin liittyvät laskut
-INSERT INTO Varaus (aloitus_pvm, paattymis_pvm, henkilo_maara, sahkoposti, mokkiID) VALUES 
-('2023-05-10', '2023-05-15', 4, 'yritys1@example.com', 1),
-('2023-06-20', '2023-06-25', 2, 'yritys2@example.com', 2),
-('2023-07-01', '2023-07-10', 6, 'yritys3@example.com', 3),
-('2023-08-15', '2023-08-20', 5, 'yritys4@example.com', 4),
-('2023-09-05', '2023-09-12', 3, 'yritys5@example.com', 5),
-('2023-10-10', '2023-10-15', 4, 'yritys6@example.com', 1),
-('2023-11-01', '2023-11-07', 2, 'yritys7@example.com', 2),
-('2023-12-20', '2023-12-27', 8, 'yritys8@example.com', 3),
-('2024-01-05', '2024-01-10', 1, 'yritys9@example.com', 4),
-('2024-02-14', '2024-02-20', 2, 'yritys10@example.com', 5),
-('2024-03-10', '2024-03-15', 5, 'matti@example.com', 1),
-('2024-04-01', '2024-04-05', 6, 'maija@example.com', 2),
-('2024-05-22', '2024-05-27', 7, 'kalle@example.com', 3),
-('2024-06-14', '2024-06-21', 3, 'laura@example.com', 4),
-('2024-07-04', '2024-07-09', 4, 'antti@example.com', 5),
-('2024-08-11', '2024-08-18', 2, 'elina@example.com', 1),
-('2024-09-09', '2024-09-14', 6, 'jari@example.com', 2),
-('2024-10-01', '2024-10-06', 3, 'tiina@example.com', 3),
-('2024-11-17', '2024-11-23', 5, 'pekka@example.com', 4),
-('2024-12-05', '2024-12-12', 4, 'sari@example.com', 5),
-('2025-01-03', '2025-01-10', 4, 'yritys1@example.com', 1),
-('2025-02-15', '2025-02-20', 3, 'yritys2@example.com', 2),
-('2025-03-12', '2025-03-18', 2, 'yritys3@example.com', 3),
-('2025-04-01', '2025-04-06', 1, 'yritys4@example.com', 4),
-('2025-05-20', '2025-05-25', 2, 'yritys5@example.com', 5),
-('2025-06-10', '2025-06-15', 6, 'yritys6@example.com', 1),
-('2025-07-05', '2025-07-10', 5, 'yritys7@example.com', 2),
-('2025-08-22', '2025-08-28', 3, 'yritys8@example.com', 3),
-('2025-09-14', '2025-09-19', 4, 'yritys9@example.com', 4),
-('2025-10-01', '2025-10-07', 2, 'yritys10@example.com', 5);
-
-
--- Laskut
-INSERT INTO Laskut (veroton_hinta, alv, paivamaara, erapaiva, status, sahkoposti, osoite, nimi) VALUES
-(300.00, 72.00, '2023-05-10', '2023-05-24', 'Maksettu', 'yritys1@example.com', 'Yrityskatu 1, Helsinki', 'Yritys 1'),
-(450.00, 108.00, '2023-06-20', '2023-07-04', 'Maksettu', 'yritys2@example.com', 'Yrityskatu 2, Espoo', 'Yritys 2'),
-(600.00, 144.00, '2023-07-01', '2023-07-15', 'Myöhässä', 'yritys3@example.com', 'Yrityskatu 3, Vantaa', 'Yritys 3'),
-(280.00, 67.20, '2023-08-15', '2023-08-29', 'Avoin', 'yritys4@example.com', 'Yrityskatu 4, Turku', 'Yritys 4'),
-(500.00, 120.00, '2023-09-05', '2023-09-19', 'Maksettu', 'yritys5@example.com', 'Yrityskatu 5, Tampere', 'Yritys 5'),
-(320.00, 76.80, '2023-10-10', '2023-10-24', 'Maksettu', 'yritys6@example.com', 'Yrityskatu 6, Oulu', 'Yritys 6'),
-(200.00, 48.00, '2023-11-01', '2023-11-15', 'Avoin', 'yritys7@example.com', 'Yrityskatu 7, Jyväskylä', 'Yritys 7'),
-(700.00, 168.00, '2023-12-20', '2024-01-03', 'Maksettu', 'yritys8@example.com', 'Yrityskatu 8, Kuopio', 'Yritys 8'),
-(150.00, 36.00, '2024-01-05', '2024-01-19', 'Myöhässä', 'yritys9@example.com', 'Yrityskatu 9, Lahti', 'Yritys 9'),
-(270.00, 64.80, '2024-02-14', '2024-02-28', 'Maksettu', 'yritys10@example.com', 'Yrityskatu 10, Pori', 'Yritys 10'),
-(390.00, 93.60, '2024-03-10', '2024-03-24', 'Avoin', 'matti@example.com', 'Katuosoite 1, Helsinki', 'Matti Meikäläinen'),
-(410.00, 98.40, '2024-04-01', '2024-04-15', 'Myöhässä', 'maija@example.com', 'Katuosoite 2, Espoo', 'Maija Virtanen'),
-(580.00, 139.20, '2024-05-22', '2024-06-05', 'Maksettu', 'kalle@example.com', 'Katuosoite 3, Vantaa', 'Kalle Korhonen'),
-(460.00, 110.40, '2024-06-14', '2024-06-28', 'Avoin', 'laura@example.com', 'Katuosoite 4, Turku', 'Laura Lahtinen'),
-(360.00, 86.40, '2024-07-04', '2024-07-18', 'Maksettu', 'antti@example.com', 'Katuosoite 5, Tampere', 'Antti Nieminen'),
-(480.00, 115.20, '2024-08-11', '2024-08-25', 'Myöhässä', 'elina@example.com', 'Katuosoite 6, Oulu', 'Elina Salonen'),
-(310.00, 74.40, '2024-09-09', '2024-09-23', 'Maksettu', 'jari@example.com', 'Katuosoite 7, Jyväskylä', 'Jari Heikkinen'),
-(220.00, 52.80, '2024-10-01', '2024-10-15', 'Maksettu', 'tiina@example.com', 'Katuosoite 8, Kuopio', 'Tiina Lehtinen'),
-(330.00, 79.20, '2024-11-17', '2024-12-01', 'Avoin', 'pekka@example.com', 'Katuosoite 9, Lahti', 'Pekka Mäkelä'),
-(410.00, 98.40, '2024-12-05', '2024-12-19', 'Maksettu', 'sari@example.com', 'Katuosoite 10, Pori', 'Sari Aalto');
