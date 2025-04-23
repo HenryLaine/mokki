@@ -3,13 +3,13 @@ CREATE DATABASE IF NOT EXISTS mokkikodit;
 USE mokkikodit;
 
 -- Taulu: Asiakas (geneerinen asiakastaulu)
-CREATE TABLE Asiakas (
+CREATE TABLE IF NOT EXISTS Asiakas (
     sahkoposti VARCHAR(100) PRIMARY KEY,
     asiakastyyppi ENUM('yksityinen', 'yritys') NOT NULL
 );
 
 -- Taulu: Yksityisasiakas (asiakasID viittaus Asiakas-tauluun)
-CREATE TABLE Yksityisasiakas (
+CREATE TABLE IF NOT EXISTS Yksityisasiakas (
     sahkoposti VARCHAR(100) PRIMARY KEY,
     nimi VARCHAR(100),
     puhelinnumero VARCHAR(20),
@@ -18,7 +18,7 @@ CREATE TABLE Yksityisasiakas (
 );
 
 -- Taulu: Yritysasiakas (asiakasID viittaus Asiakas-tauluun)
-CREATE TABLE Yritysasiakas (
+CREATE TABLE IF NOT EXISTS Yritysasiakas (
     sahkoposti VARCHAR(100) PRIMARY KEY,
     y_tunnus VARCHAR(20),
     osoite VARCHAR(255),
@@ -46,7 +46,7 @@ FROM Asiakas a
 JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti;
 
 -- Taulu: Mökki
-CREATE TABLE Mokki (
+CREATE TABLE IF NOT EXISTS Mokki (
     mokkiID INT AUTO_INCREMENT PRIMARY KEY,
     sijainti VARCHAR(100),
     hinta DECIMAL(10,2),
@@ -55,7 +55,7 @@ CREATE TABLE Mokki (
 );
 
 -- Taulu: Varaus
-CREATE TABLE Varaus (
+CREATE TABLE IF NOT EXISTS Varaus (
     varaustunnus INT AUTO_INCREMENT PRIMARY KEY,
     aloitus_pvm DATE,
     paattymis_pvm DATE,
@@ -67,7 +67,7 @@ CREATE TABLE Varaus (
 );
 
 -- Taulu: Laskut
-CREATE TABLE Laskut (
+CREATE TABLE IF NOT EXISTS Laskut (
     laskuID INT AUTO_INCREMENT PRIMARY KEY,
     veroton_hinta DECIMAL(10,2),
     alv DECIMAL(5,2),

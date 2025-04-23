@@ -154,6 +154,7 @@ public class Raportit {
     public static void main(String[] args) throws SQLException {
 
         Connection conn = DatabaseManager.getConnection();
+        DatabaseInitializer.initializeDatabase();
         Raportit raportti=new Raportit(conn);
         raportti.haeKaikkiAsiakkaat();
         raportti.tulostaMokit();
