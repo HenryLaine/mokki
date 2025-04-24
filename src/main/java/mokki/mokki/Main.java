@@ -20,9 +20,9 @@ public class Main extends Application {
     VBox raportitPaneeli = new VBox();
 
     private void alustaKohteetPaneeli() {
-        Hallintapaneeli kohteetHallinta = new Hallintapaneeli(
+        Hallintapaneeli hallintapaneeli = new Hallintapaneeli(
                 new String[] {"Lisää kohde", "Rajaa kohteita", "Poista rajaukset"});
-        kohteetHallinta.asetaFonttikoko(fonttikoko);
+        hallintapaneeli.asetaFonttikoko(fonttikoko);
         // Dummy-dataa
         ObservableList<KohteetWrapper> taulukonSisalto = FXCollections.observableArrayList(
                 new KohteetWrapper("JOE001", "Joensuu", 1,
@@ -32,50 +32,107 @@ public class Main extends Application {
                 new KohteetWrapper("LIP003", "Liperi", 2, 15,
                         130, "Kohde on remontoitavana 16.3.2025 asti.")
         );
-        Taulukkopaneeli<KohteetWrapper> kohteetTaulukko = new Taulukkopaneeli<>(
+        Taulukkopaneeli<KohteetWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
                 taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
-        kohteetTaulukko.asetaFonttikoko(fonttikoko);
-        kohteetPaneeli.getChildren().addAll(kohteetHallinta, kohteetTaulukko);
+        taulukkopaneeli.asetaFonttikoko(fonttikoko);
+        kohteetPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
 
         // TODO: Aseta painikkeiden toiminnallisuus.
-        kohteetHallinta.getLisaaPainike().setOnAction(e -> {
+        hallintapaneeli.getLisaaPainike().setOnAction(e -> {
 
         });
-        kohteetHallinta.getRajaaPainike().setOnAction(e -> {
+        hallintapaneeli.getRajaaPainike().setOnAction(e -> {
 
-            //kohteetHallinta.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
+            //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
         });
-        kohteetHallinta.getPoistaRajauksetPainike().setOnAction(event -> {
-            kohteetHallinta.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+        hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
+            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
 
         });
     }
 
     private void alustaVarauksetPaneeli() {
-        Hallintapaneeli kohteetHallinta = new Hallintapaneeli(
+        Hallintapaneeli hallintapaneeli = new Hallintapaneeli(
                 new String[] {"Lisää varaus", "Rajaa varauksia", "Poista rajaukset"});
-        kohteetHallinta.asetaFonttikoko(fonttikoko);
+        hallintapaneeli.asetaFonttikoko(fonttikoko);
         // Dummy-dataa
         ObservableList<VarauksetWrapper> taulukonSisalto = FXCollections.observableArrayList(
                 new VarauksetWrapper("A003", "JOE001", "Matti Meikäläinen",
                         "05.04.2025", "08.04.2025", "Päättynyt",
                         "Lisäpalvelu: ylimääräinen sänky")
         );
-        Taulukkopaneeli<VarauksetWrapper> kohteetTaulukko = new Taulukkopaneeli<>(
+        Taulukkopaneeli<VarauksetWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
                 taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
-        kohteetTaulukko.asetaFonttikoko(fonttikoko);
-        varauksetPaneeli.getChildren().addAll(kohteetHallinta, kohteetTaulukko);
+        taulukkopaneeli.asetaFonttikoko(fonttikoko);
+        varauksetPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
 
         // TODO: Aseta painikkeiden toiminnallisuus.
-        kohteetHallinta.getLisaaPainike().setOnAction(e -> {
+        hallintapaneeli.getLisaaPainike().setOnAction(e -> {
 
         });
-        kohteetHallinta.getRajaaPainike().setOnAction(e -> {
+        hallintapaneeli.getRajaaPainike().setOnAction(e -> {
 
-            //kohteetHallinta.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
+            //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
         });
-        kohteetHallinta.getPoistaRajauksetPainike().setOnAction(event -> {
-            kohteetHallinta.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+        hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
+            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+
+        });
+    }
+
+    private void alustaAsiakkaatPaneeli() {
+        Hallintapaneeli hallintapaneeli = new Hallintapaneeli(
+                new String[] {"Lisää asiakas", "Rajaa asiakkaita", "Poista rajaukset"});
+        hallintapaneeli.asetaFonttikoko(fonttikoko);
+        // Dummy-dataa
+        ObservableList<AsiakkaatWrapper> taulukonSisalto = FXCollections.observableArrayList(
+                new AsiakkaatWrapper("Jukka Jokunen", "jukka@gmail.com",
+                        "043-046-0349","yksityishenkilö", "")
+        );
+        Taulukkopaneeli<AsiakkaatWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
+                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
+        taulukkopaneeli.asetaFonttikoko(fonttikoko);
+        asiakkaatPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
+
+        // TODO: Aseta painikkeiden toiminnallisuus.
+        hallintapaneeli.getLisaaPainike().setOnAction(e -> {
+
+        });
+        hallintapaneeli.getRajaaPainike().setOnAction(e -> {
+
+            //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
+        });
+        hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
+            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+
+        });
+    }
+
+    private void alustaLaskutPaneeli() {
+        Hallintapaneeli hallintapaneeli = new Hallintapaneeli(
+                new String[] {"Lisää lasku", "Rajaa laskuja", "Poista rajaukset"});
+        hallintapaneeli.asetaFonttikoko(fonttikoko);
+        // Dummy-dataa
+        ObservableList<LaskutWrapper> taulukonSisalto = FXCollections.observableArrayList(
+                new LaskutWrapper(3950359, "Vuokraus: JOE001; 15.03.2025-16.03.2025",
+                        "Jaska Jokunen (jaska@gmail.com)", 90405964, 150.35,
+                        "Avoin")
+        );
+        Taulukkopaneeli<LaskutWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
+                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
+        taulukkopaneeli.asetaFonttikoko(fonttikoko);
+        laskutPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
+
+        // TODO: Aseta painikkeiden toiminnallisuus.
+        hallintapaneeli.getLisaaPainike().setOnAction(e -> {
+
+        });
+        hallintapaneeli.getRajaaPainike().setOnAction(e -> {
+
+            //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
+        });
+        hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
+            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
 
         });
     }
@@ -100,6 +157,15 @@ public class Main extends Application {
         // Alustetaan toinen välilehti.
         alustaVarauksetPaneeli();
         valilehdet.get(1).setContent(varauksetPaneeli);
+
+        // Alustetaan kolmas välilehti.
+        alustaAsiakkaatPaneeli();
+        valilehdet.get(2).setContent(asiakkaatPaneeli);
+
+        // Alustetaan neljäs välilehti.
+        alustaLaskutPaneeli();
+        valilehdet.get(3).setContent(laskutPaneeli);
+
 
 
         Scene kehys = new Scene(valilehtipaneeli, 900, 600);
