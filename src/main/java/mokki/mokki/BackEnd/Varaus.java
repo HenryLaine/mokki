@@ -1,4 +1,6 @@
 package mokki.mokki.BackEnd;
 
-public class Varaus {
+public class Varaus
+{
+    // Viimeistelen perjantaina kuntoon
 }
