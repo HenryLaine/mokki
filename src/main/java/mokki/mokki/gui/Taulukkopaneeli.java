@@ -6,7 +6,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
 /**
- * Luokka toteuttaa käytöliittymän taulukkopaneelin. Taulukko tukee String- ja Integer-tyypin arvoja.
+ * Luokka toteuttaa käytöliittymän taulukkopaneelin. Taulukko tukee String, Integer ja
+ * Double-tyypin arvoja.
  * @param <T> taulukkoon sijoitettavan tiedon tyyppi
  */
 public class Taulukkopaneeli<T> extends TableView<T> {
@@ -44,6 +45,24 @@ public class Taulukkopaneeli<T> extends TableView<T> {
                 TableColumn<T, Integer> sarake = new TableColumn<>(tiedot[0]);
                 this.getColumns().add(sarake);
                 sarake.setCellValueFactory(new PropertyValueFactory<>(tiedot[2]));
+            }
+            else if (tiedot[1].equals("Double")) {
+                TableColumn<T, Double> sarake = new TableColumn<>(tiedot[0]);
+                this.getColumns().add(sarake);
+                sarake.setCellValueFactory(new PropertyValueFactory<>(tiedot[2]));
+                // Määritetään, että desimaaliluvut näytetään pilkun kanssa.
+                sarake.setCellFactory(solu -> new TableCell<T, Double>() {
+                    @Override
+                    protected void updateItem(Double arvo, boolean tyhja) {
+                        super.updateItem(arvo, tyhja);
+                        if (tyhja) {
+                            setText(null);
+                        }
+                        else {
+                            setText(String.valueOf(arvo).replaceAll("\\.", ","));
+                        }
+                    }
+                });
             }
         }
 
