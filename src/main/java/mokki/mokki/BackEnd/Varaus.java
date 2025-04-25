@@ -51,7 +51,7 @@ public class Varaus
         return varausAlkuPvm;
     }
     public Date getVarausLoppuPvm(){
-        return getVarausLoppuPvm();
+        return varausLoppuPvm;
     }
 
 
