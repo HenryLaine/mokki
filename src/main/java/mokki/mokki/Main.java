@@ -33,7 +33,8 @@ public class Main extends Application {
                         130, "Kohde on remontoitavana 16.3.2025 asti.")
         );
         Taulukkopaneeli<KohteetWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
-                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
+                taulukonSisalto.getFirst().getMaaritykset(),
+                new String[] {"Näytä kohteen tiedot", "Muuta kohteen tietoja", "Poista kohde"}, taulukonSisalto);
         taulukkopaneeli.asetaFonttikoko(fonttikoko);
         kohteetPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
 
@@ -62,7 +63,9 @@ public class Main extends Application {
                         "Lisäpalvelu: ylimääräinen sänky")
         );
         Taulukkopaneeli<VarauksetWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
-                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
+                taulukonSisalto.getFirst().getMaaritykset(),
+                new String[] {"Näytä varauksen tiedot", "Näytä mökin tiedot", "Näytä asiakkaan tiedot",
+                        "Muuta varauksen tietoja", "Poista varaus"}, taulukonSisalto);
         taulukkopaneeli.asetaFonttikoko(fonttikoko);
         varauksetPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
 
@@ -90,7 +93,9 @@ public class Main extends Application {
                         "043-046-0349","yksityishenkilö", "")
         );
         Taulukkopaneeli<AsiakkaatWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
-                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
+                taulukonSisalto.getFirst().getMaaritykset(),
+                new String[] {"Näytä asiakkaan tiedot", "Muuta asiakkaan tietoja", "Poista asiakas"},
+                taulukonSisalto);
         taulukkopaneeli.asetaFonttikoko(fonttikoko);
         asiakkaatPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
 
@@ -119,7 +124,9 @@ public class Main extends Application {
                         "Avoin")
         );
         Taulukkopaneeli<LaskutWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
-                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
+                taulukonSisalto.getFirst().getMaaritykset(),
+                new String[] {"Näytä laskun tiedot", "Muuta laskun tietoja", "Merkitse lasku maksetuksi",
+                        "Poista lasku"}, taulukonSisalto);
         taulukkopaneeli.asetaFonttikoko(fonttikoko);
         laskutPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
 
@@ -146,7 +153,8 @@ public class Main extends Application {
                         20, 46.4, 100, 10000)
         );
         Taulukkopaneeli<RaportitWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
-                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
+                taulukonSisalto.getFirst().getMaaritykset(),
+                new String[] {"Näytä kohteen tiedot", "Näytä kohteen varaukset"}, taulukonSisalto);
         taulukkopaneeli.asetaFonttikoko(fonttikoko);
         raportitPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
 
