@@ -1,4 +1,6 @@
 package mokki.mokki.dao;
+import mokki.mokki.BackEnd.Lasku;
+import mokki.mokki.BackEnd.Varaus;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +8,7 @@ import java.util.List;
 /**
  * Tietokantayhteyden ottaminen ja laskuihin liittyvien sql kyselyiden tekeminen.
  * Luokka lisää laskuja, muokkaa laskuja, poistaa laskuja sekä raportoi laskuja.
+
 
 public class LaskutDAO {
     private Connection conn;

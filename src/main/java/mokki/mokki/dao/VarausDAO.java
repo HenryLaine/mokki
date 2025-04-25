@@ -1,11 +1,10 @@
 package mokki.mokki.dao;
-
+import mokki.mokki.BackEnd.Varaus;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /** Luokka ottaa yhteyden tietokantaan ja muokkaa, lisää, poistaa ja listaa varauksia.
- *
 
 public class VarausDAO {
     private Connection conn;

@@ -1,10 +1,12 @@
 package mokki.mokki.dao;
+import mokki.mokki.BackEnd.Mokki;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /** Tämä luokka ottaa yhteyden tietokantaan ja muokkaa sekä hakee tietoa
  * Mökki-taulukosta.
+
 
 public class MokkiDAO {
     private Connection conn;
@@ -13,10 +15,8 @@ public class MokkiDAO {
         this.conn = conn;
     }
 
-    /** Mökin lisääminen tietokantaan. MokkiID on automaattisesti tuleva luku.
-     *
-     * @param mokki
-     * @throws SQLException
+    // Mökin lisääminen tietokantaan. MokkiID on automaattisesti tuleva luku.
+
 
     public void lisaaMokki(Mokki mokki) throws SQLException {
         String sql = "INSERT INTO Mokki (sijainti, hinta, huoneala, henkilo_maara) VALUES (?, ?, ?, ?, ?)";
@@ -37,10 +37,7 @@ public class MokkiDAO {
         }
     }
 
-    /** Metodi muokkaa olemassa olevaa mökkiä
-     *
-     * @param mokki
-     * @throws SQLException
+    // Metodi muokkaa olemassa olevaa mökkiä
 
     public void muokkaaMokki(Mokki mokki) throws SQLException {
         String sql = "UPDATE Mokki SET sijainti = ?, hinta = ?, huoneala = ?, henkilo_maara = ? WHERE mokkiID = ?";
@@ -53,10 +50,7 @@ public class MokkiDAO {
         }
     }
 
-    /** Metodi hakee listauksen kaikista mökki-olioista.
-     *
-     * @return
-     * @throws SQLException
+    // Metodi hakee listauksen kaikista mökki-olioista.
 
     public List<Mokki> haeMokit() throws SQLException {
         List<Mokki> mokit = new ArrayList<>();
@@ -79,4 +73,5 @@ public class MokkiDAO {
 
         return mokit;
     }
-}*/
+}
+ */
