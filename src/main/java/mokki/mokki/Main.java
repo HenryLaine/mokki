@@ -137,6 +137,41 @@ public class Main extends Application {
         });
     }
 
+    private void alustaRaportitPaneeli() {
+        RaportitHallintapaneeli hallintapaneeli = new RaportitHallintapaneeli();
+        hallintapaneeli.asetaFonttikoko(fonttikoko);
+        // Dummy-dataa
+        ObservableList<RaportitWrapper> taulukonSisalto = FXCollections.observableArrayList(
+                new RaportitWrapper("JOE001", 45, 21,
+                        20, 46.4, 100, 10000)
+        );
+        Taulukkopaneeli<RaportitWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
+                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
+        taulukkopaneeli.asetaFonttikoko(fonttikoko);
+        raportitPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
+
+        // TODO: Aseta elementtien toiminnallisuus.
+        /*
+        hallintapaneeli.getAlkuvuosivalikko().*(e -> {
+
+        });
+        hallintapaneeli.getAlkukuukausivalikko().*(e -> {
+
+        });
+        hallintapaneeli.getLoppuvuosivalikko().*(e -> {
+
+        });
+        hallintapaneeli.getLoppukuukausivalikko().*(e -> {
+
+        });
+        hallintapaneeli.getRajauksetKentta().*(e -> {
+
+        });
+
+         */
+
+    }
+
 
 
     public static void main(String[] args) {
@@ -166,9 +201,13 @@ public class Main extends Application {
         alustaLaskutPaneeli();
         valilehdet.get(3).setContent(laskutPaneeli);
 
+        // Alustetaan viides välilehti
+        alustaRaportitPaneeli();
+        valilehdet.get(4).setContent(raportitPaneeli);
 
 
-        Scene kehys = new Scene(valilehtipaneeli, 900, 600);
+
+        Scene kehys = new Scene(valilehtipaneeli, 1000, 650);
         primaryStage.setTitle("Mokki");
         primaryStage.setScene(kehys);
         primaryStage.show();
