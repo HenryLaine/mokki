@@ -1,8 +1,12 @@
 package mokki.mokki.dao;
+import mokki.mokki.BackEnd.Asiakas;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 /** tämä luokka lisää, muokkaa, poistaa ja tulostaa tietoja asiakastaulusta.
+ *
+ */
 public class AsiakasDAO {
     private Connection conn;
 
@@ -51,6 +55,7 @@ public class AsiakasDAO {
      *
      * @param asiakas
      * @throws SQLException
+     */
 
     public void muokkaaAsiakasta(Asiakas asiakas) throws SQLException {
         String sql = "UPDATE Asiakas SET asiakastyyppi = ? WHERE sahkoposti = ?";
@@ -85,6 +90,7 @@ public class AsiakasDAO {
      *
      * @return
      * @throws SQLException
+     * */
 
     public List<Asiakas> haeAsiakkaat() throws SQLException {
         List<Asiakas> asiakkaat = new ArrayList<>();
@@ -121,4 +127,78 @@ public class AsiakasDAO {
         }
         return asiakkaat;
     }
-}*/
+    // metodi rajaa asiakkaita hakusanojen perusteella
+    public List<Asiakas> rajaaAsiakkaat(String hakusana) throws SQLException {
+        List<Asiakas> asiakkaat = new ArrayList<>();
+
+        String baseSql = "SELECT a.sahkoposti, a.asiakastyyppi, "
+                + "y.nimi AS yksityis_nimi, y.osoite AS yksityis_osoite, y.puhelinnumero, "
+                + "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.y_tunnus "
+                + "FROM Asiakas a "
+                + "LEFT JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti "
+                + "LEFT JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti ";
+
+        List<String> sanat = new ArrayList<>();
+        if (hakusana != null && !hakusana.trim().isEmpty()) {
+            for (String sana : hakusana.toLowerCase().split("\\s+")) {
+                if (!sana.isBlank()) {
+                    sanat.add(sana);
+                }
+            }
+        }
+
+        StringBuilder whereClause = new StringBuilder();
+        if (!sanat.isEmpty()) {
+            whereClause.append("WHERE ");
+            for (int i = 0; i < sanat.size(); i++) {
+                if (i > 0) whereClause.append(" AND ");
+
+                whereClause.append("(")
+                        .append("LOWER(a.sahkoposti) LIKE ? OR ")
+                        .append("LOWER(a.asiakastyyppi) LIKE ? OR ")
+                        .append("LOWER(y.nimi) LIKE ? OR ")
+                        .append("LOWER(y.puhelinnumero) LIKE ? OR ")
+                        .append("LOWER(yr.nimi) LIKE ? OR ")
+                        .append("LOWER(yr.y_tunnus) LIKE ?")
+                        .append(")");
+            }
+        }
+
+        String finalSql = baseSql + whereClause.toString();
+
+        try (PreparedStatement stmt = conn.prepareStatement(finalSql)) {
+            int paramIndex = 1;
+            for (String sana : sanat) {
+                String like = "%" + sana + "%";
+                for (int j = 0; j < 6; j++) {
+                    stmt.setString(paramIndex++, like);
+                }
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String sahkoposti = rs.getString("sahkoposti");
+                    String asiakastyyppi = rs.getString("asiakastyyppi");
+                    Asiakas asiakas;
+
+                    if ("yksityinen".equalsIgnoreCase(asiakastyyppi)) {
+                        asiakas = new Asiakas(sahkoposti, asiakastyyppi,
+                                rs.getString("yksityis_nimi"),
+                                rs.getString("yksityis_osoite"));
+                        asiakas.setPuhelinnumero(rs.getString("puhelinnumero"));
+                    } else {
+                        asiakas = new Asiakas(sahkoposti, asiakastyyppi,
+                                rs.getString("yritys_nimi"),
+                                rs.getString("yritys_osoite"));
+                        asiakas.setYTunnus(rs.getString("y_tunnus"));
+                    }
+
+                    asiakkaat.add(asiakas);
+                }
+            }
+        }
+
+        return asiakkaat;
+    }
+
+}
