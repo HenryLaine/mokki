@@ -1,4 +1,4 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.wrapper;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -6,7 +6,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Wrapper-luokka varausten tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
-public class VarauksetWrapper {
+public class VarauksetWrapper implements TaulukkoWrapper {
     private StringProperty tunnus;
     private StringProperty mokinTunnus;
     private StringProperty asiakas;
@@ -113,4 +113,30 @@ public class VarauksetWrapper {
     public String[][] getMaaritykset() {
         return maaritykset;
     }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden tunnisteen eli varauksen tunnuksen.
+     * @return tunniste
+     */
+    public String palautaTunniste() {
+        return tunnus.get();
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden kuvaustekstin eli varauksen tunnuksen.
+     * @return kuvausteksti
+     */
+    public String palautaKuvausteksti() {
+        return tunnus.get();
+    }
+
+    /**
+     * Metodi palauttaa kenttien arvot merkkijonolistana.
+     * @return kenttien arvot
+     */
+    public String[] palautaKenttienArvot() {
+        return new String[] {tunnus.get(), mokinTunnus.get(), asiakas.get(),
+                alkaa.get(), paattyy.get(), tila.get(), huomioitavaa.get()};
+    }
+
 }

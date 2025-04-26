@@ -1,19 +1,16 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.wrapper;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 /**
  * Wrapper-luokka kohteiden tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
-public class KohteetWrapper {
+public class KohteetWrapper implements TaulukkoWrapper {
     private StringProperty tunnus;
     private StringProperty sijainti;
     private IntegerProperty huoneita;
-    private IntegerProperty pintaAla;
-    private IntegerProperty hinta;
+    private DoubleProperty pintaAla;
+    private DoubleProperty hinta;
     private StringProperty huomioitavaa;
 
     /** Määrityksiä tarvitaan taulukon luomisessa */
@@ -34,16 +31,16 @@ public class KohteetWrapper {
         this.tunnus = new SimpleStringProperty(tunnus);
         this.sijainti = new SimpleStringProperty(sijainti);
         this.huoneita = new SimpleIntegerProperty(huoneita);
-        this.pintaAla = new SimpleIntegerProperty(pintaAla);
-        this.hinta = new SimpleIntegerProperty(hinta);
+        this.pintaAla = new SimpleDoubleProperty(pintaAla);
+        this.hinta = new SimpleDoubleProperty(hinta);
         this.huomioitavaa = new SimpleStringProperty(huomioitavaa);
 
         maaritykset = new String[][] {
                 {"Tunnus", "String", "tunnus"},
                 {"Sijainti", "String", "sijainti"},
                 {"Huoneita", "Integer", "huoneita"},
-                {"Pinta-ala", "Integer", "pintaAla"},
-                {"Hinta", "Integer", "hinta"},
+                {"Pinta-ala", "Double", "pintaAla"},
+                {"Hinta", "Double", "hinta"},
                 {"Huomioitavaa", "String", "huomioitavaa"},
         };
     }
@@ -76,7 +73,7 @@ public class KohteetWrapper {
      * Metodi palauttaa pinta-ala-kentän arvon.
      * @return pinta-ala
      */
-    public int getPintaAla() {
+    public double getPintaAla() {
         return pintaAla.get();
     }
 
@@ -84,7 +81,7 @@ public class KohteetWrapper {
      * Metodi palauttaa hinta-kentän arvon.
      * @return hinta
      */
-    public int getHinta() {
+    public double getHinta() {
         return hinta.get();
     }
 
@@ -103,4 +100,30 @@ public class KohteetWrapper {
     public String[][] getMaaritykset() {
         return maaritykset;
     }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden tunnisteen eli kohteen tunnuksen.
+     * @return tunniste
+     */
+    public String palautaTunniste() {
+        return tunnus.get();
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden kuvaustekstin eli kohteen tunnuksen.
+     * @return tunniste
+     */
+    public String palautaKuvausteksti() {
+        return tunnus.get();
+    }
+
+    /**
+     * Metodi palauttaa kenttien arvot merkkijonolistana.
+     * @return kenttien arvot
+     */
+    public String[] palautaKenttienArvot() {
+        return new String[] {tunnus.get(), sijainti.get(), ""+huoneita.get(),
+                ""+pintaAla.get(), ""+hinta.get(), huomioitavaa.get()};
+    }
+
 }

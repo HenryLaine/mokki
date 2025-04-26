@@ -4,27 +4,33 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import mokki.mokki.gui.*;
+import mokki.mokki.gui.alipaneeli.Hallintapaneeli;
+import mokki.mokki.gui.alipaneeli.RaportitHallintapaneeli;
+import mokki.mokki.gui.alipaneeli.Taulukkopaneeli;
+import mokki.mokki.gui.Valilehtipaneeli;
+import mokki.mokki.gui.paapaneeli.*;
+import mokki.mokki.gui.ponnahdusikkuna.KohteenTiedotIkkuna;
+import mokki.mokki.gui.ponnahdusikkuna.Vahvistusikkuna;
+import mokki.mokki.gui.wrapper.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Main extends Application {
-    int fonttikoko = 16;
-    VBox kohteetPaneeli = new VBox();
-    VBox varauksetPaneeli = new VBox();
-    VBox asiakkaatPaneeli = new VBox();
-    VBox laskutPaneeli = new VBox();
-    VBox raportitPaneeli = new VBox();
+    int fonttikoko = 26;
+    KohteetPaneeli kohteetPaneeli;
+    VarauksetPaneeli varauksetPaneeli;
+    AsiakkaatPaneeli asiakkaatPaneeli;
+    LaskutPaneeli laskutPaneeli;
+    RaportitPaneeli raportitPaneeli;
 
     private void alustaKohteetPaneeli() {
-        Hallintapaneeli hallintapaneeli = new Hallintapaneeli(
-                new String[] {"Lisää kohde", "Rajaa kohteita", "Poista rajaukset"});
-        hallintapaneeli.asetaFonttikoko(fonttikoko);
-        // Dummy-dataa
-        ObservableList<KohteetWrapper> taulukonSisalto = FXCollections.observableArrayList(
+        // Dummy-dataa testausta varten
+        ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
                 new KohteetWrapper("JOE001", "Joensuu", 1,
                         46, 250, "Kohteessa on poreallas."),
                 new KohteetWrapper("KON005", "Kontiolahti", 5,
@@ -32,12 +38,10 @@ public class Main extends Application {
                 new KohteetWrapper("LIP003", "Liperi", 2, 15,
                         130, "Kohde on remontoitavana 16.3.2025 asti.")
         );
-        Taulukkopaneeli<KohteetWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
-                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
-        taulukkopaneeli.asetaFonttikoko(fonttikoko);
-        kohteetPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
+        kohteetPaneeli = new KohteetPaneeli(fonttikoko, taulukonSisalto);
 
-        // TODO: Aseta painikkeiden toiminnallisuus.
+        // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
+        Hallintapaneeli hallintapaneeli = kohteetPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
 
         });
@@ -48,25 +52,48 @@ public class Main extends Application {
         hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
             hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
 
+        });
+
+        // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
+        Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = kohteetPaneeli.getTaulukkopaneeli();
+        ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+
+        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
+            // Kohteen tiedot näytetään
+            KohteenTiedotIkkuna kohteenTiedotIkkuna =
+                    new KohteenTiedotIkkuna(taulukkopaneeli.getSelectionModel().getSelectedItem());
+            kohteenTiedotIkkuna.asetaFonttikoko(fonttikoko);
+            kohteenTiedotIkkuna.showAndWait();
+        });
+        kontekstivalikonKohdat.get(1).setOnAction(e -> {
+            // Kohteen tietoja muutetaan
+
+        });
+        kontekstivalikonKohdat.get(2).setOnAction(e -> {
+            Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
+                    "Haluatko varmasti poistaa kohteen " +
+                    taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
+            Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
+
+            if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
+                // Kohde poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+
+                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
+            }
         });
     }
 
     private void alustaVarauksetPaneeli() {
-        Hallintapaneeli hallintapaneeli = new Hallintapaneeli(
-                new String[] {"Lisää varaus", "Rajaa varauksia", "Poista rajaukset"});
-        hallintapaneeli.asetaFonttikoko(fonttikoko);
         // Dummy-dataa
-        ObservableList<VarauksetWrapper> taulukonSisalto = FXCollections.observableArrayList(
+        ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
                 new VarauksetWrapper("A003", "JOE001", "Matti Meikäläinen",
                         "05.04.2025", "08.04.2025", "Päättynyt",
                         "Lisäpalvelu: ylimääräinen sänky")
         );
-        Taulukkopaneeli<VarauksetWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
-                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
-        taulukkopaneeli.asetaFonttikoko(fonttikoko);
-        varauksetPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
+        varauksetPaneeli = new VarauksetPaneeli(fonttikoko, taulukonSisalto);
 
-        // TODO: Aseta painikkeiden toiminnallisuus.
+        // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
+        Hallintapaneeli hallintapaneeli = varauksetPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
 
         });
@@ -77,24 +104,52 @@ public class Main extends Application {
         hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
             hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
 
+        });
+
+        // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
+        Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = varauksetPaneeli.getTaulukkopaneeli();
+        ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+
+        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
+            // Varauksen tiedot näytetään
+
+        });
+        kontekstivalikonKohdat.get(1).setOnAction(e -> {
+            // Mökin tiedot näytetään
+
+        });
+        kontekstivalikonKohdat.get(2).setOnAction(e -> {
+            // Asiakkaan tiedot näytetään
+
+        });
+        kontekstivalikonKohdat.get(3).setOnAction(e -> {
+            // Varauksen tietoja muutetaan
+
+        });
+        kontekstivalikonKohdat.get(4).setOnAction(e -> {
+            Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
+                    "Haluatko varmasti poistaa varauksen " +
+                            taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
+            Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
+
+            if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
+                // Varaus poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+
+                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
+            }
         });
     }
 
     private void alustaAsiakkaatPaneeli() {
-        Hallintapaneeli hallintapaneeli = new Hallintapaneeli(
-                new String[] {"Lisää asiakas", "Rajaa asiakkaita", "Poista rajaukset"});
-        hallintapaneeli.asetaFonttikoko(fonttikoko);
         // Dummy-dataa
-        ObservableList<AsiakkaatWrapper> taulukonSisalto = FXCollections.observableArrayList(
+        ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
                 new AsiakkaatWrapper("Jukka Jokunen", "jukka@gmail.com",
                         "043-046-0349","yksityishenkilö", "")
         );
-        Taulukkopaneeli<AsiakkaatWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
-                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
-        taulukkopaneeli.asetaFonttikoko(fonttikoko);
-        asiakkaatPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
+        asiakkaatPaneeli = new AsiakkaatPaneeli(fonttikoko, taulukonSisalto);
 
-        // TODO: Aseta painikkeiden toiminnallisuus.
+        // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
+        Hallintapaneeli hallintapaneeli = asiakkaatPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
 
         });
@@ -105,25 +160,46 @@ public class Main extends Application {
         hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
             hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
 
+        });
+
+        // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
+        Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = asiakkaatPaneeli.getTaulukkopaneeli();
+        ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+
+        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
+            // Varauksen tiedot näytetään
+
+        });
+        kontekstivalikonKohdat.get(1).setOnAction(e -> {
+            // Mökin tiedot näytetään
+
+        });
+
+        kontekstivalikonKohdat.get(2).setOnAction(e -> {
+            Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
+                    "Haluatko varmasti poistaa asiakkaan " +
+                            taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
+            Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
+
+            if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
+                // Asiakas poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+
+                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
+            }
         });
     }
 
     private void alustaLaskutPaneeli() {
-        Hallintapaneeli hallintapaneeli = new Hallintapaneeli(
-                new String[] {"Lisää lasku", "Rajaa laskuja", "Poista rajaukset"});
-        hallintapaneeli.asetaFonttikoko(fonttikoko);
         // Dummy-dataa
-        ObservableList<LaskutWrapper> taulukonSisalto = FXCollections.observableArrayList(
+        ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
                 new LaskutWrapper(3950359, "Vuokraus: JOE001; 15.03.2025-16.03.2025",
                         "Jaska Jokunen (jaska@gmail.com)", 90405964, 150.35,
                         "Avoin")
         );
-        Taulukkopaneeli<LaskutWrapper> taulukkopaneeli = new Taulukkopaneeli<>(
-                taulukonSisalto.getFirst().getMaaritykset(), taulukonSisalto);
-        taulukkopaneeli.asetaFonttikoko(fonttikoko);
-        laskutPaneeli.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
+        laskutPaneeli = new LaskutPaneeli(fonttikoko, taulukonSisalto);
 
-        // TODO: Aseta painikkeiden toiminnallisuus.
+        // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
+        Hallintapaneeli hallintapaneeli = laskutPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
 
         });
@@ -135,9 +211,79 @@ public class Main extends Application {
             hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
 
         });
+
+        // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
+        Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = laskutPaneeli.getTaulukkopaneeli();
+        ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+
+        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
+            // Varauksen tiedot näytetään
+
+        });
+        kontekstivalikonKohdat.get(1).setOnAction(e -> {
+            // Mökin tiedot näytetään
+
+        });
+
+        kontekstivalikonKohdat.get(2).setOnAction(e -> {
+            // Mökin tiedot näytetään
+
+        });
+
+        kontekstivalikonKohdat.get(3).setOnAction(e -> {
+            Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
+                    "Haluatko varmasti poistaa laskun " +
+                            taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
+            Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
+
+            if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
+                // Asiakas poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+
+                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
+            }
+        });
     }
 
+    private void alustaRaportitPaneeli() {
+        // Dummy-dataa
+        ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
+                new RaportitWrapper("JOE001", 45, 21,
+                        20, 46.4, 100, 10000)
+        );
+        raportitPaneeli = new RaportitPaneeli(fonttikoko, taulukonSisalto);
 
+        // TODO: Aseta elementtien toiminnallisuus.
+        RaportitHallintapaneeli hallintapaneeli = raportitPaneeli.getHallintapaneeli();
+        /*
+        hallintapaneeli.getAlkuvuosivalikko().*(e -> {
+
+        });
+        hallintapaneeli.getAlkukuukausivalikko().*(e -> {
+
+        });
+        hallintapaneeli.getLoppuvuosivalikko().*(e -> {
+
+        });
+        hallintapaneeli.getLoppukuukausivalikko().*(e -> {
+
+        });
+        hallintapaneeli.getRajauksetKentta().*(e -> {
+
+        });
+
+         */
+
+        // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
+        Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = raportitPaneeli.getTaulukkopaneeli();
+        ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
+
+        });
+
+        kontekstivalikonKohdat.get(1).setOnAction(e -> {
+
+        });
+    }
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -148,27 +294,25 @@ public class Main extends Application {
         Valilehtipaneeli valilehtipaneeli = new Valilehtipaneeli(
                 new String[] {"Kohteet", "Varaukset", "Asiakkaat", "Laskut", "Raportit"});
         valilehtipaneeli.asetaFonttikoko((int)Math.round(fonttikoko * 1.3));
-        ArrayList<Tab> valilehdet = valilehtipaneeli.getValilehtilista();
 
+        ArrayList<Tab> valilehdet = valilehtipaneeli.getValilehtilista();
         // Alustetaan ensimmäinen välilehti.
         alustaKohteetPaneeli();
         valilehdet.getFirst().setContent(kohteetPaneeli);
-
         // Alustetaan toinen välilehti.
         alustaVarauksetPaneeli();
         valilehdet.get(1).setContent(varauksetPaneeli);
-
         // Alustetaan kolmas välilehti.
         alustaAsiakkaatPaneeli();
         valilehdet.get(2).setContent(asiakkaatPaneeli);
-
         // Alustetaan neljäs välilehti.
         alustaLaskutPaneeli();
         valilehdet.get(3).setContent(laskutPaneeli);
+        // Alustetaan viides välilehti
+        alustaRaportitPaneeli();
+        valilehdet.get(4).setContent(raportitPaneeli);
 
-
-
-        Scene kehys = new Scene(valilehtipaneeli, 900, 600);
+        Scene kehys = new Scene(valilehtipaneeli, 1000, 650);
         primaryStage.setTitle("Mokki");
         primaryStage.setScene(kehys);
         primaryStage.show();

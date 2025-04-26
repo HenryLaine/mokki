@@ -1,9 +1,11 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.alipaneeli;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+
+import java.util.ArrayList;
 
 /**
  * Luokka toteuttaa käytöliittymän taulukkopaneelin. Taulukko tukee String, Integer ja
@@ -11,19 +13,52 @@ import javafx.scene.text.Text;
  * @param <T> taulukkoon sijoitettavan tiedon tyyppi
  */
 public class Taulukkopaneeli<T> extends TableView<T> {
+    ArrayList<MenuItem> kontekstivalikonKohdat = new ArrayList<>();
 
     /**
-     * Luokan alustaja
-     * @param sarakkeidenTiedot sarakkeidentiedot muodossa {"Sarakkeen nimi", "Tyyppi", "muuttujanNimi"}
-     * @param taulukonSisalto taulukon sisältö
+     * Luokan alustaja, joka ei luo kontekstivalikkoa.
+     * @param sarakkeidenTiedot
+     * @param taulukonSisalto
      */
-    public Taulukkopaneeli(String[][] sarakkeidenTiedot, ObservableList<T> taulukonSisalto) {
+    public Taulukkopaneeli(String[][] sarakkeidenTiedot,
+                           ObservableList<T> taulukonSisalto) {
         // Määritetään taulukon asetukset.
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_NEXT_COLUMN);
         this.setPrefHeight(4000);
         this.setPlaceholder(new Label(""));
 
-        // Luodaan sarakkeet tietojen perusteella.
+        // Luodaan sarakkeet ja kontekstivalikko.
+        luoSarakkeet(sarakkeidenTiedot);
+
+        // Lisätään taulukon sisältö.
+        this.setItems(taulukonSisalto);
+    }
+
+    /**
+     * Luokan alustaja, joka luo kontekstivalikon.
+     * @param sarakkeidenTiedot sarakkeidentiedot muodossa {"Sarakkeen nimi", "Tyyppi", "muuttujanNimi"}
+     * @param taulukonSisalto taulukon sisältö
+     */
+    public Taulukkopaneeli(String[][] sarakkeidenTiedot, String[] kontekstivalikonNimet,
+                           ObservableList<T> taulukonSisalto) {
+        // Määritetään taulukon asetukset.
+        this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_NEXT_COLUMN);
+        this.setPrefHeight(4000);
+        this.setPlaceholder(new Label(""));
+
+        // Luodaan sarakkeet ja kontekstivalikko.
+        luoSarakkeet(sarakkeidenTiedot);
+        lisaaKontekstivalikko(kontekstivalikonNimet);
+
+        // Lisätään taulukon sisältö.
+        this.setItems(taulukonSisalto);
+    }
+
+    /**
+     * Metodi luo talukon sarakkeet.
+     * @param sarakkeidenTiedot sarakkeiden tiedot
+     */
+    private void luoSarakkeet(String[][] sarakkeidenTiedot) {
         for (String[] tiedot : sarakkeidenTiedot) {
             if (tiedot[1].equals("String")) {
                 TableColumn<T, String> sarake = new TableColumn<>(tiedot[0]);
@@ -65,9 +100,48 @@ public class Taulukkopaneeli<T> extends TableView<T> {
                 });
             }
         }
+    }
 
-        // Lisätään taulukon sisältö.
-        this.setItems(taulukonSisalto);
+    /**
+     * Metodi luo kontekstivalikon.
+     * @param kontekstivalikonNimet valikon kohteiden nimet
+     */
+    private void lisaaKontekstivalikko(String [] kontekstivalikonNimet) {
+        ContextMenu kontekstivalikko = new ContextMenu();
+        for (String nimi : kontekstivalikonNimet) {
+            MenuItem kohta = new MenuItem(nimi);
+            kontekstivalikko.getItems().add(kohta);
+            kontekstivalikonKohdat.add(kohta);
+        }
+
+        this.setRowFactory(tv -> {
+            TableRow<T> rivi = new TableRow<>() {
+                @Override
+                public void updateItem(T tieto, boolean tyhja) {
+                    super.updateItem(tieto, tyhja);
+                    if (tyhja || tieto == null) {
+                        setContextMenu(null);
+                    }
+                    else {
+                        setContextMenu(kontekstivalikko);
+                    }
+                }
+            };
+            return rivi;
+        });
+    }
+
+    /**
+     * Metodi palauttaa kontekstivalikon kohdat listarakenteena.
+     * @return kohtekstivalikon kohdat listana
+     */
+    public ArrayList<MenuItem> getKontekstivalikonKohdat() {
+        return kontekstivalikonKohdat;
+    }
+
+    public T palautaRivinTiedot() {
+        T valitunRivinTIedot = this.getSelectionModel().getSelectedItem();
+        return valitunRivinTIedot;
     }
 
     /**

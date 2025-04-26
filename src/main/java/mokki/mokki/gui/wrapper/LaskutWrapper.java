@@ -1,4 +1,4 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.wrapper;
 
 
 import javafx.beans.property.*;
@@ -6,7 +6,7 @@ import javafx.beans.property.*;
 /**
  * Wrapper-luokka laskujen tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
-public class LaskutWrapper {
+public class LaskutWrapper implements TaulukkoWrapper {
     private IntegerProperty laskunumero;
     private StringProperty tuote;
     private StringProperty asiakas;
@@ -101,4 +101,30 @@ public class LaskutWrapper {
     public String[][] getMaaritykset() {
         return maaritykset;
     }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden tunnisteen eli laskun numeron.
+     * @return tunniste
+     */
+    public String palautaTunniste() {
+        return "" + laskunumero.get();
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden kuvaustekstin eli laskun numeron.
+     * @return tunniste
+     */
+    public String palautaKuvausteksti() {
+        return "" + laskunumero.get();
+    }
+
+    /**
+     * Metodi palauttaa kenttien arvot merkkijonolistana.
+     * @return kenttien arvot
+     */
+    public String[] palautaKenttienArvot() {
+        return new String[] {""+laskunumero.get(), tuote.get(), asiakas.get(),
+                ""+viitenumero.get(), ""+maksettava.get(), tila.get()};
+    }
+
 }
