@@ -1,11 +1,11 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.wrapper;
 
 import javafx.beans.property.*;
 
 /**
  * Wrapper-luokka kohteiden tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
-public class KohteetWrapper {
+public class KohteetWrapper implements TaulukkoWrapper {
     private StringProperty tunnus;
     private StringProperty sijainti;
     private IntegerProperty huoneita;
@@ -99,5 +99,21 @@ public class KohteetWrapper {
      */
     public String[][] getMaaritykset() {
         return maaritykset;
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden tunnisteen eli kohteen tunnuksen.
+     * @return tunniste
+     */
+    public String palautaTunniste() {
+        return tunnus.get();
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden kuvaustekstin eli kohteen tunnuksen.
+     * @return tunniste
+     */
+    public String palautaKuvausteksti() {
+        return tunnus.get();
     }
 }

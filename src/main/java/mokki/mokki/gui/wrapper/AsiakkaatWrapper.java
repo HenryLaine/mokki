@@ -1,4 +1,4 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.wrapper;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -6,7 +6,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Wrapper-luokka asiakkaiden tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
-public class AsiakkaatWrapper {
+public class AsiakkaatWrapper implements TaulukkoWrapper {
     private StringProperty nimi;
     private StringProperty sahkoposti;
     private StringProperty puhelinnumero;
@@ -88,5 +88,21 @@ public class AsiakkaatWrapper {
      */
     public String[][] getMaaritykset() {
         return maaritykset;
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden tunnisteen eli asiakkaan sähköpostiosoitteen.
+     * @return tunniste
+     */
+    public String palautaTunniste() {
+        return sahkoposti.get();
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden kuvaustekstin, joka on asiakkaan nimi ja sähköpostiosoite.
+     * @return tunniste
+     */
+    public String palautaKuvausteksti() {
+        return nimi.get() + " (" + sahkoposti.get() + ")";
     }
 }

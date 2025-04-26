@@ -1,8 +1,11 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.wrapper;
 
 import javafx.beans.property.*;
 
-public class RaportitWrapper {
+/**
+ *
+ */
+public class RaportitWrapper implements TaulukkoWrapper {
     private StringProperty kohde;
     private IntegerProperty kayttoaste;
     private IntegerProperty varaustenMaara;
@@ -13,6 +16,16 @@ public class RaportitWrapper {
 
     private String[][] maaritykset;
 
+    /**
+     * Luokan alustaja
+     * @param kohde kohde
+     * @param kayttoaste käyttöaste
+     * @param varaustenMaara varausten määrä
+     * @param paivatulot päivätulot
+     * @param viikkotulot viikkotulot
+     * @param kuukausitulot kuukausitulot
+     * @param kokonaistulot kokonaistulot
+     */
     public RaportitWrapper(String kohde, int kayttoaste, int varaustenMaara,
                            double paivatulot, double viikkotulot, double kuukausitulot, double kokonaistulot) {
 
@@ -35,35 +48,83 @@ public class RaportitWrapper {
         };
     }
 
+    /**
+     * Metodi palauttaa kohteen.
+     * @return kohde
+     */
     public String getKohde() {
         return kohde.get();
     }
 
+    /**
+     * Metodi palauttaa käyttöasteen.
+     * @return käyttöaste
+     */
     public int getKayttoaste() {
         return kayttoaste.get();
     }
 
+    /**
+     * Metodi palauttaa varausten määrän.
+     * @return varauten määrä
+     */
     public int getVaraustenMaara() {
         return varaustenMaara.get();
     }
 
+    /**
+     * Metodi palauttaa päivätulot.
+     * @return päivätulot
+     */
     public double getPaivatulot() {
         return paivatulot.get();
     }
 
+    /**
+     * Metodi palauttaa viikkotulot.
+     * @return viikkotulot
+     */
     public double getViikkotulot() {
         return viikkotulot.get();
     }
 
+    /**
+     * Metodi palauttaa kuukausitulot.
+     * @return kuukausitulot
+     */
     public double getKuukausitulot() {
         return kuukausitulot.get();
     }
 
+    /**
+     * Metodi palauttaa kokonaistulot.
+     * @return kokonaistulot
+     */
     public double getKokonaistulot() {
         return kokonaistulot.get();
     }
 
+    /**
+     * Metodi palauttaa taulukkomääritykset.
+     * @return taulukkomääritykset
+     */
     public String[][] getMaaritykset() {
         return maaritykset;
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden tunnisteen eli kohteen tunnuksen.
+     * @return tunniste
+     */
+    public String palautaTunniste() {
+        return kohde.get();
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden kuvaustekstin eli kohteen tunnuksen.
+     * @return tunniste
+     */
+    public String palautaKuvausteksti() {
+        return kohde.get();
     }
 }

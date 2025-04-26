@@ -1,4 +1,4 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.alipaneeli;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -7,6 +7,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
+/**
+ * Luokka toteuttaa paneelin, jonka avulla on mahdollista hallita raportteja.
+ */
 public class RaportitHallintapaneeli extends FlowPane {
     private ComboBox<String> alkuvuosivalikko;
     private ComboBox<String> alkukuukausivalikko;
@@ -16,6 +19,9 @@ public class RaportitHallintapaneeli extends FlowPane {
     private Text kokonaistulotTeksti;
     private TextField rajauksetKentta;
 
+    /**
+     * Luokan alustaja
+     */
     public RaportitHallintapaneeli() {
         String[] kuukaudet = new String[] {"Tammikuu", "Helmikuu", "Maaliskuu", "Huhtikuu", "Toukokuu",
                 "Kesäkuu", "Heinäkuu", "Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"};
@@ -35,6 +41,13 @@ public class RaportitHallintapaneeli extends FlowPane {
         this.setVgap(0);
     }
 
+    /**
+     * Metodi luo hallintapaneeliin sijoitettavan päivämäärälaatikon.
+     * @param nimi laatikon otsikko
+     * @param vuosi vuosien nimet sisältävä pudotusvalikko
+     * @param kuukausi kuukausien nimet sisältävä pudotusvalikko
+     * @return päivämäärälaatikko
+     */
     private VBox luoPaivamaaralaatikko(String nimi, ComboBox<String> vuosi, ComboBox<String> kuukausi) {
         VBox paivamaarapaneeli = new VBox(10);
         paivamaarapaneeli.setPadding(new Insets(10));
@@ -46,6 +59,10 @@ public class RaportitHallintapaneeli extends FlowPane {
         return paivamaarapaneeli;
     }
 
+    /**
+     * Metodi luo hallintapaneeliin sijoitettavan tilastolaatikon
+     * @return tilastolaatikko
+     */
     private GridPane luoTilastolaatikko() {
         GridPane tilastolaatikko = new GridPane();
         tilastolaatikko.setPadding(new Insets(10));
@@ -60,6 +77,10 @@ public class RaportitHallintapaneeli extends FlowPane {
         return tilastolaatikko;
     }
 
+    /**
+     * Metodi luo hallintapaneeliin sijoitettavan rajauslaatikon.
+     * @return rajauslaatikko
+     */
     private VBox luoRajauslaatikko() {
         VBox rajauslaatikko = new VBox(10);
         rajauslaatikko.setPadding(new Insets(10));
@@ -70,6 +91,10 @@ public class RaportitHallintapaneeli extends FlowPane {
         return rajauslaatikko;
     }
 
+    /**
+     * Metodi muuttaa fontin kokoa.
+     * @param fonttikoko fontin koko
+     */
     public void asetaFonttikoko(int fonttikoko) {
         this.setStyle("-fx-font-size:" + fonttikoko + "px;");
         alkuvuosivalikko.setPrefWidth(9*fonttikoko);
@@ -78,30 +103,58 @@ public class RaportitHallintapaneeli extends FlowPane {
         loppukuukausivalikko.setPrefWidth(9*fonttikoko);
     }
 
+    /**
+     * Metodi palauttaa alkukuukausipudotusvalikon.
+     * @return alkukuukausipudotusvalikko
+     */
     public ComboBox<String> getAlkukuukausivalikko() {
         return alkukuukausivalikko;
     }
 
+    /**
+     * Metodi palauttaa alkuvuosipudotusvalikon.
+     * @return alkuvuosipudotusvalikko
+     */
     public ComboBox<String> getAlkuvuosivalikko() {
         return alkuvuosivalikko;
     }
 
+    /**
+     * Metodi palauttaa loppukuukausipudotusvalikon.
+     * @return loppukuukausipudotusvalikko
+     */
     public ComboBox<String> getLoppukuukausivalikko() {
         return loppukuukausivalikko;
     }
 
+    /**
+     * Metodi palauttaa loppuvuosipudotusvalikon.
+     * @return loppuvuosipudotusvalikko
+     */
     public ComboBox<String> getLoppuvuosivalikko() {
         return loppuvuosivalikko;
     }
 
+    /**
+     * Metodi palauttaa kokonaiskäyttöasteen näyttävän tekstin.
+     * @return kokonaiskäyttöaste
+     */
     public Text getKokonaiskayttoasteTeksti() {
         return kokonaiskayttoasteTeksti;
     }
 
+    /**
+     * Metodi palauttaa kokonaistulot näyttävän tekstin.
+     * @return kokonaistuloteksti
+     */
     public Text getKokonaistulotTeksti() {
         return kokonaistulotTeksti;
     }
 
+    /**
+     * Metodi palauttaa rajaukset sisältävän tekstikentän.
+     * @return Rajaukset-tekstikenttä
+     */
     public TextField getRajauksetKentta() {
         return rajauksetKentta;
     }

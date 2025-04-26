@@ -1,4 +1,4 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.alipaneeli;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -111,6 +111,7 @@ public class Taulukkopaneeli<T> extends TableView<T> {
         for (String nimi : kontekstivalikonNimet) {
             MenuItem kohta = new MenuItem(nimi);
             kontekstivalikko.getItems().add(kohta);
+            kontekstivalikonKohdat.add(kohta);
         }
 
         this.setRowFactory(tv -> {
@@ -136,6 +137,11 @@ public class Taulukkopaneeli<T> extends TableView<T> {
      */
     public ArrayList<MenuItem> getKontekstivalikonKohdat() {
         return kontekstivalikonKohdat;
+    }
+
+    public T palautaRivinTiedot() {
+        T valitunRivinTIedot = this.getSelectionModel().getSelectedItem();
+        return valitunRivinTIedot;
     }
 
     /**
