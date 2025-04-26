@@ -1,6 +1,7 @@
 module mokki.mokki {
     requires javafx.controls;
     requires java.sql;
+    requires java.desktop;
 
 
     exports mokki.mokki;

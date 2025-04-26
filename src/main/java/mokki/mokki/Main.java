@@ -13,6 +13,7 @@ import mokki.mokki.gui.alipaneeli.RaportitHallintapaneeli;
 import mokki.mokki.gui.alipaneeli.Taulukkopaneeli;
 import mokki.mokki.gui.Valilehtipaneeli;
 import mokki.mokki.gui.paapaneeli.*;
+import mokki.mokki.gui.ponnahdusikkuna.KohteenTiedotIkkuna;
 import mokki.mokki.gui.ponnahdusikkuna.Vahvistusikkuna;
 import mokki.mokki.gui.wrapper.*;
 
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class Main extends Application {
-    int fonttikoko = 16;
+    int fonttikoko = 26;
     KohteetPaneeli kohteetPaneeli;
     VarauksetPaneeli varauksetPaneeli;
     AsiakkaatPaneeli asiakkaatPaneeli;
@@ -59,7 +60,10 @@ public class Main extends Application {
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
             // Kohteen tiedot näytetään
-
+            KohteenTiedotIkkuna kohteenTiedotIkkuna =
+                    new KohteenTiedotIkkuna(taulukkopaneeli.getSelectionModel().getSelectedItem());
+            kohteenTiedotIkkuna.asetaFonttikoko(fonttikoko);
+            kohteenTiedotIkkuna.showAndWait();
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Kohteen tietoja muutetaan
@@ -72,8 +76,9 @@ public class Main extends Application {
             Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
 
             if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // Kohde poistetaan tietokannasta
+                // Kohde poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
 
+                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
             }
         });
     }
@@ -128,8 +133,9 @@ public class Main extends Application {
             Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
 
             if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // Varaus poistetaan tietokannasta
+                // Varaus poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
 
+                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
             }
         });
     }
@@ -159,8 +165,27 @@ public class Main extends Application {
         // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
         Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = asiakkaatPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
-        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
 
+        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
+            // Varauksen tiedot näytetään
+
+        });
+        kontekstivalikonKohdat.get(1).setOnAction(e -> {
+            // Mökin tiedot näytetään
+
+        });
+
+        kontekstivalikonKohdat.get(2).setOnAction(e -> {
+            Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
+                    "Haluatko varmasti poistaa asiakkaan " +
+                            taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
+            Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
+
+            if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
+                // Asiakas poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+
+                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
+            }
         });
     }
 
@@ -190,8 +215,32 @@ public class Main extends Application {
         // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
         Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = laskutPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
-        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
 
+        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
+            // Varauksen tiedot näytetään
+
+        });
+        kontekstivalikonKohdat.get(1).setOnAction(e -> {
+            // Mökin tiedot näytetään
+
+        });
+
+        kontekstivalikonKohdat.get(2).setOnAction(e -> {
+            // Mökin tiedot näytetään
+
+        });
+
+        kontekstivalikonKohdat.get(3).setOnAction(e -> {
+            Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
+                    "Haluatko varmasti poistaa laskun " +
+                            taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
+            Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
+
+            if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
+                // Asiakas poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+
+                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
+            }
         });
     }
 
@@ -229,9 +278,11 @@ public class Main extends Application {
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
 
-
         });
 
+        kontekstivalikonKohdat.get(1).setOnAction(e -> {
+
+        });
     }
 
     public static void main(String[] args) {
