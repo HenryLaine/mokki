@@ -26,15 +26,41 @@ public class VarausDAO {
     }
     // varauksen muokkaaminen
     public void muokkaaVarausta(Varaus varaus) throws SQLException {
-        String sql = "UPDATE Varaus SET aloitus_pvm = ?, paattymis_pvm = ?, henkilo_maara = ?, sahkoposti = ?, mokkiID = ? WHERE varaustunnus = ?";
+        Varaus vanhaVaraus = haeVaraus(varaus.getVarausID());
+        if (vanhaVaraus == null) {
+            throw new SQLException("Varausta ei löydy ID:llä " + varaus.getVarausID());
+        }
+
+        String sql = "UPDATE Varaus SET aloitus_pvm = ?, paattymis_pvm = ?, henkilo_maara = ?, sahkoposti = ?, mokkiID = ? WHERE varausID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setDate(1, varaus.getAloitusPvm());
-            stmt.setDate(2, varaus.getPaattymisPvm());
-            stmt.setInt(3, varaus.getHenkiloMaara());
-            stmt.setString(4, varaus.getSahkoposti());
-            stmt.setInt(5, varaus.getMokkiID());
-            stmt.setInt(6, varaus.getVaraustunnus());
+            stmt.setDate(1, varaus.getAloitusPvm() != null ? varaus.getAloitusPvm() : vanhaVaraus.getAloitusPvm());
+            stmt.setDate(2, varaus.getPaattymisPvm() != null ? varaus.getPaattymisPvm() : vanhaVaraus.getPaattymisPvm());
+            stmt.setInt(3, varaus.getHenkiloMaara() != 0 ? varaus.getHenkiloMaara() : vanhaVaraus.getHenkiloMaara());
+            stmt.setString(4, varaus.getSahkoposti() != null && !varaus.getSahkoposti().isEmpty() ? varaus.getSahkoposti() : vanhaVaraus.getSahkoposti());
+            stmt.setInt(5, varaus.getMokkiID() != 0 ? varaus.getMokkiID() : vanhaVaraus.getMokkiID());
+            stmt.setInt(6, varaus.getVarausID());
             stmt.executeUpdate();
+        }
+    }
+    // apumetodi hakee yhden varauksen
+    public Varaus haeVaraus(int varausID) throws SQLException {
+        String sql = "SELECT * FROM Varaus WHERE varausID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, varausID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Varaus(
+                            rs.getInt("varausID"),
+                            rs.getDate("aloitus_pvm"),
+                            rs.getDate("paattymis_pvm"),
+                            rs.getInt("henkilo_maara"),
+                            rs.getString("sahkoposti"),
+                            rs.getInt("mokkiID")
+                    );
+                } else {
+                    return null;
+                }
+            }
         }
     }
     // varauksen poistaminen
