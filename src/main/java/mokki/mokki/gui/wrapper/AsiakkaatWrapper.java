@@ -105,4 +105,12 @@ public class AsiakkaatWrapper implements TaulukkoWrapper {
     public String palautaKuvausteksti() {
         return nimi.get() + " (" + sahkoposti.get() + ")";
     }
+
+    /**
+     * Metodi palauttaa kenttien arvot merkkijonolistana.
+     * @return kenttien arvot
+     */
+    public String[] palautaKenttienArvot() {
+        return new String[] {nimi.get(), sahkoposti.get(), puhelinnumero.get(), tyyppi.get(), ytunnus.get()};
+    }
 }

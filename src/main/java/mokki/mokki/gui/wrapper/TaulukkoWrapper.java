@@ -27,4 +27,10 @@ public interface TaulukkoWrapper {
      * @return kuvausteksti
      */
     String palautaKuvausteksti();
+
+    /**
+     * Metodi palauttaa luokan jokaisen kentän arvon merkkijonolistana.
+     * @return kenttien arvot
+     */
+    String[] palautaKenttienArvot();
 }

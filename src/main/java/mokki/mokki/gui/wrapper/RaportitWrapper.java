@@ -127,4 +127,14 @@ public class RaportitWrapper implements TaulukkoWrapper {
     public String palautaKuvausteksti() {
         return kohde.get();
     }
+
+    /**
+     * Metodi palauttaa kenttien arvot merkkijonolistana.
+     * @return kenttien arvot
+     */
+    public String[] palautaKenttienArvot() {
+        return new String[] {kohde.get(), ""+kayttoaste.get(), ""+varaustenMaara.get(),
+                ""+paivatulot.get(), ""+viikkotulot.get(), ""+kuukausitulot.get(), ""+kokonaistulot.get()};
+    }
+
 }

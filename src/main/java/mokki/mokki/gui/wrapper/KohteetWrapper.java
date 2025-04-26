@@ -116,4 +116,14 @@ public class KohteetWrapper implements TaulukkoWrapper {
     public String palautaKuvausteksti() {
         return tunnus.get();
     }
+
+    /**
+     * Metodi palauttaa kenttien arvot merkkijonolistana.
+     * @return kenttien arvot
+     */
+    public String[] palautaKenttienArvot() {
+        return new String[] {tunnus.get(), sijainti.get(), ""+huoneita.get(),
+                ""+pintaAla.get(), ""+hinta.get(), huomioitavaa.get()};
+    }
+
 }

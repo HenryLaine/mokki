@@ -129,4 +129,14 @@ public class VarauksetWrapper implements TaulukkoWrapper {
     public String palautaKuvausteksti() {
         return tunnus.get();
     }
+
+    /**
+     * Metodi palauttaa kenttien arvot merkkijonolistana.
+     * @return kenttien arvot
+     */
+    public String[] palautaKenttienArvot() {
+        return new String[] {tunnus.get(), mokinTunnus.get(), asiakas.get(),
+                alkaa.get(), paattyy.get(), tila.get(), huomioitavaa.get()};
+    }
+
 }

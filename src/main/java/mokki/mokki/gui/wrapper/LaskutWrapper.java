@@ -117,4 +117,14 @@ public class LaskutWrapper implements TaulukkoWrapper {
     public String palautaKuvausteksti() {
         return "" + laskunumero.get();
     }
+
+    /**
+     * Metodi palauttaa kenttien arvot merkkijonolistana.
+     * @return kenttien arvot
+     */
+    public String[] palautaKenttienArvot() {
+        return new String[] {""+laskunumero.get(), tuote.get(), asiakas.get(),
+                ""+viitenumero.get(), ""+maksettava.get(), tila.get()};
+    }
+
 }
