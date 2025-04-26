@@ -156,6 +156,7 @@ public class Raportit {
      */
     public static void main(String[] args) throws SQLException {
 
+        DatabaseCreator.ensureDatabaseExists();
         DatabaseInitializer.initializeDatabase();
         Connection conn = DatabaseManager.getConnection();
         Raportit raportti=new Raportit(conn);
