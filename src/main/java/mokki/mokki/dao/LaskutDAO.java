@@ -79,19 +79,50 @@ public class LaskutDAO {
 
     // Koko laskun muokkaaminen
     public void muokkaaLaskua(Lasku lasku) throws SQLException {
+        Lasku vanhaLasku = haeLasku(lasku.getLaskuID());
+        if (vanhaLasku == null) {
+            throw new SQLException("Laskua ei löydy laskuID:llä " + lasku.getLaskuID());
+        }
+
         String sql = "UPDATE Laskut SET veroton_hinta = ?, alv = ?, paivamaara = ?, erapaiva = ?, status = ?, " +
                 "sahkoposti = ?, osoite = ?, nimi = ? WHERE laskuID = ?";
+
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setDouble(1, lasku.getVerotonHinta());
-            stmt.setDouble(2, lasku.getAlv());
-            stmt.setDate(3, lasku.getPaivamaara());
-            stmt.setDate(4, lasku.getErapaiva());
-            stmt.setString(5, lasku.getStatus());
-            stmt.setString(6, lasku.getSahkoposti());
-            stmt.setString(7, lasku.getOsoite());
-            stmt.setString(8, lasku.getNimi());
+            stmt.setDouble(1, lasku.getVerotonHinta() != 0.0 ? lasku.getVerotonHinta() : vanhaLasku.getVerotonHinta());
+            stmt.setDouble(2, lasku.getAlv() != 0.0 ? lasku.getAlv() : vanhaLasku.getAlv());
+            stmt.setDate(3, lasku.getPaivamaara() != null ? lasku.getPaivamaara() : vanhaLasku.getPaivamaara());
+            stmt.setDate(4, lasku.getErapaiva() != null ? lasku.getErapaiva() : vanhaLasku.getErapaiva());
+            stmt.setString(5, lasku.getStatus() != null ? lasku.getStatus() : vanhaLasku.getStatus());
+            stmt.setString(6, lasku.getSahkoposti() != null ? lasku.getSahkoposti() : vanhaLasku.getSahkoposti());
+            stmt.setString(7, lasku.getOsoite() != null ? lasku.getOsoite() : vanhaLasku.getOsoite());
+            stmt.setString(8, lasku.getNimi() != null ? lasku.getNimi() : vanhaLasku.getNimi());
             stmt.setInt(9, lasku.getLaskuID());
             stmt.executeUpdate();
+        }
+    }
+    //hae vain yksi lasku
+    public Lasku haeLasku(int laskuID) throws SQLException {
+        String sql = "SELECT * FROM Laskut WHERE laskuID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, laskuID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Lasku lasku = new Lasku(
+                            rs.getInt("laskuID"),
+                            rs.getDouble("veroton_hinta"),
+                            rs.getDouble("alv"),
+                            rs.getDate("paivamaara"),
+                            rs.getDate("erapaiva"),
+                            rs.getString("status"),
+                            rs.getString("sahkoposti"),
+                            rs.getString("osoite"),
+                            rs.getString("nimi")
+                    );
+                    return lasku;
+                } else {
+                    return null;
+                }
+            }
         }
     }
 

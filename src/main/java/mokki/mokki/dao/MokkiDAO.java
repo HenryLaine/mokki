@@ -40,13 +40,39 @@ public class MokkiDAO {
     // Metodi muokkaa olemassa olevaa mökkiä
 
     public void muokkaaMokki(Mokki mokki) throws SQLException {
+        Mokki vanhaMokki = haeMokki(mokki.getMokkiID());
+        if (vanhaMokki == null) {
+            throw new SQLException("Mökkiä ei löydy ID:llä " + mokki.getMokkiID());
+        }
+
         String sql = "UPDATE Mokki SET sijainti = ?, hinta = ?, huoneala = ?, henkilo_maara = ? WHERE mokkiID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, mokki.getSijainti());
-            stmt.setDouble(2, mokki.getHinta());
-            stmt.setInt(3, mokki.getHuoneala());
-            stmt.setInt(4, mokki.getHenkiloMaara());
+            stmt.setString(1, mokki.getSijainti() != null && !mokki.getSijainti().isEmpty() ? mokki.getSijainti() : vanhaMokki.getSijainti());
+            stmt.setDouble(2, mokki.getHinta() != 0.0 ? mokki.getHinta() : vanhaMokki.getHinta());
+            stmt.setInt(3, mokki.getHuoneala() != 0 ? mokki.getHuoneala() : vanhaMokki.getHuoneala());
+            stmt.setInt(4, mokki.getHenkiloMaara() != 0 ? mokki.getHenkiloMaara() : vanhaMokki.getHenkiloMaara());
+            stmt.setInt(5, mokki.getMokkiID());
             stmt.executeUpdate();
+        }
+    }
+    // apumetodi hakee yhden mökin
+    public Mokki haeMokki(int mokkiID) throws SQLException {
+        String sql = "SELECT * FROM Mokki WHERE mokkiID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, mokkiID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Mokki(
+                            rs.getInt("mokkiID"),
+                            rs.getString("sijainti"),
+                            rs.getDouble("hinta"),
+                            rs.getInt("huoneala"),
+                            rs.getInt("henkilo_maara")
+                    );
+                } else {
+                    return null;
+                }
+            }
         }
     }
 
