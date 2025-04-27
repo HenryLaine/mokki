@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class Main extends Application {
-    int fonttikoko = 26;
+    int fonttikoko = 16;
     KohteetPaneeli kohteetPaneeli;
     VarauksetPaneeli varauksetPaneeli;
     AsiakkaatPaneeli asiakkaatPaneeli;
@@ -59,17 +59,25 @@ public class Main extends Application {
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
-            // Kohteen tiedot näytetään
-            KohteenTiedotIkkuna kohteenTiedotIkkuna =
-                    new KohteenTiedotIkkuna(taulukkopaneeli.getSelectionModel().getSelectedItem());
+            // Kohteen tiedot näytetään.
+            KohteenTiedotIkkuna kohteenTiedotIkkuna = new KohteenTiedotIkkuna(
+                    taulukkopaneeli.getSelectionModel().getSelectedItem(), false);
             kohteenTiedotIkkuna.asetaFonttikoko(fonttikoko);
             kohteenTiedotIkkuna.showAndWait();
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
-            // Kohteen tietoja muutetaan
+            // Kohteen tietoja muutetaan.
+            KohteenTiedotIkkuna kohteenTiedotIkkuna = new KohteenTiedotIkkuna(
+                    taulukkopaneeli.getSelectionModel().getSelectedItem(), true);
+            kohteenTiedotIkkuna.asetaFonttikoko(fonttikoko);
+            boolean tulos = kohteenTiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+            if (tulos) {
+                // Kohteen tietoja muutetaan tietokannassa
 
+            }
         });
         kontekstivalikonKohdat.get(2).setOnAction(e -> {
+            // Kohteen tiedot poistetaan.
             Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
                     "Haluatko varmasti poistaa kohteen " +
                     taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
