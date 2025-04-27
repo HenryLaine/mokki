@@ -127,4 +127,12 @@ public class LaskutWrapper implements TaulukkoWrapper {
                 ""+viitenumero.get(), ""+maksettava.get(), tila.get()};
     }
 
+    public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
+        return true;
+    }
+
+    public boolean paivitaKenttienArvot(String[] arvot) {
+        return true;
+    }
+
 }

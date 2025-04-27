@@ -126,4 +126,18 @@ public class KohteetWrapper implements TaulukkoWrapper {
                 ""+pintaAla.get(), ""+hinta.get(), huomioitavaa.get()};
     }
 
+    public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
+        if (arvot.length != 6) {
+            return false;
+        }
+        else if (arvot[0].trim().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean paivitaKenttienArvot(String[] arvot) {
+        return true;
+    }
+
 }

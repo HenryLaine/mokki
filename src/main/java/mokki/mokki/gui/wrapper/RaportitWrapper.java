@@ -137,4 +137,11 @@ public class RaportitWrapper implements TaulukkoWrapper {
                 ""+paivatulot.get(), ""+viikkotulot.get(), ""+kuukausitulot.get(), ""+kokonaistulot.get()};
     }
 
+    public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
+        return true;
+    }
+
+    public boolean paivitaKenttienArvot(String[] arvot) {
+        return true;
+    }
 }

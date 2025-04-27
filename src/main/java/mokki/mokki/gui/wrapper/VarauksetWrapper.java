@@ -40,7 +40,7 @@ public class VarauksetWrapper implements TaulukkoWrapper {
         this.huomioitavaa = new SimpleStringProperty(huomioitavaa);
 
         maaritykset = new String[][] {
-                {"Tunus", "String", "tunnus"},
+                {"Tunnus", "String", "tunnus"},
                 {"Mökin tunnus", "String", "mokinTunnus"},
                 {"Asiakas", "String", "asiakas"},
                 {"Alkaa", "String", "alkaa"},
@@ -137,6 +137,14 @@ public class VarauksetWrapper implements TaulukkoWrapper {
     public String[] palautaKenttienArvot() {
         return new String[] {tunnus.get(), mokinTunnus.get(), asiakas.get(),
                 alkaa.get(), paattyy.get(), tila.get(), huomioitavaa.get()};
+    }
+
+    public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
+        return true;
+    }
+
+    public boolean paivitaKenttienArvot(String[] arvot) {
+        return true;
     }
 
 }

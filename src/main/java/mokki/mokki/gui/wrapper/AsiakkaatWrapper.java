@@ -113,4 +113,12 @@ public class AsiakkaatWrapper implements TaulukkoWrapper {
     public String[] palautaKenttienArvot() {
         return new String[] {nimi.get(), sahkoposti.get(), puhelinnumero.get(), tyyppi.get(), ytunnus.get()};
     }
+
+    public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
+        return true;
+    }
+
+    public boolean paivitaKenttienArvot(String[] arvot) {
+        return true;
+    }
 }

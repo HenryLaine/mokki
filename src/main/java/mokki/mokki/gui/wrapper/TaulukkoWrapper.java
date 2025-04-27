@@ -33,4 +33,18 @@ public interface TaulukkoWrapper {
      * @return kenttien arvot
      */
     String[] palautaKenttienArvot();
+
+    /**
+     * Metodi tarkistaa, ovatko arvot hyväksyttäviä luokan kenttien arvoiksi.
+     * @param arvot arvoehdokkaat merkkijonoina
+     * @return true, jos hyväskyttäviä; false muussa tapauksessa
+     */
+    boolean ovatkoArvotHyvaksyttavia(String[] arvot);
+
+    /**
+     * Metodi päivittää luokan kenttien arvot merkkijonolistan perusteella. Metodi varmistaa, että parametrina
+     * oleva merkkijonolista on hyväksyttävä ennen muutoksen tekemistä.
+     * @return true, jos muutos on tehty; false muussa tapauksessa
+     */
+    boolean paivitaKenttienArvot(String[] arvot);
 }
