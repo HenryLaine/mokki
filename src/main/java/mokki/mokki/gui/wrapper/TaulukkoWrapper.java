@@ -1,8 +1,10 @@
 package mokki.mokki.gui.wrapper;
 
 /**
- *  * Rajapinta sisältää metodimäärittelyt sellaisille luokille, jotka on tarkoitettu taulukkopaneeliin
- *  * syötettävän tiedon tyypiksi.
+ * Rajapinta sisältää metodimäärittelyt sellaisille luokille, jotka on tarkoitettu taulukkopaneeliin
+ * syötettävän tiedon tyypiksi. Taulukkoon syötettävien kenttien tyypin tulee perustua StringProperty-
+ * luokkaan. Sopivia tyyppejä ovat esimerkiksi SimpleStringProperty, SimpleIntegerProperty ja
+ * SimpleDoubleProperty.
  */
 public interface TaulukkoWrapper {
     /**
@@ -40,6 +42,13 @@ public interface TaulukkoWrapper {
      * @return true, jos hyväskyttäviä; false muussa tapauksessa
      */
     boolean ovatkoArvotHyvaksyttavia(String[] arvot);
+
+    /**
+     * Metodi tarkistaa, mitkä arvot ovat hyväksyttäviä ja palauttaa totuusarvolistan tuloksista.
+     * @param arvot arvoehdokkaat merkkijonoina
+     * @return totuusarvolista: true, aina kun arvo on hyväksyttävä; false muussa tapauksessa
+     */
+    boolean[] mitkaArvotHyvaksyttavia(String[] arvot);
 
     /**
      * Metodi päivittää luokan kenttien arvot merkkijonolistan perusteella. Metodi varmistaa, että parametrina

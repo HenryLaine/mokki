@@ -121,4 +121,12 @@ public class AsiakkaatWrapper implements TaulukkoWrapper {
     public boolean paivitaKenttienArvot(String[] arvot) {
         return true;
     }
+
+    public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
+        boolean[] totuusarvolista = new boolean[arvot.length];
+        for (int i = 0; i < arvot.length; i++) {
+            totuusarvolista[i] = true;
+        }
+        return totuusarvolista;
+    }
 }
