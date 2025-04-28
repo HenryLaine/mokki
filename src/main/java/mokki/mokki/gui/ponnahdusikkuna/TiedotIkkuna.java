@@ -6,54 +6,139 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mokki.mokki.gui.wrapper.TaulukkoWrapper;
 
+import java.util.ArrayList;
 
-public class KohteenTiedotIkkuna extends Stage {
-    private VBox paapaneeli;
-    private TextField tunnusKentta;
-    private TextField sijaintiKentta;
-    private TextField huoneitaKentta;
-    private TextField pintaAlaKentta;
-    private TextField hintaKentta;
-    private TextArea huomioitavaaKentta;
-    boolean tulos = false;
+
+public class TiedotIkkuna extends Stage {
+    private BorderPane paapaneeli;
+    private TaulukkoWrapper dataluokka;
+    private ArrayList<TextField> tekstikenttalista;
+    private TextArea tekstialue;
+    private boolean muokattavissa;
+    private boolean tekstialueKaytossa;
+    private boolean tulos = false;
 
     /**
      * Alustaja, joka luo muokattavan ikkunan tyhjillä tiedoilla
      */
-    public KohteenTiedotIkkuna(TaulukkoWrapper kohdeluokka) {
+    public TiedotIkkuna(TaulukkoWrapper kohdeluokka) {
 
     }
 
-    /**
-     * Alustaja, joka luo esitäytetyn ikkunan
-     * @param kohdeluokka
-     * @param muokattavissa
-     */
-    public KohteenTiedotIkkuna(TaulukkoWrapper kohdeluokka, boolean muokattavissa) {
-        String[] kenttienArvot = kohdeluokka.palautaKenttienArvot();
-        paapaneeli = new VBox(20);
+
+    public TiedotIkkuna(TaulukkoWrapper dataluokka, boolean tekstialueKaytossa,
+                        boolean muokattavissa, String otsikko) {
+        this.dataluokka = dataluokka;
+        this.muokattavissa = muokattavissa;
+        this.tekstialueKaytossa = tekstialueKaytossa;
+        tekstikenttalista = new ArrayList<>();
+        paapaneeli = new BorderPane();
         paapaneeli.setPadding(new Insets(20));
-        GridPane ruudukkopaneeli = luoRuudukkopaneeli(kenttienArvot, muokattavissa);
-        VBox huomioitavaaPaneeli = luoHuomioitavaaPaneeli(kenttienArvot, muokattavissa);
+        VBox ylapaneeli = new VBox();
+        GridPane ruudukkopaneeli = luoRuudukkopaneeli();
+        if (tekstialueKaytossa) {
+            VBox tekstialuepaneeli = luotekstialuepaneeli();
+            ylapaneeli.getChildren().addAll(ruudukkopaneeli, tekstialuepaneeli);
+        }
+        else {
+            ylapaneeli.getChildren().add(ruudukkopaneeli);
+        }
+        VBox alapaneeli = new VBox();
+        alapaneeli.getChildren().add(luoPainikepaneeli());
+        paapaneeli.setTop(ylapaneeli);
+        paapaneeli.setBottom(alapaneeli);
+
+        Scene kehys = new Scene(paapaneeli);
+        this.initModality(Modality.APPLICATION_MODAL);
+        this.setTitle(otsikko);
+        this.setScene(kehys);
+    }
+
+    private GridPane luoRuudukkopaneeli() {
+        GridPane ruudukkopaneeli = new GridPane(40, 40);
+        String[] kenttienArvot = dataluokka.palautaKenttienArvot();
+        String[][] maaritykset = dataluokka.getMaaritykset();
+        int pituus;
+        if (tekstialueKaytossa) {
+            pituus = kenttienArvot.length - 1;
+        }
+        else {
+            pituus = kenttienArvot.length;
+        }
+        int vaihtoindeksi = Math.round((float)pituus / 2);
+        int sarake = 0;
+        int rivi = 0;
+        for (int i = 0; i < pituus; i++) {
+            Text otsikko = new Text(maaritykset[i][0]);
+            otsikko.setStyle("-fx-font-weight:bold;");
+            TextField tekstikentta = new TextField();
+            if (maaritykset[i][1].equals("Double")) {
+                tekstikentta.setText(kenttienArvot[i].replaceAll("\\.", ","));
+            }
+            else {
+                tekstikentta.setText(kenttienArvot[i]);
+            }
+            tekstikentta.setContextMenu(new ContextMenu());
+            if (!muokattavissa) {
+                tekstikentta.setEditable(false);
+                tekstikentta.setFocusTraversable(false);
+                tekstikentta.setBackground(Background.fill(Color.GAINSBORO));
+            }
+            tekstikenttalista.add(tekstikentta);
+
+            if (rivi == vaihtoindeksi) {
+                rivi = 0;
+                sarake = 2;
+            }
+            ruudukkopaneeli.add(otsikko, sarake, rivi);
+            ruudukkopaneeli.add(tekstikentta, sarake + 1, rivi);
+            rivi = rivi + 1;
+        }
+
+        return ruudukkopaneeli;
+    }
+
+    private VBox luotekstialuepaneeli() {
+        String[] kenttienArvot = dataluokka.palautaKenttienArvot();
+        String[][] maaritykset = dataluokka.getMaaritykset();
+        VBox tekstialuepaneeli = new VBox(10);
+        tekstialuepaneeli.setPadding(new Insets(30,0,0,0));
+
+        Text otsikko = new Text(maaritykset[maaritykset.length - 1][0]);
+        otsikko.setStyle("-fx-font-weight:bold;");
+        tekstialue = new TextArea(kenttienArvot[kenttienArvot.length - 1]);
+        tekstialue.setWrapText(true);
+        tekstialue.setContextMenu(new ContextMenu());
+
+        if (!muokattavissa) {
+            tekstialue.setEditable(false);
+            tekstialue.setFocusTraversable(false);
+            tekstialue.setStyle("-fx-control-inner-background:#DCDCDC;-fx-background-color:#DCDCDC;");
+        }
+
+        tekstialuepaneeli.getChildren().addAll(otsikko, tekstialue);
+
+        return tekstialuepaneeli;
+    }
+
+    private HBox luoPainikepaneeli() {
+        HBox painikepaneeli = new HBox(20);
         if (muokattavissa) {
-            HBox painikeLaatikko = new HBox(20);
             Button muutaPainike = new Button("Muuta tiedot");
             Button peruutaPainike = new Button("Peruuta");
             muutaPainike.setMinWidth(100);
             peruutaPainike.setMinWidth(100);
+            painikepaneeli.getChildren().addAll(muutaPainike, peruutaPainike);
 
             muutaPainike.setOnAction(e -> {
-                tulos = kohdeluokka.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
+                tulos = dataluokka.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
                 if (tulos) {
                     this.close();
                 }
@@ -65,103 +150,17 @@ public class KohteenTiedotIkkuna extends Stage {
                 tulos = false;
                 this.close();
             });
-
-            painikeLaatikko.getChildren().addAll(muutaPainike, peruutaPainike);
-            paapaneeli.getChildren().addAll(ruudukkopaneeli, huomioitavaaPaneeli, painikeLaatikko);
         }
         else {
             Button suljePainike = new Button("Sulje");
             suljePainike.setMinWidth(100);
+            painikepaneeli.getChildren().add(suljePainike);
             suljePainike.setOnAction(e -> {
                 this.close();
             });
-            paapaneeli.getChildren().addAll(ruudukkopaneeli, huomioitavaaPaneeli, suljePainike);
         }
 
-        Scene kehys = new Scene(paapaneeli);
-        this.initModality(Modality.APPLICATION_MODAL);
-        if (muokattavissa) {
-            this.setTitle("Muuta kohteen tietoja");
-        }
-        else {
-            this.setTitle("Kohteen tiedot");
-        }
-        this.setScene(kehys);
-    }
-
-    private GridPane luoRuudukkopaneeli(String[] kenttienArvot, boolean muokattavissa) {
-        GridPane ruudukkopaneeli = new GridPane(40, 40);
-
-        Text tunnus = new Text("Tunnus:");
-        tunnus.setStyle("-fx-font-weight:bold;");
-        tunnusKentta = new TextField(kenttienArvot[0]);
-        ruudukkopaneeli.add(tunnus, 0,0);
-        ruudukkopaneeli.add(tunnusKentta, 1,0);
-
-        Text sijainti = new Text("Sijainti:");
-        sijainti.setStyle("-fx-font-weight:bold;");
-        sijaintiKentta = new TextField(kenttienArvot[1]);
-        ruudukkopaneeli.add(sijainti, 0,1);
-        ruudukkopaneeli.add(sijaintiKentta, 1,1);
-
-        Text huoneita = new Text("Huoneita:");
-        huoneita.setStyle("-fx-font-weight:bold;");
-        huoneitaKentta = new TextField(kenttienArvot[2]);
-        ruudukkopaneeli.add(huoneita, 0,2);
-        ruudukkopaneeli.add(huoneitaKentta, 1,2);
-
-        Text pintaAla = new Text("Pinta-ala:");
-        pintaAla.setStyle("-fx-font-weight:bold;");
-        pintaAlaKentta = new TextField(kenttienArvot[3].replaceAll("\\.", ","));
-        ruudukkopaneeli.add(pintaAla, 2,0);
-        ruudukkopaneeli.add(pintaAlaKentta, 3,0);
-
-        Text hinta = new Text("Hinta:");
-        hinta.setStyle("-fx-font-weight:bold;");
-        hintaKentta = new TextField(kenttienArvot[4].replaceAll("\\.", ","));
-        ruudukkopaneeli.add(hinta, 2,1);
-        ruudukkopaneeli.add(hintaKentta, 3,1);
-
-        if (!muokattavissa) {
-            tunnusKentta.setEditable(false);
-            tunnusKentta.setFocusTraversable(false);
-            tunnusKentta.setBackground(Background.fill(Color.GAINSBORO));
-            sijaintiKentta.setEditable(false);
-            sijaintiKentta.setFocusTraversable(false);
-            sijaintiKentta.setBackground(Background.fill(Color.GAINSBORO));
-            huoneitaKentta.setEditable(false);
-            huoneitaKentta.setFocusTraversable(false);
-            huoneitaKentta.setBackground(Background.fill(Color.GAINSBORO));
-            pintaAlaKentta.setEditable(false);
-            pintaAlaKentta.setFocusTraversable(false);
-            pintaAlaKentta.setBackground(Background.fill(Color.GAINSBORO));
-            hintaKentta.setEditable(false);
-            hintaKentta.setFocusTraversable(false);
-            hintaKentta.setBackground(Background.fill(Color.GAINSBORO));
-        }
-
-        return ruudukkopaneeli;
-    }
-
-    private VBox luoHuomioitavaaPaneeli(String[] kenttienArvot, boolean muokattavissa) {
-        VBox huomioitavaaPaneeli = new VBox(10);
-        huomioitavaaPaneeli.setPadding(new Insets(30,0,0,0));
-
-        Text otsikko = new Text("Huomioitavaa:");
-        otsikko.setStyle("-fx-font-weight:bold;");
-        huomioitavaaKentta = new TextArea(kenttienArvot[5]);
-        huomioitavaaKentta.setWrapText(true);
-        huomioitavaaKentta.setContextMenu(new ContextMenu());
-
-        if (!muokattavissa) {
-            huomioitavaaKentta.setEditable(false);
-            huomioitavaaKentta.setFocusTraversable(false);
-            huomioitavaaKentta.setStyle("-fx-control-inner-background:#DCDCDC;-fx-background-color:#DCDCDC;");
-        }
-
-        huomioitavaaPaneeli.getChildren().addAll(otsikko, huomioitavaaKentta);
-
-        return huomioitavaaPaneeli;
+        return painikepaneeli;
     }
 
     public boolean naytaJaOdotaJaPalautaTulos() {
@@ -174,8 +173,31 @@ public class KohteenTiedotIkkuna extends Stage {
     }
 
     public String[] palautaKenttienTiedot() {
-        return new String[] {tunnusKentta.getText(), sijaintiKentta.getText(), huoneitaKentta.getText(),
-        pintaAlaKentta.getText(), hintaKentta.getText(), huomioitavaaKentta.getText()};
+        String[] tiedot;
+        if (!tekstialueKaytossa) {
+            tiedot = new String[tekstikenttalista.size()];
+            for (int i = 0; i < tiedot.length; i++) {
+                if (dataluokka.getMaaritykset()[i][2].equals("Double")) {
+                    tiedot[i] = tekstikenttalista.get(i).getText().replaceAll(",", ".");
+                }
+                else {
+                    tiedot[i] = tekstikenttalista.get(i).getText();
+                }
+            }
+        }
+        else {
+            tiedot = new String[tekstikenttalista.size() + 1];
+            for (int i = 0; i < tiedot.length; i++) {
+                if (dataluokka.getMaaritykset()[i][2].equals("Double")) {
+                    tiedot[i] = tekstikenttalista.get(i).getText().replaceAll(",", ".");
+                }
+                else {
+                    tiedot[i] = tekstikenttalista.get(i).getText();
+                }
+            }
+            tiedot[tiedot.length - 1] = tekstialue.getText();
+        }
+        return tiedot;
     }
 
 }

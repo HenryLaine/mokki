@@ -13,7 +13,7 @@ import mokki.mokki.gui.alipaneeli.RaportitHallintapaneeli;
 import mokki.mokki.gui.alipaneeli.Taulukkopaneeli;
 import mokki.mokki.gui.Valilehtipaneeli;
 import mokki.mokki.gui.paapaneeli.*;
-import mokki.mokki.gui.ponnahdusikkuna.KohteenTiedotIkkuna;
+import mokki.mokki.gui.ponnahdusikkuna.TiedotIkkuna;
 import mokki.mokki.gui.ponnahdusikkuna.Vahvistusikkuna;
 import mokki.mokki.gui.wrapper.*;
 
@@ -29,7 +29,7 @@ public class Main extends Application {
     RaportitPaneeli raportitPaneeli;
 
     private void alustaKohteetPaneeli() {
-        // Dummy-dataa testausta varten
+        // Käyttöliittymän taulukon sisältö (dummy-dataa)
         ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
                 new KohteetWrapper("JOE001", "Joensuu", 1,
                         46, 250, "Kohteessa on poreallas."),
@@ -60,19 +60,21 @@ public class Main extends Application {
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
             // Kohteen tiedot näytetään.
-            KohteenTiedotIkkuna kohteenTiedotIkkuna = new KohteenTiedotIkkuna(
-                    taulukkopaneeli.getSelectionModel().getSelectedItem(), false);
-            kohteenTiedotIkkuna.asetaFonttikoko(fonttikoko);
-            kohteenTiedotIkkuna.showAndWait();
+            TiedotIkkuna tiedotIkkuna = new TiedotIkkuna(
+                    taulukkopaneeli.getSelectionModel().getSelectedItem(),
+                    true, false, "Kohteen tiedot");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            tiedotIkkuna.showAndWait();
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Kohteen tietoja muutetaan.
-            KohteenTiedotIkkuna kohteenTiedotIkkuna = new KohteenTiedotIkkuna(
-                    taulukkopaneeli.getSelectionModel().getSelectedItem(), true);
-            kohteenTiedotIkkuna.asetaFonttikoko(fonttikoko);
-            boolean tulos = kohteenTiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+            TiedotIkkuna tiedotIkkuna = new TiedotIkkuna(
+                    taulukkopaneeli.getSelectionModel().getSelectedItem(),
+                    true, true, "Muuta kohteen tietoja");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
-                // Kohteen tietoja muutetaan tietokannassa
+                // TODO: Kohteen tietoja muutetaan tietokannassa.
 
             }
         });
@@ -84,8 +86,11 @@ public class Main extends Application {
             Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
 
             if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // Kohde poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+                // TODO: Kohde poistetaan tietokannasta.
 
+
+
+                // Kohde poistetaan käyttöliittymän taulukosta.
                 taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
             }
         });
