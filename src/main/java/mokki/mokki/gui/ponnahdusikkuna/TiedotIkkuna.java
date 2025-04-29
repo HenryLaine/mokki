@@ -11,38 +11,30 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import mokki.mokki.gui.wrapper.TaulukkoWrapper;
+import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 import java.util.ArrayList;
 
 
 public class TiedotIkkuna extends Stage {
     private BorderPane paapaneeli;
-    private TaulukkoWrapper dataluokka;
+    private TaulukonData data;
     private ArrayList<TextField> tekstikenttalista;
     private TextArea tekstialue;
-    private boolean muokattavissa;
+    boolean muokattavissa;
     private boolean tekstialueKaytossa;
     private boolean tulos = false;
 
-    /**
-     * Alustaja, joka luo muokattavan ikkunan tyhjillä tiedoilla
-     */
-    public TiedotIkkuna(TaulukkoWrapper kohdeluokka) {
-
-    }
-
-
-    public TiedotIkkuna(TaulukkoWrapper dataluokka, boolean tekstialueKaytossa,
-                        boolean muokattavissa, String otsikko) {
-        this.dataluokka = dataluokka;
-        this.muokattavissa = muokattavissa;
+    public TiedotIkkuna(TaulukonData data, boolean tekstialueKaytossa,
+                        String otsikko, String[] painikkeidenNimet) {
+        this.data = data;
+        this.muokattavissa = true;
         this.tekstialueKaytossa = tekstialueKaytossa;
         tekstikenttalista = new ArrayList<>();
         paapaneeli = new BorderPane();
         paapaneeli.setPadding(new Insets(20));
         VBox ylapaneeli = new VBox();
-        GridPane ruudukkopaneeli = luoRuudukkopaneeli();
+        GridPane ruudukkopaneeli = luoRuudukkopaneeli(false);
         if (tekstialueKaytossa) {
             VBox tekstialuepaneeli = luotekstialuepaneeli();
             ylapaneeli.getChildren().addAll(ruudukkopaneeli, tekstialuepaneeli);
@@ -51,7 +43,7 @@ public class TiedotIkkuna extends Stage {
             ylapaneeli.getChildren().add(ruudukkopaneeli);
         }
         VBox alapaneeli = new VBox();
-        alapaneeli.getChildren().add(luoPainikepaneeli());
+        alapaneeli.getChildren().add(luoPainikepaneeli(painikkeidenNimet));
         paapaneeli.setTop(ylapaneeli);
         paapaneeli.setBottom(alapaneeli);
 
@@ -61,10 +53,39 @@ public class TiedotIkkuna extends Stage {
         this.setScene(kehys);
     }
 
-    private GridPane luoRuudukkopaneeli() {
+
+    public TiedotIkkuna(TaulukonData data, boolean muokattavissa, boolean tekstialueKaytossa,
+                        String otsikko, String[] painikkeidenNimet) {
+        this.data = data;
+        this.muokattavissa = muokattavissa;
+        this.tekstialueKaytossa = tekstialueKaytossa;
+        tekstikenttalista = new ArrayList<>();
+        paapaneeli = new BorderPane();
+        paapaneeli.setPadding(new Insets(20));
+        VBox ylapaneeli = new VBox();
+        GridPane ruudukkopaneeli = luoRuudukkopaneeli(true);
+        if (tekstialueKaytossa) {
+            VBox tekstialuepaneeli = luotekstialuepaneeli();
+            ylapaneeli.getChildren().addAll(ruudukkopaneeli, tekstialuepaneeli);
+        }
+        else {
+            ylapaneeli.getChildren().add(ruudukkopaneeli);
+        }
+        VBox alapaneeli = new VBox();
+        alapaneeli.getChildren().add(luoPainikepaneeli(painikkeidenNimet));
+        paapaneeli.setTop(ylapaneeli);
+        paapaneeli.setBottom(alapaneeli);
+
+        Scene kehys = new Scene(paapaneeli);
+        this.initModality(Modality.APPLICATION_MODAL);
+        this.setTitle(otsikko);
+        this.setScene(kehys);
+    }
+
+    private GridPane luoRuudukkopaneeli(boolean esitayta) {
         GridPane ruudukkopaneeli = new GridPane(40, 40);
-        String[] kenttienArvot = dataluokka.palautaKenttienArvot();
-        String[][] maaritykset = dataluokka.getMaaritykset();
+        String[] kenttienArvot = data.palautaKenttienArvot();
+        String[][] maaritykset = data.getMaaritykset();
         int pituus;
         if (tekstialueKaytossa) {
             pituus = kenttienArvot.length - 1;
@@ -78,12 +99,14 @@ public class TiedotIkkuna extends Stage {
         for (int i = 0; i < pituus; i++) {
             Text otsikko = new Text(maaritykset[i][0]);
             otsikko.setStyle("-fx-font-weight:bold;");
-            TextField tekstikentta = new TextField();
-            if (maaritykset[i][1].equals("Double")) {
-                tekstikentta.setText(kenttienArvot[i].replaceAll("\\.", ","));
-            }
-            else {
-                tekstikentta.setText(kenttienArvot[i]);
+            TextField tekstikentta = new TextField("");
+            if (esitayta) {
+                if (maaritykset[i][1].equals("Double")) {
+                    tekstikentta.setText(kenttienArvot[i].replaceAll("\\.", ","));
+                }
+                else {
+                    tekstikentta.setText(kenttienArvot[i]);
+                }
             }
             tekstikentta.setContextMenu(new ContextMenu());
             if (!muokattavissa) {
@@ -106,8 +129,8 @@ public class TiedotIkkuna extends Stage {
     }
 
     private VBox luotekstialuepaneeli() {
-        String[] kenttienArvot = dataluokka.palautaKenttienArvot();
-        String[][] maaritykset = dataluokka.getMaaritykset();
+        String[] kenttienArvot = data.palautaKenttienArvot();
+        String[][] maaritykset = data.getMaaritykset();
         VBox tekstialuepaneeli = new VBox(10);
         tekstialuepaneeli.setPadding(new Insets(30,0,0,0));
 
@@ -128,22 +151,25 @@ public class TiedotIkkuna extends Stage {
         return tekstialuepaneeli;
     }
 
-    private HBox luoPainikepaneeli() {
+    private HBox luoPainikepaneeli(String[] painikkeidenNimet) {
         HBox painikepaneeli = new HBox(20);
+        painikepaneeli.setPadding(new Insets(20, 0, 0, 0));
         if (muokattavissa) {
-            Button muutaPainike = new Button("Muuta tiedot");
-            Button peruutaPainike = new Button("Peruuta");
-            muutaPainike.setMinWidth(100);
+            Button hyvaksyPainike = new Button(painikkeidenNimet[0]);
+            Button peruutaPainike = new Button(painikkeidenNimet[1]);
+            hyvaksyPainike.setMinWidth(100);
             peruutaPainike.setMinWidth(100);
-            painikepaneeli.getChildren().addAll(muutaPainike, peruutaPainike);
+            painikepaneeli.getChildren().addAll(hyvaksyPainike, peruutaPainike);
 
-            muutaPainike.setOnAction(e -> {
-                tulos = dataluokka.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
+            hyvaksyPainike.setOnAction(e -> {
+                tulos = data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
                 if (tulos) {
                     this.close();
                 }
                 else {
-                    //TODO: Luodaan virheikkuna
+                    Virheikkuna virheikkuna = new Virheikkuna("Tietokenttävirhe",
+                            muotoileTietokentavirheteksti());
+                    virheikkuna.show();
                 }
             });
             peruutaPainike.setOnAction(e -> {
@@ -152,7 +178,7 @@ public class TiedotIkkuna extends Stage {
             });
         }
         else {
-            Button suljePainike = new Button("Sulje");
+            Button suljePainike = new Button(painikkeidenNimet[1]);
             suljePainike.setMinWidth(100);
             painikepaneeli.getChildren().add(suljePainike);
             suljePainike.setOnAction(e -> {
@@ -163,6 +189,35 @@ public class TiedotIkkuna extends Stage {
         return painikepaneeli;
     }
 
+    private String muotoileTietokentavirheteksti() {
+        StringBuilder virheteksti = new StringBuilder("""
+                Joidenkin kenttien arvot ovat virheelliset. Tarkista, \
+                että pakolliset kentät on täytetty ja kaikkien kenttien arvot \
+                noudattavat muotoiluvaatimuksia: syötä kokonaislukukenttiin \
+                ainoastaan numeroita ja käytä desimaalilukukentissä erottimena \
+                pilkkua (esim. 72,15).
+                
+                Seuraavien kenttien arvot ovat virheelliset:\s""");
+        String[][] maaritykset = data.getMaaritykset();
+        boolean[] virhearvot = data.mitkaArvotHyvaksyttavia(palautaKenttienTiedot());
+        for (int i = 0; i < virhearvot.length; i++) {
+            if (!virhearvot[i]) {
+                virheteksti.append(maaritykset[i][0]);
+                if (i != virhearvot.length - 1) {
+                    virheteksti.append(", ");
+                }
+            }
+        }
+
+        return virheteksti.toString();
+    }
+
+    /**
+     * Metodi kutsuu Stagen showAndWait-metodia. Ikkunan sulkeuduttua metodi palauttaa
+     * tuloksen.
+     * @return true, jos tekstikentissä on arvoja, jotka ovat hyväksyttäviä järjestelmän ja
+     * käyttäjän puolesta; false muussa tapauksessa
+     */
     public boolean naytaJaOdotaJaPalautaTulos() {
         this.showAndWait();
         return tulos;
@@ -172,12 +227,16 @@ public class TiedotIkkuna extends Stage {
         paapaneeli.setStyle("-fx-font-size:" + fonttikoko + "px;");
     }
 
+    /**
+     * Metodi palauttaa ikkunan tekstikentissä olevat tiedot.
+     * @return tekstikenttien tiedot
+     */
     public String[] palautaKenttienTiedot() {
         String[] tiedot;
         if (!tekstialueKaytossa) {
             tiedot = new String[tekstikenttalista.size()];
             for (int i = 0; i < tiedot.length; i++) {
-                if (dataluokka.getMaaritykset()[i][2].equals("Double")) {
+                if (data.getMaaritykset()[i][1].equals("Double")) {
                     tiedot[i] = tekstikenttalista.get(i).getText().replaceAll(",", ".");
                 }
                 else {
@@ -187,8 +246,8 @@ public class TiedotIkkuna extends Stage {
         }
         else {
             tiedot = new String[tekstikenttalista.size() + 1];
-            for (int i = 0; i < tiedot.length; i++) {
-                if (dataluokka.getMaaritykset()[i][2].equals("Double")) {
+            for (int i = 0; i < tiedot.length - 1; i++) {
+                if (data.getMaaritykset()[i][1].equals("Double")) {
                     tiedot[i] = tekstikenttalista.get(i).getText().replaceAll(",", ".");
                 }
                 else {
@@ -197,6 +256,7 @@ public class TiedotIkkuna extends Stage {
             }
             tiedot[tiedot.length - 1] = tekstialue.getText();
         }
+
         return tiedot;
     }
 

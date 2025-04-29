@@ -12,12 +12,14 @@ import mokki.mokki.gui.alipaneeli.Hallintapaneeli;
 import mokki.mokki.gui.alipaneeli.RaportitHallintapaneeli;
 import mokki.mokki.gui.alipaneeli.Taulukkopaneeli;
 import mokki.mokki.gui.Valilehtipaneeli;
+import mokki.mokki.gui.alipaneeli.TaulukonData;
 import mokki.mokki.gui.paapaneeli.*;
 import mokki.mokki.gui.ponnahdusikkuna.TiedotIkkuna;
 import mokki.mokki.gui.ponnahdusikkuna.Vahvistusikkuna;
-import mokki.mokki.gui.wrapper.*;
+import mokki.mokki.gui.testiluokatTaulukonDatalle.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Main extends Application {
@@ -29,8 +31,8 @@ public class Main extends Application {
     RaportitPaneeli raportitPaneeli;
 
     private void alustaKohteetPaneeli() {
-        // Käyttöliittymän taulukon sisältö (dummy-dataa)
-        ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
+        // Dummy-dataa
+        List<TaulukonData> kohteet = List.of(
                 new KohteetWrapper("JOE001", "Joensuu", 1,
                         46, 250, "Kohteessa on poreallas."),
                 new KohteetWrapper("KON005", "Kontiolahti", 5,
@@ -38,44 +40,70 @@ public class Main extends Application {
                 new KohteetWrapper("LIP003", "Liperi", 2, 15,
                         130, "Kohde on remontoitavana 16.3.2025 asti.")
         );
+        // Käyttöliittymän taulukon sisältö
+        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(kohteet);
         kohteetPaneeli = new KohteetPaneeli(fonttikoko, taulukonSisalto);
 
-        // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
+        Taulukkopaneeli<TaulukonData> taulukkopaneeli = kohteetPaneeli.getTaulukkopaneeli();
         Hallintapaneeli hallintapaneeli = kohteetPaneeli.getHallintapaneeli();
+
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
+            // Uusi kohde luodaan.
+            TaulukonData uusiKohde = new KohteetWrapper();
+            TiedotIkkuna tiedotIkkuna = new TiedotIkkuna(uusiKohde, true,
+                    "Lisää kohde", new String[] {"Lisää kohde", "Peruuta"});
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+            if (tulos) {
+                uusiKohde.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                // TODO: Kohde lisätään tietokantaan.
+
+                // Kohde lisätään käyttöliittymän taulukkoon.
+                taulukonSisalto.add(uusiKohde);
+            }
 
         });
         hallintapaneeli.getRajaaPainike().setOnAction(e -> {
+            // Kohteita rajataan.
+            // TODO: Rajausten hallintapaneeli avataan.
 
+
+            // TODO: Ylimääräiset kohteet poistetaan taulukon sisällöstä.
+
+            // Rajaukset-teksti päivitetään vastaamaan rajauksia.
             //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
         });
         hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
-            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+            // Rajaukset poistetaan
+            // TODO: Taulukon sisältöön lisätään jollain logiikalla kaikki näytettävät kohteet.
+            //taulukonSisalto.clear();
+            //taulukonSisalto.addAll();
 
+            // Rajaukset-teksti alustetaan.
+            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
         });
 
-        // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
-        Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = kohteetPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
             // Kohteen tiedot näytetään.
-            TiedotIkkuna tiedotIkkuna = new TiedotIkkuna(
-                    taulukkopaneeli.getSelectionModel().getSelectedItem(),
-                    true, false, "Kohteen tiedot");
+            TiedotIkkuna tiedotIkkuna = new TiedotIkkuna(taulukkopaneeli.palautaRivinTiedot(), false,
+                    true, "Kohteen tiedot", new String[] {"", "Sulje"});
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             tiedotIkkuna.showAndWait();
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Kohteen tietoja muutetaan.
-            TiedotIkkuna tiedotIkkuna = new TiedotIkkuna(
-                    taulukkopaneeli.getSelectionModel().getSelectedItem(),
-                    true, true, "Muuta kohteen tietoja");
+            TaulukonData kohteenTiedot = taulukkopaneeli.palautaRivinTiedot();
+            TiedotIkkuna tiedotIkkuna = new TiedotIkkuna(kohteenTiedot, true, true,
+                    "Muuta kohteen tietoja", new String[] {"Muuta tiedot", "Peruuta"});
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
                 // TODO: Kohteen tietoja muutetaan tietokannassa.
 
+                // Kohteen tiedot muutetaan käyttöliittymän taulukossa.
+                kohteenTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
             }
         });
         kontekstivalikonKohdat.get(2).setOnAction(e -> {
@@ -98,7 +126,7 @@ public class Main extends Application {
 
     private void alustaVarauksetPaneeli() {
         // Dummy-dataa
-        ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
+        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
                 new VarauksetWrapper("A003", "JOE001", "Matti Meikäläinen",
                         "05.04.2025", "08.04.2025", "Päättynyt",
                         "Lisäpalvelu: ylimääräinen sänky")
@@ -120,7 +148,7 @@ public class Main extends Application {
         });
 
         // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
-        Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = varauksetPaneeli.getTaulukkopaneeli();
+        Taulukkopaneeli<TaulukonData> taulukkopaneeli = varauksetPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
@@ -155,7 +183,7 @@ public class Main extends Application {
 
     private void alustaAsiakkaatPaneeli() {
         // Dummy-dataa
-        ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
+        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
                 new AsiakkaatWrapper("Jukka Jokunen", "jukka@gmail.com",
                         "043-046-0349","yksityishenkilö", "")
         );
@@ -176,7 +204,7 @@ public class Main extends Application {
         });
 
         // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
-        Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = asiakkaatPaneeli.getTaulukkopaneeli();
+        Taulukkopaneeli<TaulukonData> taulukkopaneeli = asiakkaatPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
@@ -204,7 +232,7 @@ public class Main extends Application {
 
     private void alustaLaskutPaneeli() {
         // Dummy-dataa
-        ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
+        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
                 new LaskutWrapper(3950359, "Vuokraus: JOE001; 15.03.2025-16.03.2025",
                         "Jaska Jokunen (jaska@gmail.com)", 90405964, 150.35,
                         "Avoin")
@@ -226,7 +254,7 @@ public class Main extends Application {
         });
 
         // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
-        Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = laskutPaneeli.getTaulukkopaneeli();
+        Taulukkopaneeli<TaulukonData> taulukkopaneeli = laskutPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
@@ -259,7 +287,7 @@ public class Main extends Application {
 
     private void alustaRaportitPaneeli() {
         // Dummy-dataa
-        ObservableList<TaulukkoWrapper> taulukonSisalto = FXCollections.observableArrayList(
+        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
                 new RaportitWrapper("JOE001", 45, 21,
                         20, 46.4, 100, 10000)
         );
@@ -287,7 +315,7 @@ public class Main extends Application {
          */
 
         // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
-        Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli = raportitPaneeli.getTaulukkopaneeli();
+        Taulukkopaneeli<TaulukonData> taulukkopaneeli = raportitPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
 
