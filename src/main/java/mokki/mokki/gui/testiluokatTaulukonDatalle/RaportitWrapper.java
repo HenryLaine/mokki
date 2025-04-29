@@ -1,11 +1,12 @@
-package mokki.mokki.gui.wrapper;
+package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 import javafx.beans.property.*;
+import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 /**
  *
  */
-public class RaportitWrapper implements TaulukkoWrapper {
+public class RaportitWrapper implements TaulukonData {
     private StringProperty kohde;
     private IntegerProperty kayttoaste;
     private IntegerProperty varaustenMaara;

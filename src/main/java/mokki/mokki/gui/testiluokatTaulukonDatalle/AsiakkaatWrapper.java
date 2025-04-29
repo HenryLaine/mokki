@@ -1,12 +1,13 @@
-package mokki.mokki.gui.wrapper;
+package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 /**
  * Wrapper-luokka asiakkaiden tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
-public class AsiakkaatWrapper implements TaulukkoWrapper {
+public class AsiakkaatWrapper implements TaulukonData {
     private StringProperty nimi;
     private StringProperty sahkoposti;
     private StringProperty puhelinnumero;

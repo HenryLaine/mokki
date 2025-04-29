@@ -4,21 +4,21 @@ import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
 import mokki.mokki.gui.alipaneeli.Hallintapaneeli;
 import mokki.mokki.gui.alipaneeli.Taulukkopaneeli;
-import mokki.mokki.gui.wrapper.TaulukkoWrapper;
+import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 /**
  * Luokka toteuttaa asiakkaiden tietojen hallintaan tarkoitetun paneelin.
  */
 public class AsiakkaatPaneeli extends VBox {
     private Hallintapaneeli hallintapaneeli;
-    private Taulukkopaneeli<TaulukkoWrapper> taulukkopaneeli;
+    private Taulukkopaneeli<TaulukonData> taulukkopaneeli;
 
     /**
      * Luokan alustaja
      * @param fonttikoko fontin koko
      * @param taulukonSisalto taulukon sisältö
      */
-    public AsiakkaatPaneeli(int fonttikoko, ObservableList<TaulukkoWrapper> taulukonSisalto) {
+    public AsiakkaatPaneeli(int fonttikoko, ObservableList<TaulukonData> taulukonSisalto) {
         hallintapaneeli = new Hallintapaneeli(
                 new String[] {"Lisää asiakas", "Rajaa asiakkaita", "Poista rajaukset"});
         hallintapaneeli.asetaFonttikoko(fonttikoko);
@@ -43,7 +43,7 @@ public class AsiakkaatPaneeli extends VBox {
      * Metodi palauttaa taulukkopaneelin.
      * @return taulukkopaneeli
      */
-    public Taulukkopaneeli<TaulukkoWrapper> getTaulukkopaneeli() {
+    public Taulukkopaneeli<TaulukonData> getTaulukkopaneeli() {
         return taulukkopaneeli;
     }
 

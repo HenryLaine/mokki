@@ -1,12 +1,13 @@
-package mokki.mokki.gui.wrapper;
+package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 
 import javafx.beans.property.*;
+import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 /**
  * Wrapper-luokka laskujen tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
-public class LaskutWrapper implements TaulukkoWrapper {
+public class LaskutWrapper implements TaulukonData {
     private IntegerProperty laskunumero;
     private StringProperty tuote;
     private StringProperty asiakas;

@@ -1,12 +1,33 @@
-package mokki.mokki.gui.wrapper;
+package mokki.mokki.gui.alipaneeli;
 
 /**
+ * <p>
  * Rajapinta sisältää metodimäärittelyt sellaisille luokille, jotka on tarkoitettu taulukkopaneeliin
  * syötettävän tiedon tyypiksi. Taulukkoon syötettävien kenttien tyypin tulee perustua StringProperty-
  * luokkaan. Sopivia tyyppejä ovat esimerkiksi SimpleStringProperty, SimpleIntegerProperty ja
  * SimpleDoubleProperty.
+ * </p><p>
+ * Jokaisella taulukkoon asetettavalla kentällä tulee luokassa olla seuraavat metodit:
+ * setKentanNimi, getKentanNimi ja kentanNimiProperty. Alustajassa tulee käyttää setKentanNimi-metodia.
+ * Alla on esimerkki näiden metodien määrittelystä tunnus-nimiselle kentälle, jonka tiedon tyyppi on String.
+ * </p><p><pre>{@code
+ * public String getTunnus() {
+ *   return tunnusProperty().get();
+ * }
+ *
+ * public void setTunnus(String tunnus) {
+ *   tunnusProperty().set(tunnus);
+ * }
+ *
+ * public StringProperty tunnusProperty() {
+ *   if (tunnus == null) {
+ *      tunnus = new SimpleStringProperty(this, maaritykset[0][2]);
+ *   }
+ *   return tunnus;
+ * }
+ * }</pre>
  */
-public interface TaulukkoWrapper {
+public interface TaulukonData {
     /**
      * Metodi palauttaa taulukkoon syötettävän tiedon määritykset. Määrityksiin sisällytetään
      * sarakkeen nimi (esim. "Asiakkaan puhelinnumero"), tiedon tyyppi (esim. "Integer") ja
