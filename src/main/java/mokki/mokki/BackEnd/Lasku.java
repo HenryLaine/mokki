@@ -53,37 +53,65 @@ public class Lasku {
     }
 
     /**
-     * Metodi
-     * @param lasku_summa
+     * Metodi asettaa parametrina tulleen numeron laskun summaksi
+     * @param lasku_summa Ilmaisee Laskulla olevaa summa
      */
     public void setLasku_summa(int lasku_summa) {
         this.lasku_summa = lasku_summa;
     }
 
+    /**
+     * Metodi palauttaa laskulla olevan summan
+     * @return Laskulla oleva summa
+     */
     public int getLasku_summa() {
         return lasku_summa;
     }
 
+    /**
+     * Metodi asettaa parametrina tulleen totuusarvon laskun maksutilaksi
+     * @param maksun_tila Ilmaisee laskun sen hetkinen maksun tilaa
+     */
     public void setMaksun_tila(boolean maksun_tila) {
         this.maksun_tila = maksun_tila;
     }
 
+    /**
+     * Metodi palauttaa laskun maksun tilan
+     * @return Laskun maksutilanne (ei maksettu/ maksettu)
+     */
     public boolean isMaksun_tila() {
         return maksun_tila;
     }
 
+    /**
+     * Metodi asettaa parametrina tulleen numeron laskun eräpäiväksi
+     * @param erapaiva Ilmaisee laskun eräpäivää
+     */
     public void setErapaiva(int erapaiva) {
         this.erapaiva = erapaiva;
     }
 
+    /**
+     * Metodi palauttaa laskulla olevan eräpäivän
+     * @return Laskun eräpäivä
+     */
     public int getErapaiva() {
         return erapaiva;
     }
 
+    /**
+     * Metodi asettaa parametrina tulleen numeron laskun päivämääräksi
+     * @param lasku_paivamaara Ilmaisee laskulla olevaa päivämäärää
+     */
     public void setLasku_paivamaara(int lasku_paivamaara) {
         this.lasku_paivamaara = lasku_paivamaara;
     }
 
+    /**
+     * Metodi palauttaa laskulla olevan päivämäärän
+     * @return Laskun päivämäärä
+     */
     public int getLasku_paivamaara() {
         return lasku_paivamaara;
     }
