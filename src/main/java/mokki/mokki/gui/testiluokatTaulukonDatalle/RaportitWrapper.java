@@ -1,11 +1,12 @@
-package mokki.mokki.gui.wrapper;
+package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 import javafx.beans.property.*;
+import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 /**
  *
  */
-public class RaportitWrapper implements TaulukkoWrapper {
+public class RaportitWrapper implements TaulukonData {
     private StringProperty kohde;
     private IntegerProperty kayttoaste;
     private IntegerProperty varaustenMaara;
@@ -137,4 +138,19 @@ public class RaportitWrapper implements TaulukkoWrapper {
                 ""+paivatulot.get(), ""+viikkotulot.get(), ""+kuukausitulot.get(), ""+kokonaistulot.get()};
     }
 
+    public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
+        return true;
+    }
+
+    public boolean paivitaKenttienArvot(String[] arvot) {
+        return true;
+    }
+
+    public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
+        boolean[] totuusarvolista = new boolean[arvot.length];
+        for (int i = 0; i < arvot.length; i++) {
+            totuusarvolista[i] = true;
+        }
+        return totuusarvolista;
+    }
 }

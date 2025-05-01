@@ -1,12 +1,13 @@
-package mokki.mokki.gui.wrapper;
+package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 /**
  * Wrapper-luokka asiakkaiden tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
-public class AsiakkaatWrapper implements TaulukkoWrapper {
+public class AsiakkaatWrapper implements TaulukonData {
     private StringProperty nimi;
     private StringProperty sahkoposti;
     private StringProperty puhelinnumero;
@@ -112,5 +113,21 @@ public class AsiakkaatWrapper implements TaulukkoWrapper {
      */
     public String[] palautaKenttienArvot() {
         return new String[] {nimi.get(), sahkoposti.get(), puhelinnumero.get(), tyyppi.get(), ytunnus.get()};
+    }
+
+    public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
+        return true;
+    }
+
+    public boolean paivitaKenttienArvot(String[] arvot) {
+        return true;
+    }
+
+    public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
+        boolean[] totuusarvolista = new boolean[arvot.length];
+        for (int i = 0; i < arvot.length; i++) {
+            totuusarvolista[i] = true;
+        }
+        return totuusarvolista;
     }
 }

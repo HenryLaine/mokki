@@ -17,8 +17,8 @@ public class Taulukkopaneeli<T> extends TableView<T> {
 
     /**
      * Luokan alustaja, joka ei luo kontekstivalikkoa.
-     * @param sarakkeidenTiedot
-     * @param taulukonSisalto
+     * @param sarakkeidenTiedot sarakkeidentiedot muodossa {"Sarakkeen nimi", "Tyyppi", "muuttujanNimi"}
+     * @param taulukonSisalto taulukon sisältö
      */
     public Taulukkopaneeli(String[][] sarakkeidenTiedot,
                            ObservableList<T> taulukonSisalto) {
@@ -27,7 +27,7 @@ public class Taulukkopaneeli<T> extends TableView<T> {
         this.setPrefHeight(4000);
         this.setPlaceholder(new Label(""));
 
-        // Luodaan sarakkeet ja kontekstivalikko.
+        // Luodaan sarakkeet
         luoSarakkeet(sarakkeidenTiedot);
 
         // Lisätään taulukon sisältö.
@@ -139,9 +139,12 @@ public class Taulukkopaneeli<T> extends TableView<T> {
         return kontekstivalikonKohdat;
     }
 
+    /**
+     * Metodi palauttaa rivillä olevat tiedot oliona.
+     * @return rivin tiedot oliona
+     */
     public T palautaRivinTiedot() {
-        T valitunRivinTIedot = this.getSelectionModel().getSelectedItem();
-        return valitunRivinTIedot;
+        return this.getSelectionModel().getSelectedItem();
     }
 
     /**
