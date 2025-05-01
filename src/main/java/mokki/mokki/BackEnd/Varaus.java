@@ -4,7 +4,6 @@ import java.util.Date;
 
 public class Varaus
 {
-    // Viimeistelen perjantaina kuntoon
 
     private String varausTunnus;
     private int varaajienMaara;
