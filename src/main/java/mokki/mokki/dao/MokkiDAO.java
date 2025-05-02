@@ -6,7 +6,7 @@ import java.util.List;
 
 /** Tämä luokka ottaa yhteyden tietokantaan ja muokkaa sekä hakee tietoa
  * Mökki-taulukosta.
-
+*/
 
 public class MokkiDAO {
     private Connection conn;
@@ -19,7 +19,7 @@ public class MokkiDAO {
 
 
     public void lisaaMokki(Mokki mokki) throws SQLException {
-        String sql = "INSERT INTO Mokki (sijainti, hinta, huoneala, henkilo_maara) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Mokki (sijainti, hinta, huoneala, henkilo_maara) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, mokki.getSijainti());
             stmt.setDouble(2, mokki.getHinta());
@@ -100,4 +100,3 @@ public class MokkiDAO {
         return mokit;
     }
 }
- */

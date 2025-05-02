@@ -24,7 +24,7 @@ public class Varaus
      * @param varausLoppuPvm   varauksen loppupäivämäärä
      */
 
-    Varaus(String varausTunnus, int varaajienMaara, Date varausAlkuPvm, Date varausLoppuPvm){
+    public Varaus(String varausTunnus, int varaajienMaara, Date varausAlkuPvm, Date varausLoppuPvm){
 
         this.varausTunnus = varausTunnus;
         this.varaajienMaara = varaajienMaara;
@@ -94,7 +94,8 @@ public class Varaus
 
     /**
      * metodi palauttaa varauksen alkamispäivämäärän
-     * @return   varauksen alkamispäivämäärän
+     *
+     * @return varauksen alkamispäivämäärän
      */
 
     public Date getVarausAlkuPvm(){
@@ -103,7 +104,8 @@ public class Varaus
 
     /**
      * metodi palauttaa varauksen loppumispäivämäärän
-     * @return   varauksen loppumispäivämäärän
+     *
+     * @return varauksen loppumispäivämäärän
      */
     public Date getVarausLoppuPvm(){
         return varausLoppuPvm;
