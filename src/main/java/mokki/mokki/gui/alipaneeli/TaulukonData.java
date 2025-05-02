@@ -77,4 +77,20 @@ public interface TaulukonData {
      * @return true, jos muutos on tehty; false muussa tapauksessa
      */
     boolean paivitaKenttienArvot(String[] arvot);
+
+    /**
+     * Metodi tarkistaa, että tunniste-ehdokas ei ole vielä käytössä tietokannassa jonkin muun samantyyppisen
+     * tietokokonaisuuden tunnisteena. Metodi ei tarkista tätä, jos nykyinen tunniste ja tunniste-ehdokas ovat
+     * samat.
+     * @return true, jos tunniste on uniikki tai jos tunniste-ehdokas on sama kuin nykyinen tunniste;
+     * false muussa tapauksessa
+     */
+    boolean onkoTunnisteUniikki(String tunniste);
+
+    /**
+     * Metodi palauttaa tunnisteen indeksin. Indeksin avulla pitää pystyä noutamaan tunnisteen määritykset
+     * ja tunnisteen arvo.
+     * @return tunnisteen indeksi
+     */
+    int palautaTunnisteenIndeksi();
 }

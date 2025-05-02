@@ -15,8 +15,10 @@ import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 import java.util.ArrayList;
 
-
-public class TiedotIkkuna extends Stage {
+/**
+ * Luokka toteuttaa ikkunan, jolla näytetään ja hallitaan kohteen tietoja.
+ */
+public class KohteenTiedotIkkuna extends Stage {
     private BorderPane paapaneeli;
     private TaulukonData data;
     private ArrayList<TextField> tekstikenttalista;
@@ -25,8 +27,15 @@ public class TiedotIkkuna extends Stage {
     private boolean tekstialueKaytossa;
     private boolean tulos = false;
 
-    public TiedotIkkuna(TaulukonData data, boolean tekstialueKaytossa,
-                        String otsikko, String[] painikkeidenNimet) {
+    /**
+     * Luokan alustaja, joka luo kohteiden tietojen näyttämiseen ja muokkaamisen soveltuvan ikkunan
+     * @param data kohteen tiedot
+     * @param tekstialueKaytossa true, jos tekstialue on käytössä; false muussa tapauksessa
+     * @param otsikko ikkunan otsikko
+     * @param painikkeidenNimet ikkunan painikkeiden nimet
+     */
+    public KohteenTiedotIkkuna(TaulukonData data, boolean tekstialueKaytossa,
+                               String otsikko, String[] painikkeidenNimet) {
         this.data = data;
         this.muokattavissa = true;
         this.tekstialueKaytossa = tekstialueKaytossa;
@@ -53,9 +62,16 @@ public class TiedotIkkuna extends Stage {
         this.setScene(kehys);
     }
 
-
-    public TiedotIkkuna(TaulukonData data, boolean muokattavissa, boolean tekstialueKaytossa,
-                        String otsikko, String[] painikkeidenNimet) {
+    /**
+     * Luokan alustaja, joka luo kohteiden tietojen näyttämiseen ja muokkaamisen soveltuvan ikkunan
+     * @param data kohteen tiedot
+     * @param muokattavissa true, jos tekstikenttiä voi muokata; false muussa tapauksessa
+     * @param tekstialueKaytossa true, jos tekstialue on käytössä; false muussa tapauksessa
+     * @param otsikko ikkunan otsikko
+     * @param painikkeidenNimet painikkeiden nimet
+     */
+    public KohteenTiedotIkkuna(TaulukonData data, boolean muokattavissa, boolean tekstialueKaytossa,
+                               String otsikko, String[] painikkeidenNimet) {
         this.data = data;
         this.muokattavissa = muokattavissa;
         this.tekstialueKaytossa = tekstialueKaytossa;
@@ -82,6 +98,10 @@ public class TiedotIkkuna extends Stage {
         this.setScene(kehys);
     }
 
+    /**
+     * Metodi luo ruudukkopaneelin, johon sisällytetään otsikko- ja arvokentät.
+     * @return ruudukkopaneeli
+     */
     private GridPane luoRuudukkopaneeli(boolean esitayta) {
         GridPane ruudukkopaneeli = new GridPane(40, 40);
         String[] kenttienArvot = data.palautaKenttienArvot();
@@ -97,7 +117,7 @@ public class TiedotIkkuna extends Stage {
         int sarake = 0;
         int rivi = 0;
         for (int i = 0; i < pituus; i++) {
-            Text otsikko = new Text(maaritykset[i][0]);
+            Text otsikko = new Text(maaritykset[i][0] + ":");
             otsikko.setStyle("-fx-font-weight:bold;");
             TextField tekstikentta = new TextField("");
             if (esitayta) {
@@ -128,13 +148,17 @@ public class TiedotIkkuna extends Stage {
         return ruudukkopaneeli;
     }
 
+    /**
+     * Metodi luo tekstialuepaneelin.
+     * @return tekstialuepaneeli
+     */
     private VBox luotekstialuepaneeli() {
         String[] kenttienArvot = data.palautaKenttienArvot();
         String[][] maaritykset = data.getMaaritykset();
         VBox tekstialuepaneeli = new VBox(10);
         tekstialuepaneeli.setPadding(new Insets(30,0,0,0));
 
-        Text otsikko = new Text(maaritykset[maaritykset.length - 1][0]);
+        Text otsikko = new Text(maaritykset[maaritykset.length - 1][0] + ":");
         otsikko.setStyle("-fx-font-weight:bold;");
         tekstialue = new TextArea(kenttienArvot[kenttienArvot.length - 1]);
         tekstialue.setWrapText(true);
@@ -151,6 +175,11 @@ public class TiedotIkkuna extends Stage {
         return tekstialuepaneeli;
     }
 
+    /**
+     * Metodi luo painikepaneelin, jonka avulla voi joko lisätä tietoja, muuttaa tietoja tai sulkea
+     * ikkunan.
+     * @return painikepaneeli
+     */
     private HBox luoPainikepaneeli(String[] painikkeidenNimet) {
         HBox painikepaneeli = new HBox(20);
         painikepaneeli.setPadding(new Insets(20, 0, 0, 0));
@@ -162,13 +191,25 @@ public class TiedotIkkuna extends Stage {
             painikepaneeli.getChildren().addAll(hyvaksyPainike, peruutaPainike);
 
             hyvaksyPainike.setOnAction(e -> {
-                tulos = data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
-                if (tulos) {
+                int tunnisteenIndeksi = data.palautaTunnisteenIndeksi();
+                boolean arvotHyvaksyttavia = data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
+                boolean tunnisteUniikki = data.onkoTunnisteUniikki(
+                        tekstikenttalista.get(tunnisteenIndeksi).getText());
+                if (arvotHyvaksyttavia && tunnisteUniikki) {
+                    tulos = true;
                     this.close();
                 }
-                else {
+                else if (!arvotHyvaksyttavia) {
                     Virheikkuna virheikkuna = new Virheikkuna("Tietokenttävirhe",
-                            muotoileTietokentavirheteksti());
+                            muotoileTietokenttavirheteksti());
+                    virheikkuna.show();
+                }
+                else {
+                    String virheteksti = data.getMaaritykset()[tunnisteenIndeksi][0] + " " +
+                            tekstikenttalista.get(tunnisteenIndeksi).getText() +
+                            " löytyy jo tietokannasta. Valitse jokin toinen arvo.";
+                    Virheikkuna virheikkuna = new Virheikkuna("Tunnistevirhe",
+                            virheteksti);
                     virheikkuna.show();
                 }
             });
@@ -189,7 +230,12 @@ public class TiedotIkkuna extends Stage {
         return painikepaneeli;
     }
 
-    private String muotoileTietokentavirheteksti() {
+    /**
+     * Metodi muotoilee virhetekstin, joka näytetään, kun käyttäjä syöttää virheellisiä arvoja
+     * tietokenttiin.
+     * @return tietokenttävirheteksti
+     */
+    private String muotoileTietokenttavirheteksti() {
         StringBuilder virheteksti = new StringBuilder("""
                 Joidenkin kenttien arvot ovat virheelliset. Tarkista, \
                 että pakolliset kentät on täytetty ja kaikkien kenttien arvot \

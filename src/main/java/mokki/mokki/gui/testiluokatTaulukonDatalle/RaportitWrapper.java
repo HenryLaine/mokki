@@ -153,4 +153,13 @@ public class RaportitWrapper implements TaulukonData {
         }
         return totuusarvolista;
     }
+
+    public boolean onkoTunnisteUniikki(String tunniste) {
+        // TODO: tarkista, että tunnistetta ei löydy tietokannasta.
+        return false;
+    }
+
+    public int palautaTunnisteenIndeksi() {
+        return 0;
+    }
 }
