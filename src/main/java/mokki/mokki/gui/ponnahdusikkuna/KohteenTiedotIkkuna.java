@@ -15,8 +15,10 @@ import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 import java.util.ArrayList;
 
-
-public class TiedotIkkuna extends Stage {
+/**
+ * Luokka toteuttaa ikkunan, jolla näytetään ja hallitaan kohteen tietoja.
+ */
+public class KohteenTiedotIkkuna extends Stage {
     private BorderPane paapaneeli;
     private TaulukonData data;
     private ArrayList<TextField> tekstikenttalista;
@@ -25,8 +27,15 @@ public class TiedotIkkuna extends Stage {
     private boolean tekstialueKaytossa;
     private boolean tulos = false;
 
-    public TiedotIkkuna(TaulukonData data, boolean tekstialueKaytossa,
-                        String otsikko, String[] painikkeidenNimet) {
+    /**
+     * Luokan alustaja, joka luo kohteiden tietojen näyttämiseen ja muokkaamisen soveltuvan ikkunan
+     * @param data kohteen tiedot
+     * @param tekstialueKaytossa true, jos tekstialue on käytössä; false muussa tapauksessa
+     * @param otsikko ikkunan otsikko
+     * @param painikkeidenNimet ikkunan painikkeiden nimet
+     */
+    public KohteenTiedotIkkuna(TaulukonData data, boolean tekstialueKaytossa,
+                               String otsikko, String[] painikkeidenNimet) {
         this.data = data;
         this.muokattavissa = true;
         this.tekstialueKaytossa = tekstialueKaytossa;
@@ -53,9 +62,16 @@ public class TiedotIkkuna extends Stage {
         this.setScene(kehys);
     }
 
-
-    public TiedotIkkuna(TaulukonData data, boolean muokattavissa, boolean tekstialueKaytossa,
-                        String otsikko, String[] painikkeidenNimet) {
+    /**
+     * Luokan alustaja, joka luo kohteiden tietojen näyttämiseen ja muokkaamisen soveltuvan ikkunan
+     * @param data kohteen tiedot
+     * @param muokattavissa true, jos tekstikenttiä voi muokata; false muussa tapauksessa
+     * @param tekstialueKaytossa true, jos tekstialue on käytössä; false muussa tapauksessa
+     * @param otsikko ikkunan otsikko
+     * @param painikkeidenNimet painikkeiden nimet
+     */
+    public KohteenTiedotIkkuna(TaulukonData data, boolean muokattavissa, boolean tekstialueKaytossa,
+                               String otsikko, String[] painikkeidenNimet) {
         this.data = data;
         this.muokattavissa = muokattavissa;
         this.tekstialueKaytossa = tekstialueKaytossa;
@@ -82,6 +98,10 @@ public class TiedotIkkuna extends Stage {
         this.setScene(kehys);
     }
 
+    /**
+     * Metodi luo ruudukkopaneelin, johon sisällytetään otsikko- ja arvokentät.
+     * @return ruudukkopaneeli
+     */
     private GridPane luoRuudukkopaneeli(boolean esitayta) {
         GridPane ruudukkopaneeli = new GridPane(40, 40);
         String[] kenttienArvot = data.palautaKenttienArvot();
@@ -128,6 +148,10 @@ public class TiedotIkkuna extends Stage {
         return ruudukkopaneeli;
     }
 
+    /**
+     * Metodi luo tekstialuepaneelin.
+     * @return tekstialuepaneeli
+     */
     private VBox luotekstialuepaneeli() {
         String[] kenttienArvot = data.palautaKenttienArvot();
         String[][] maaritykset = data.getMaaritykset();
@@ -151,6 +175,11 @@ public class TiedotIkkuna extends Stage {
         return tekstialuepaneeli;
     }
 
+    /**
+     * Metodi luo painikepaneelin, jonka avulla voi joko lisätä tietoja, muuttaa tietoja tai sulkea
+     * ikkunan.
+     * @return painikepaneeli
+     */
     private HBox luoPainikepaneeli(String[] painikkeidenNimet) {
         HBox painikepaneeli = new HBox(20);
         painikepaneeli.setPadding(new Insets(20, 0, 0, 0));
@@ -201,6 +230,11 @@ public class TiedotIkkuna extends Stage {
         return painikepaneeli;
     }
 
+    /**
+     * Metodi muotoilee virhetekstin, joka näytetään, kun käyttäjä syöttää virheellisiä arvoja
+     * tietokenttiin.
+     * @return tietokenttävirheteksti
+     */
     private String muotoileTietokenttavirheteksti() {
         StringBuilder virheteksti = new StringBuilder("""
                 Joidenkin kenttien arvot ovat virheelliset. Tarkista, \
