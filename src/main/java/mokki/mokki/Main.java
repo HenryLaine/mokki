@@ -14,7 +14,8 @@ import mokki.mokki.gui.alipaneeli.Taulukkopaneeli;
 import mokki.mokki.gui.Valilehtipaneeli;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 import mokki.mokki.gui.paapaneeli.*;
-import mokki.mokki.gui.ponnahdusikkuna.TiedotIkkuna;
+import mokki.mokki.gui.ponnahdusikkuna.AsiakkaanTiedotIkkuna;
+import mokki.mokki.gui.ponnahdusikkuna.KohteenTiedotIkkuna;
 import mokki.mokki.gui.ponnahdusikkuna.Vahvistusikkuna;
 import mokki.mokki.gui.testiluokatTaulukonDatalle.*;
 
@@ -50,7 +51,7 @@ public class Main extends Application {
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
             // Uusi kohde luodaan.
             TaulukonData uusiKohde = new KohteetWrapper();
-            TiedotIkkuna tiedotIkkuna = new TiedotIkkuna(uusiKohde, true,
+            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(uusiKohde, true,
                     "Lisää kohde", new String[] {"Lisää kohde", "Peruuta"});
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
@@ -87,15 +88,15 @@ public class Main extends Application {
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
             // Kohteen tiedot näytetään.
-            TiedotIkkuna tiedotIkkuna = new TiedotIkkuna(taulukkopaneeli.palautaRivinTiedot(), false,
-                    true, "Kohteen tiedot", new String[] {"", "Sulje"});
+            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(taulukkopaneeli.palautaRivinTiedot(),
+                    false, true, "Kohteen tiedot", new String[] {"", "Sulje"});
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             tiedotIkkuna.showAndWait();
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Kohteen tietoja muutetaan.
             TaulukonData kohteenTiedot = taulukkopaneeli.palautaRivinTiedot();
-            TiedotIkkuna tiedotIkkuna = new TiedotIkkuna(kohteenTiedot, true, true,
+            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(kohteenTiedot, true, true,
                     "Muuta kohteen tietoja", new String[] {"Muuta tiedot", "Peruuta"});
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
@@ -119,7 +120,7 @@ public class Main extends Application {
 
 
                 // Kohde poistetaan käyttöliittymän taulukosta.
-                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
+                taulukonSisalto.remove(taulukkopaneeli.palautaRivinTiedot());
             }
         });
     }
@@ -183,49 +184,87 @@ public class Main extends Application {
 
     private void alustaAsiakkaatPaneeli() {
         // Dummy-dataa
-        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
+        List<TaulukonData> asiakkaat = List.of(
                 new AsiakkaatWrapper("Jukka Jokunen", "jukka@gmail.com",
-                        "043-046-0349","yksityishenkilö", "")
+                        "043-046-0349","yksityishenkilö", ""),
+                new AsiakkaatWrapper("Yritys Oy", "yritys@gmail.com",
+                "304539-30505","yritys", "3566456")
         );
+
+        // Taulukon sisältö
+        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(asiakkaat);
         asiakkaatPaneeli = new AsiakkaatPaneeli(fonttikoko, taulukonSisalto);
 
-        // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
         Hallintapaneeli hallintapaneeli = asiakkaatPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
+            // Lisää asiakas
+            TaulukonData uusiAsiakas = new AsiakkaatWrapper("", "",
+                    "", "", "");
+            AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(uusiAsiakas, "Lisää asiakas");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+            if (tulos) {
+                uusiAsiakas.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                // TODO: Kohde lisätään tietokantaan.
+
+                // Kohde lisätään käyttöliittymän taulukkoon.
+                taulukonSisalto.add(uusiAsiakas);
+            }
 
         });
         hallintapaneeli.getRajaaPainike().setOnAction(e -> {
+            // Rajaa asiakkaita
+            // TODO
 
             //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
         });
         hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
-            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+            // Poista rajaukset
+            // TODO
 
+
+            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
         });
 
-        // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
+
         Taulukkopaneeli<TaulukonData> taulukkopaneeli = asiakkaatPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
-            // Varauksen tiedot näytetään
+            // Asiakkaan tiedot näytetään
+            AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(
+                    taulukkopaneeli.palautaRivinTiedot(), "Asiakkaan tiedot");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            tiedotIkkuna.showAndWait();
 
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
-            // Mökin tiedot näytetään
+            // Asiakkaan tietoja muutetaan
+            TaulukonData asiakkaanTiedot = taulukkopaneeli.palautaRivinTiedot();
+            AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(asiakkaanTiedot,
+                    "Muuta asiakkaan tietoja");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+            if (tulos) {
+                // TODO: Kohteen tietoja muutetaan tietokannassa.
 
+                // Kohteen tiedot muutetaan käyttöliittymän taulukossa.
+                asiakkaanTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+            }
         });
 
         kontekstivalikonKohdat.get(2).setOnAction(e -> {
+            // Asiakas poistetaan
             Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
                     "Haluatko varmasti poistaa asiakkaan " +
                             taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
             Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
 
             if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // Asiakas poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+                // TODO: asiakas poistetaan tietokannasta
 
-                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
+                // Asiakas poistetaan taulukon sisällöstä
+                taulukonSisalto.remove(taulukkopaneeli.palautaRivinTiedot());
             }
         });
     }
