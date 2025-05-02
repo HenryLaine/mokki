@@ -3,6 +3,8 @@ package mokki.mokki.gui.testiluokatTaulukonDatalle;
 import javafx.beans.property.*;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
+import java.util.Arrays;
+
 /**
  * Testiluokka kohteiden tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
@@ -308,4 +310,18 @@ public class KohteetWrapper implements TaulukonData {
         return totuusarvolista;
     }
 
+
+    public boolean onkoTunnisteUniikki(String tunniste) {
+        if (tunnus.get().equals(tunniste)) {
+            return true;
+        }
+        else {
+            // TODO: tarkista, että tunniste ei ole sama kuin jonkin muun kohteen tunniste tietokannassa
+            return true;
+        }
+    }
+
+    public int palautaTunnisteenIndeksi() {
+        return 0;
+    }
 }

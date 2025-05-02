@@ -97,7 +97,7 @@ public class TiedotIkkuna extends Stage {
         int sarake = 0;
         int rivi = 0;
         for (int i = 0; i < pituus; i++) {
-            Text otsikko = new Text(maaritykset[i][0]);
+            Text otsikko = new Text(maaritykset[i][0] + ":");
             otsikko.setStyle("-fx-font-weight:bold;");
             TextField tekstikentta = new TextField("");
             if (esitayta) {
@@ -134,7 +134,7 @@ public class TiedotIkkuna extends Stage {
         VBox tekstialuepaneeli = new VBox(10);
         tekstialuepaneeli.setPadding(new Insets(30,0,0,0));
 
-        Text otsikko = new Text(maaritykset[maaritykset.length - 1][0]);
+        Text otsikko = new Text(maaritykset[maaritykset.length - 1][0] + ":");
         otsikko.setStyle("-fx-font-weight:bold;");
         tekstialue = new TextArea(kenttienArvot[kenttienArvot.length - 1]);
         tekstialue.setWrapText(true);
@@ -162,13 +162,25 @@ public class TiedotIkkuna extends Stage {
             painikepaneeli.getChildren().addAll(hyvaksyPainike, peruutaPainike);
 
             hyvaksyPainike.setOnAction(e -> {
-                tulos = data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
-                if (tulos) {
+                int tunnisteenIndeksi = data.palautaTunnisteenIndeksi();
+                boolean arvotHyvaksyttavia = data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
+                boolean tunnisteUniikki = data.onkoTunnisteUniikki(
+                        tekstikenttalista.get(tunnisteenIndeksi).getText());
+                if (arvotHyvaksyttavia && tunnisteUniikki) {
+                    tulos = true;
                     this.close();
                 }
-                else {
+                else if (!arvotHyvaksyttavia) {
                     Virheikkuna virheikkuna = new Virheikkuna("Tietokenttävirhe",
-                            muotoileTietokentavirheteksti());
+                            muotoileTietokenttavirheteksti());
+                    virheikkuna.show();
+                }
+                else {
+                    String virheteksti = data.getMaaritykset()[tunnisteenIndeksi][0] + " " +
+                            tekstikenttalista.get(tunnisteenIndeksi).getText() +
+                            " löytyy jo tietokannasta. Valitse jokin toinen arvo.";
+                    Virheikkuna virheikkuna = new Virheikkuna("Tunnistevirhe",
+                            virheteksti);
                     virheikkuna.show();
                 }
             });
@@ -189,7 +201,7 @@ public class TiedotIkkuna extends Stage {
         return painikepaneeli;
     }
 
-    private String muotoileTietokentavirheteksti() {
+    private String muotoileTietokenttavirheteksti() {
         StringBuilder virheteksti = new StringBuilder("""
                 Joidenkin kenttien arvot ovat virheelliset. Tarkista, \
                 että pakolliset kentät on täytetty ja kaikkien kenttien arvot \

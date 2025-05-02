@@ -130,4 +130,19 @@ public class AsiakkaatWrapper implements TaulukonData {
         }
         return totuusarvolista;
     }
+
+    public boolean onkoTunnisteUniikki(String tunniste) {
+        if (sahkoposti.get().equals(tunniste)) {
+            return true;
+        }
+        else {
+            // TODO: tarkista, että tunniste ei ole sama kuin jonkin muun kohteen tunniste tietokannassa
+            return true;
+        }
+    }
+
+    public int palautaTunnisteenIndeksi() {
+        return 1;
+    }
+
 }
