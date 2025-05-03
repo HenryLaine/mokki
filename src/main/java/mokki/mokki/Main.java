@@ -17,6 +17,7 @@ import mokki.mokki.gui.paapaneeli.*;
 import mokki.mokki.gui.ponnahdusikkuna.AsiakkaanTiedotIkkuna;
 import mokki.mokki.gui.ponnahdusikkuna.KohteenTiedotIkkuna;
 import mokki.mokki.gui.ponnahdusikkuna.Vahvistusikkuna;
+import mokki.mokki.gui.ponnahdusikkuna.VarauksenTiedotIkkuna;
 import mokki.mokki.gui.testiluokatTaulukonDatalle.*;
 
 import java.util.ArrayList;
@@ -127,25 +128,36 @@ public class Main extends Application {
 
     private void alustaVarauksetPaneeli() {
         // Dummy-dataa
-        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
-                new VarauksetWrapper("A003", "JOE001", "Matti Meikäläinen",
-                        "05.04.2025", "08.04.2025", "Päättynyt",
-                        "Lisäpalvelu: ylimääräinen sänky")
+        List<TaulukonData> varaukset = List.of(
+                new VarauksetWrapper("A003", "JOE001",
+                        "Matti Meikäläinen", "matti@gmail.com", "05.04.2025",
+                        "08.04.2025", "Päättynyt", "Lisäpalvelu: ylimääräinen sänky"),
+                new VarauksetWrapper("J046", "KUO004", "Jukka Jokunen" ,
+                        "jukka@gmail.com", "08.06.2025", "14.07.2025",
+                        "Aktiivinen", "")
         );
+        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(varaukset);
         varauksetPaneeli = new VarauksetPaneeli(fonttikoko, taulukonSisalto);
 
-        // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
         Hallintapaneeli hallintapaneeli = varauksetPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
+            // Uusi varaus lisätään
+            // TODO
 
         });
         hallintapaneeli.getRajaaPainike().setOnAction(e -> {
+            // Varauksia rajataan
+            // TODO
+
 
             //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
         });
         hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
-            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+            // Rajaukset poistetaan
+            // TODO
 
+
+            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
         });
 
         // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
@@ -154,6 +166,10 @@ public class Main extends Application {
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
             // Varauksen tiedot näytetään
+            VarauksenTiedotIkkuna tiedotIkkuna = new VarauksenTiedotIkkuna(taulukkopaneeli.palautaRivinTiedot(),
+                    "Varauksen tiedot");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            tiedotIkkuna.showAndWait();
 
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
@@ -169,15 +185,19 @@ public class Main extends Application {
 
         });
         kontekstivalikonKohdat.get(4).setOnAction(e -> {
+            // Varaus poistetaan
             Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
                     "Haluatko varmasti poistaa varauksen " +
                             taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
             Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
 
             if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // Varaus poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+                // TODO: Varaus poistetaan tietokannasta.
 
-                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
+
+
+                // Varaus poistetaan käyttöliittymän taulukosta.
+                taulukonSisalto.remove(taulukkopaneeli.palautaRivinTiedot());
             }
         });
     }
