@@ -64,7 +64,7 @@ public class AsiakasData implements TaulukonData {
         return arvot[0].contains("@") &&
                 !arvot[1].isEmpty() &&
                 !arvot[2].isEmpty() &&
-                arvot[3].matches("\\d{6,15}") && // Puhelinnumeron oltava 6-15 numeroa
+                arvot[3].matches("\\d{10,15}") && // Puhelinnumeron oltava 6-15 numeroa
                 (arvot[4].equals("yksityishenkilö") || arvot[4].equals("yritys")) &&
                 (!arvot[4].equals("yritys") || !arvot[5].isEmpty());
     }
@@ -75,7 +75,7 @@ public class AsiakasData implements TaulukonData {
         tulos[0] = arvot[0].contains("@"); // Sähköposti oltava validi
         tulos[1] = !arvot[1].isEmpty(); // Nimi ei saa olla tyhjä
         tulos[2] = !arvot[2].isEmpty(); // Osoite ei saa olla tyhjä
-        tulos[3] = arvot[3].matches("\\d{6,15}"); // Puhelinnumeron oltava numeerinen ja pituus 6-15
+        tulos[3] = arvot[3].matches("\\d{10,15}"); // Puhelinnumeron oltava numeerinen ja pituus 10-15 numeroa
         tulos[4] = arvot[4].equals("yksityishenkilö") || arvot[4].equals("yritys"); // Tyyppi hyväksyttävä
         tulos[5] = !arvot[4].equals("yritys") || !arvot[5].isEmpty(); // Y-tunnus vaaditaan vain yritykselle
         return tulos;

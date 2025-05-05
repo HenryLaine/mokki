@@ -6,10 +6,10 @@ package mokki.mokki.BackEnd;
  * Lisäksi yksityisasiakkailla on puhelinnumero, ja yritysasiakkailla on Y-tunnus
  */
 public class Asiakas {
-    private String sahkoposti; // Asiakkaan sähköposti
-    private String asiakastyyppi; // Asiakkaan tyyppi, joko "yksityinen" tai "yritys"
-    private String nimi; // Asiakkaan nimi
-    private String osoite; // Asiakkaan osoite
+    private String sahkoposti;
+    private String asiakastyyppi;
+    private String nimi;
+    private String osoite;
     private String puhelinnumero; // vain yksityisasiakkaalle
     private String ytunnus; // vain yritysasiakkaalle
 
