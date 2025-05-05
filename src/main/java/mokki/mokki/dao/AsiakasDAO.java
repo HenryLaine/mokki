@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** tämä luokka lisää, muokkaa, poistaa ja tulostaa tietoja asiakastaulusta.
-
+*/
 public class AsiakasDAO {
     private Connection conn;
 
@@ -52,6 +52,7 @@ public class AsiakasDAO {
 
     // metodi asiakkaan tietojen muokkaamiseksi. Mikäli muokattava tieto on tyhjä,
     // jää vanha tieto voimaan.
+
     public void muokkaaAsiakasta(Asiakas asiakas) throws SQLException {
         // 1. Haetaan vanha asiakas
         Asiakas vanhaAsiakas = haeAsiakas(asiakas.getSahkoposti());
@@ -173,6 +174,7 @@ public class AsiakasDAO {
         return asiakkaat;
     }
     // metodi rajaa asiakkaita hakusanojen perusteella
+
     public List<Asiakas> rajaaAsiakkaat(String hakusana) throws SQLException {
         List<Asiakas> asiakkaat = new ArrayList<>();
 
@@ -242,9 +244,7 @@ public class AsiakasDAO {
                 }
             }
         }
-
         return asiakkaat;
     }
 
 }
-*/

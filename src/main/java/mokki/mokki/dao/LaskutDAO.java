@@ -2,6 +2,7 @@ package mokki.mokki.dao;
 import mokki.mokki.BackEnd.Lasku;
 import mokki.mokki.BackEnd.Varaus;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,9 +80,9 @@ public class LaskutDAO {
 
     // Koko laskun muokkaaminen
     public void muokkaaLaskua(Lasku lasku) throws SQLException {
-        Lasku vanhaLasku = haeLasku(lasku.getLaskuID());
+        Lasku vanhaLasku = haeLasku(lasku.getLaskunumero());
         if (vanhaLasku == null) {
-            throw new SQLException("Laskua ei löydy laskuID:llä " + lasku.getLaskuID());
+            throw new SQLException("Laskua ei löydy laskuID:llä " + lasku.getLaskunumero());
         }
 
         String sql = "UPDATE Laskut SET veroton_hinta = ?, alv = ?, paivamaara = ?, erapaiva = ?, status = ?, " +
@@ -189,5 +190,4 @@ public class LaskutDAO {
                 rs.getString("nimi")
         );
     }
-}
-*/
+}*/

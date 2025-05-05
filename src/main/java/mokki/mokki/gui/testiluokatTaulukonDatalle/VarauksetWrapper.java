@@ -16,25 +16,22 @@ public class VarauksetWrapper implements TaulukonData {
     private StringProperty tila;
     private StringProperty huomioitavaa;
 
+    private String asiakkaanNimi;
+    private String asiakkaanSahkoposti;
+
     /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
     private String[][] maaritykset;
 
-    /**
-     * Luokan alustaja
-     * @param tunnus tunnus
-     * @param mokinTunnus mökin tunnus
-     * @param asiakas asiakas
-     * @param alkaa alkaa
-     * @param paattyy päättyy
-     * @param tila tila
-     * @param huomioitavaa huomioitavaa
-     */
-    public VarauksetWrapper(String tunnus, String mokinTunnus, String asiakas,
+
+    public VarauksetWrapper(String tunnus, String mokinTunnus, String asiakkaanNimi, String asiakkaanSahkoposti,
                             String alkaa, String paattyy, String tila, String huomioitavaa) {
+
+        this.asiakkaanNimi = asiakkaanNimi;
+        this.asiakkaanSahkoposti = asiakkaanSahkoposti;
 
         this.tunnus = new SimpleStringProperty(tunnus);
         this.mokinTunnus = new SimpleStringProperty(mokinTunnus);
-        this.asiakas = new SimpleStringProperty(asiakas);
+        this.asiakas = new SimpleStringProperty(asiakkaanNimi + " (" +asiakkaanSahkoposti + ")");
         this.alkaa = new SimpleStringProperty(alkaa);
         this.paattyy = new SimpleStringProperty(paattyy);
         this.tila = new SimpleStringProperty(tila);

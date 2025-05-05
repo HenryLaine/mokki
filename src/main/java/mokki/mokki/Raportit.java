@@ -1,5 +1,7 @@
 package mokki.mokki;
 import mokki.mokki.database.*;
+import mokki.mokki.BackEnd.*;
+import mokki.mokki.dao.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -161,8 +163,9 @@ public class Raportit {
         Connection conn = DatabaseManager.getConnection();
         Raportit raportti=new Raportit(conn);
         raportti.haeKaikkiAsiakkaat();
+        Mokki moksa=new Mokki(1234, "Franska", 666.666, 69, 7);
+        MokkiDAO mokkidao=new MokkiDAO(conn);
+        mokkidao.lisaaMokki(moksa);
         raportti.tulostaMokit();
-        raportti.tulostaVaraukset();
-        raportti.tulostaLaskut();
     }
 }
