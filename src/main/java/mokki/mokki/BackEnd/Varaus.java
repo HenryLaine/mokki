@@ -1,6 +1,6 @@
 package mokki.mokki.BackEnd;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * Luokka kuvaa varausta missä sisältyy varauksen tunnus, varaajien määrä,
@@ -10,11 +10,13 @@ import java.util.Date;
 
 public class Varaus
 {
-
+    private int varausID;
     private String varausTunnus;
     private int varaajienMaara;
     private Date varausAlkuPvm;
     private Date varausLoppuPvm;
+    private String sahkoposti;
+    private int mokkiID;
 
     /**
      * Alustaa uuden varauksen
@@ -24,22 +26,29 @@ public class Varaus
      * @param varausLoppuPvm   varauksen loppupäivämäärä
      */
 
-    Varaus(String varausTunnus, int varaajienMaara, Date varausAlkuPvm, Date varausLoppuPvm){
+    Varaus(int varausID,String varausTunnus, int varaajienMaara, Date varausAlkuPvm, Date varausLoppuPvm,
+           String sahkoposti,int mokkiID){
 
+        this.varausID = varausID;
         this.varausTunnus = varausTunnus;
         this.varaajienMaara = varaajienMaara;
         this.varausAlkuPvm = varausAlkuPvm;
         this.varausLoppuPvm = varausLoppuPvm;
+        this.sahkoposti = sahkoposti;
+        this.mokkiID = mokkiID;
     }
 
 
     // setterit
 
+
+    public void setVarausID(int varausID){
+        this.varausID = varausID;
+    }
     /**
      * metodi asettaa varaus tunnuksen
-      * @param varausTunnus  varauksen tunnus
+     * @param varausTunnus  varauksen tunnus
      */
-
 
     public void setVarausTunnus(String varausTunnus){
         this.varausTunnus = varausTunnus;
@@ -71,7 +80,20 @@ public class Varaus
         this.varausLoppuPvm = varausLoppuPvm;
     }
 
+    public void setSahkoposti(String sahkoposti){
+        this.sahkoposti = sahkoposti;
+    }
+
+    public void setMokkiID(int mokkiID){
+        this.mokkiID = mokkiID;
+    }
+
     // getterit
+
+
+    public int getVarausID() {
+        return varausID;
+    }
 
     /**
      * metodi palauttaa varaus tunnuksen
@@ -109,15 +131,11 @@ public class Varaus
         return varausLoppuPvm;
     }
 
+    public String getSahkoposti(){
+        return sahkoposti;
+    }
 
-
-
-
-
-
-
-
-
-
-
+    public int getMokkiID() {
+        return mokkiID;
+    }
 }
