@@ -1,12 +1,13 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 /**
  * Wrapper-luokka varausten tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
-public class VarauksetWrapper {
+public class VarauksetWrapper implements TaulukonData {
     private StringProperty tunnus;
     private StringProperty mokinTunnus;
     private StringProperty asiakas;
@@ -40,7 +41,7 @@ public class VarauksetWrapper {
         this.huomioitavaa = new SimpleStringProperty(huomioitavaa);
 
         maaritykset = new String[][] {
-                {"Tunus", "String", "tunnus"},
+                {"Tunnus", "String", "tunnus"},
                 {"Mökin tunnus", "String", "mokinTunnus"},
                 {"Asiakas", "String", "asiakas"},
                 {"Alkaa", "String", "alkaa"},
@@ -113,4 +114,55 @@ public class VarauksetWrapper {
     public String[][] getMaaritykset() {
         return maaritykset;
     }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden tunnisteen eli varauksen tunnuksen.
+     * @return tunniste
+     */
+    public String palautaTunniste() {
+        return tunnus.get();
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden kuvaustekstin eli varauksen tunnuksen.
+     * @return kuvausteksti
+     */
+    public String palautaKuvausteksti() {
+        return tunnus.get();
+    }
+
+    /**
+     * Metodi palauttaa kenttien arvot merkkijonolistana.
+     * @return kenttien arvot
+     */
+    public String[] palautaKenttienArvot() {
+        return new String[] {tunnus.get(), mokinTunnus.get(), asiakas.get(),
+                alkaa.get(), paattyy.get(), tila.get(), huomioitavaa.get()};
+    }
+
+    public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
+        return true;
+    }
+
+    public boolean paivitaKenttienArvot(String[] arvot) {
+        return true;
+    }
+
+    public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
+        boolean[] totuusarvolista = new boolean[arvot.length];
+        for (int i = 0; i < arvot.length; i++) {
+            totuusarvolista[i] = true;
+        }
+        return totuusarvolista;
+    }
+
+    public boolean onkoTunnisteUniikki(String tunniste) {
+        // TODO: tarkista, että tunnistetta ei löydy tietokannasta.
+        return false;
+    }
+
+    public int palautaTunnisteenIndeksi() {
+        return 0;
+    }
+
 }

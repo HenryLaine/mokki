@@ -1,4 +1,4 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.alipaneeli;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;

@@ -2,6 +2,7 @@
 CREATE DATABASE IF NOT EXISTS mokkikodit;
 USE mokkikodit;
 
+
 -- Taulu: Asiakas (geneerinen asiakastaulu)
 CREATE TABLE IF NOT EXISTS Asiakas (
     sahkoposti VARCHAR(100) PRIMARY KEY,

@@ -1,12 +1,13 @@
-package mokki.mokki.gui;
+package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 /**
  * Wrapper-luokka asiakkaiden tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
-public class AsiakkaatWrapper {
+public class AsiakkaatWrapper implements TaulukonData {
     private StringProperty nimi;
     private StringProperty sahkoposti;
     private StringProperty puhelinnumero;
@@ -89,4 +90,59 @@ public class AsiakkaatWrapper {
     public String[][] getMaaritykset() {
         return maaritykset;
     }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden tunnisteen eli asiakkaan sähköpostiosoitteen.
+     * @return tunniste
+     */
+    public String palautaTunniste() {
+        return sahkoposti.get();
+    }
+
+    /**
+     * Metodi palauttaa tietokokonaisuuden kuvaustekstin, joka on asiakkaan nimi ja sähköpostiosoite.
+     * @return tunniste
+     */
+    public String palautaKuvausteksti() {
+        return nimi.get() + " (" + sahkoposti.get() + ")";
+    }
+
+    /**
+     * Metodi palauttaa kenttien arvot merkkijonolistana.
+     * @return kenttien arvot
+     */
+    public String[] palautaKenttienArvot() {
+        return new String[] {nimi.get(), sahkoposti.get(), puhelinnumero.get(), tyyppi.get(), ytunnus.get()};
+    }
+
+    public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
+        return true;
+    }
+
+    public boolean paivitaKenttienArvot(String[] arvot) {
+        return true;
+    }
+
+    public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
+        boolean[] totuusarvolista = new boolean[arvot.length];
+        for (int i = 0; i < arvot.length; i++) {
+            totuusarvolista[i] = true;
+        }
+        return totuusarvolista;
+    }
+
+    public boolean onkoTunnisteUniikki(String tunniste) {
+        if (sahkoposti.get().equals(tunniste)) {
+            return true;
+        }
+        else {
+            // TODO: tarkista, että tunniste ei ole sama kuin jonkin muun kohteen tunniste tietokannassa
+            return true;
+        }
+    }
+
+    public int palautaTunnisteenIndeksi() {
+        return 1;
+    }
+
 }
