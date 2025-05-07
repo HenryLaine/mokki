@@ -281,7 +281,6 @@ public class Main extends Application {
                 tiedotIkkuna.asetaFonttikoko(fonttikoko);
                 tiedotIkkuna.showAndWait();
             });
-
             // Muokkaa asiakkaan tietoja
             kontekstivalikonKohdat.get(1).setOnAction(e -> {
                 TaulukonData asiakkaanTiedot = taulukkopaneeli.palautaRivinTiedot();
@@ -291,7 +290,13 @@ public class Main extends Application {
                 boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
                 if (tulos) {
                     asiakkaanTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
-                    // TODO: Päivitä tietokantaan
+
+                    try {
+                        AsiakkaatWrapper uusiData = (AsiakkaatWrapper) asiakkaanTiedot; // <-- metodin nimi voi vaihdella
+                        asiakasDAO.muokkaaAsiakasta(uusiData);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace(); // tai näytä virheviesti käyttöliittymässä
+                    }
                 }
             });
 
@@ -302,8 +307,13 @@ public class Main extends Application {
                         "Haluatko varmasti poistaa asiakkaan " + valittu.palautaKuvausteksti() + "?");
                 Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
                 if (tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                    // TODO: Poista tietokannasta
-                    taulukonSisalto.remove(valittu);
+                    try {
+                        String sahkoposti = valittu.palautaTunniste(); // tai valittu.palautaKentta("sahkoposti");
+                        asiakasDAO.poistaAsiakas(sahkoposti);
+                        taulukonSisalto.remove(valittu);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace(); // tai näytä virheviesti käyttöliittymässä
+                    }
                 }
             });
 
