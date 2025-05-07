@@ -311,10 +311,10 @@ public class Main extends Application {
                     asiakkaanTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
 
                     try {
-                        AsiakkaatWrapper uusiData = (AsiakkaatWrapper) asiakkaanTiedot; // <-- metodin nimi voi vaihdella
+                        AsiakkaatWrapper uusiData = (AsiakkaatWrapper) asiakkaanTiedot;
                         asiakasDAO.muokkaaAsiakasta(uusiData);
                     } catch (SQLException ex) {
-                        ex.printStackTrace(); // tai näytä virheviesti käyttöliittymässä
+                        ex.printStackTrace();
                     }
                 }
             });
@@ -327,11 +327,11 @@ public class Main extends Application {
                 Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
                 if (tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
                     try {
-                        String sahkoposti = valittu.palautaTunniste(); // tai valittu.palautaKentta("sahkoposti");
+                        String sahkoposti = valittu.palautaTunniste();
                         asiakasDAO.poistaAsiakas(sahkoposti);
                         taulukonSisalto.remove(valittu);
                     } catch (SQLException ex) {
-                        ex.printStackTrace(); // tai näytä virheviesti käyttöliittymässä
+                        ex.printStackTrace();
                     }
                 }
             });
