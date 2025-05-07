@@ -39,16 +39,16 @@ INSERT IGNORE INTO Yritysasiakas (sahkoposti, y_tunnus, osoite, nimi) VALUES
 
 -- ASIAKKAAT: Yksityiset
 INSERT IGNORE INTO Asiakas (sahkoposti, asiakastyyppi) VALUES
-('matti@example.com', 'yksityinen'),
-('maija@example.com', 'yksityinen'),
-('kalle@example.com', 'yksityinen'),
-('laura@example.com', 'yksityinen'),
-('antti@example.com', 'yksityinen'),
-('elina@example.com', 'yksityinen'),
-('jari@example.com', 'yksityinen'),
-('tiina@example.com', 'yksityinen'),
-('pekka@example.com', 'yksityinen'),
-('sari@example.com', 'yksityinen');
+('matti@example.com', 'yksityisasiakas'),
+('maija@example.com', 'yksityisasiakas'),
+('kalle@example.com', 'yksityisasiakas'),
+('laura@example.com', 'yksityisasiakas'),
+('antti@example.com', 'yksityisasiakas'),
+('elina@example.com', 'yksityisasiakas'),
+('jari@example.com', 'yksityisasiakas'),
+('tiina@example.com', 'yksityisasiakas'),
+('pekka@example.com', 'yksityisasiakas'),
+('sari@example.com', 'yksityisasiakas');
 
 INSERT IGNORE INTO Yksityisasiakas (sahkoposti, nimi, puhelinnumero, osoite) VALUES
 ('matti@example.com', 'Matti Meikäläinen', '0401234567', 'Katuosoite 1, Helsinki'),

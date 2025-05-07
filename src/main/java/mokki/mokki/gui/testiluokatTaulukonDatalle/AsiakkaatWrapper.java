@@ -41,6 +41,7 @@ public class AsiakkaatWrapper implements TaulukonData {
                 {"Sähköposti", "String", "sahkoposti"},
                 {"Puhelinnumero", "String", "puhelinnumero"},
                 {"Tyyppi", "String", "tyyppi"},
+                {"Osoite", "String", "osoite"},
                 {"Y-tunnus", "String", "ytunnus"}
         };
     }
@@ -150,7 +151,7 @@ public class AsiakkaatWrapper implements TaulukonData {
      * @return kenttien arvot
      */
     public String[] palautaKenttienArvot() {
-        return new String[] {nimi.get(), sahkoposti.get(), puhelinnumero.get(), tyyppi.get(), ytunnus.get()};
+        return new String[] {nimi.get(), sahkoposti.get(), puhelinnumero.get(), tyyppi.get(), osoite.get(), ytunnus.get()};
     }
 
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
@@ -158,6 +159,15 @@ public class AsiakkaatWrapper implements TaulukonData {
     }
 
     public boolean paivitaKenttienArvot(String[] arvot) {
+        if (arvot.length < 6) return false;
+
+        setNimi(arvot[0]);
+        setSahkoposti(arvot[1]);
+        setPuhelinnumero(arvot[2]);
+        setTyyppi(arvot[3]);
+        setOsoite(arvot[4]);
+        setYtunnus(arvot[5]);
+
         return true;
     }
 

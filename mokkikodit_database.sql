@@ -6,7 +6,7 @@ USE mokkikodit;
 -- Taulu: Asiakas (geneerinen asiakastaulu)
 CREATE TABLE IF NOT EXISTS Asiakas (
     sahkoposti VARCHAR(100) PRIMARY KEY,
-    asiakastyyppi ENUM('yksityinen', 'yritys') NOT NULL
+    asiakastyyppi VARCHAR(30)
 );
 
 -- Taulu: Yksityisasiakas (asiakasID viittaus Asiakas-tauluun)

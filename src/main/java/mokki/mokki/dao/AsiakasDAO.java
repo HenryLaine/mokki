@@ -14,6 +14,10 @@ public class AsiakasDAO {
     }
 
     public void lisaaAsiakas(AsiakkaatWrapper a) throws SQLException {
+        if (a.getSahkoposti() == null || a.getSahkoposti().trim().isEmpty()) {
+            throw new IllegalArgumentException("Sähköpostiosoite ei saa olla tyhjä.");
+        }
+
         String sql = "INSERT INTO Asiakas (sahkoposti, asiakastyyppi) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, a.getSahkoposti());
@@ -21,7 +25,7 @@ public class AsiakasDAO {
             stmt.executeUpdate();
         }
 
-        if ("yksityinen".equalsIgnoreCase(a.getTyyppi())) {
+        if ("yksityisasiakas".equalsIgnoreCase(a.getTyyppi())) {
             String sqlYks = "INSERT INTO Yksityisasiakas (sahkoposti, nimi, osoite, puhelinnumero) VALUES (?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(sqlYks)) {
                 stmt.setString(1, a.getSahkoposti());
@@ -41,6 +45,7 @@ public class AsiakasDAO {
             }
         }
     }
+
 
     public void poistaAsiakas(String sahkoposti) throws SQLException {
         String sql = "DELETE FROM Asiakas WHERE sahkoposti = ?";
@@ -63,7 +68,7 @@ public class AsiakasDAO {
             stmt.executeUpdate();
         }
 
-        if ("yksityinen".equalsIgnoreCase(uusi.getTyyppi())) {
+        if ("yksityisasiakas".equalsIgnoreCase(uusi.getTyyppi())) {
             String sqlYks = "UPDATE Yksityisasiakas SET nimi = ?, osoite = ?, puhelinnumero = ? WHERE sahkoposti = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sqlYks)) {
                 stmt.setString(1, valitseArvo(uusi.getNimi(), vanha.getNimi()));
@@ -102,7 +107,7 @@ public class AsiakasDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     String tyyppi = rs.getString("asiakastyyppi");
-                    if ("yksityinen".equalsIgnoreCase(tyyppi)) {
+                    if ("yksityisasiakas".equalsIgnoreCase(tyyppi)) {
                         AsiakkaatWrapper a = new AsiakkaatWrapper(
                                 sahkoposti,
                                 tyyppi,
@@ -143,7 +148,7 @@ public class AsiakasDAO {
                 String sahkoposti = rs.getString("sahkoposti");
                 String tyyppi = rs.getString("asiakastyyppi");
 
-                if ("yksityinen".equalsIgnoreCase(tyyppi)) {
+                if ("yksityisasiakas".equalsIgnoreCase(tyyppi)) {
                     lista.add(new AsiakkaatWrapper(
                             sahkoposti, tyyppi,
                             rs.getString("yksityis_nimi"),
@@ -204,7 +209,7 @@ public class AsiakasDAO {
                     String sahkoposti = rs.getString("sahkoposti");
                     String tyyppi = rs.getString("asiakastyyppi");
 
-                    if ("yksityinen".equalsIgnoreCase(tyyppi)) {
+                    if ("yksityisasiakas".equalsIgnoreCase(tyyppi)) {
                         lista.add(new AsiakkaatWrapper(
                                 sahkoposti, tyyppi,
                                 rs.getString("yksityis_nimi"),
