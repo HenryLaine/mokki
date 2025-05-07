@@ -19,7 +19,11 @@ import mokki.mokki.gui.ponnahdusikkuna.KohteenTiedotIkkuna;
 import mokki.mokki.gui.ponnahdusikkuna.Vahvistusikkuna;
 import mokki.mokki.gui.ponnahdusikkuna.VarauksenTiedotIkkuna;
 import mokki.mokki.gui.testiluokatTaulukonDatalle.*;
+import mokki.mokki.dao.*;
+import mokki.mokki.database.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +35,7 @@ public class Main extends Application {
     AsiakkaatPaneeli asiakkaatPaneeli;
     LaskutPaneeli laskutPaneeli;
     RaportitPaneeli raportitPaneeli;
+
 
     private void alustaKohteetPaneeli() {
         // Dummy-dataa
@@ -203,92 +208,85 @@ public class Main extends Application {
     }
 
     private void alustaAsiakkaatPaneeli() {
-        // Dummy-dataa
-        List<TaulukonData> asiakkaat = List.of(
-                new AsiakkaatWrapper("Jukka Jokunen", "jukka@gmail.com",
-                        "043-046-0349","yksityishenkilö", ""),
-                new AsiakkaatWrapper("Yritys Oy", "yritys@gmail.com",
-                "304539-30505","yritys", "3566456")
-        );
+        try {
+            Connection conn = DatabaseManager.getConnection();
+            AsiakasDAO asiakasDAO = new AsiakasDAO(conn);
 
-        // Taulukon sisältö
-        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(asiakkaat);
-        asiakkaatPaneeli = new AsiakkaatPaneeli(fonttikoko, taulukonSisalto);
+            List<AsiakkaatWrapper> asiakkaat = asiakasDAO.haeAsiakkaat();
+            ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(asiakkaat);
+            asiakkaatPaneeli = new AsiakkaatPaneeli(fonttikoko, taulukonSisalto);
 
-        Hallintapaneeli hallintapaneeli = asiakkaatPaneeli.getHallintapaneeli();
-        hallintapaneeli.getLisaaPainike().setOnAction(e -> {
-            // Lisää asiakas
-            TaulukonData uusiAsiakas = new AsiakkaatWrapper("", "",
-                    "", "", "");
-            AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(uusiAsiakas, "Lisää asiakas");
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
-            if (tulos) {
-                uusiAsiakas.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
-                // TODO: Kohde lisätään tietokantaan.
+            Hallintapaneeli hallintapaneeli = asiakkaatPaneeli.getHallintapaneeli();
 
-                // Kohde lisätään käyttöliittymän taulukkoon.
-                taulukonSisalto.add(uusiAsiakas);
-            }
+            // Lisää asiakas -painikkeen toiminto
+            hallintapaneeli.getLisaaPainike().setOnAction(e -> {
+                TaulukonData uusiAsiakas = new AsiakkaatWrapper("", "", "", "", "", "");
+                AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(uusiAsiakas, "Lisää asiakas");
+                tiedotIkkuna.asetaFonttikoko(fonttikoko);
 
-        });
-        hallintapaneeli.getRajaaPainike().setOnAction(e -> {
-            // Rajaa asiakkaita
-            // TODO
+                boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+                if (tulos) {
+                    uusiAsiakas.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                    try {
+                        asiakasDAO.lisaaAsiakas((AsiakkaatWrapper) uusiAsiakas);
+                        taulukonSisalto.add(uusiAsiakas);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        // Voit näyttää virheilmoituksen käyttöliittymässä
+                    }
+                }
+            });
 
-            //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
-        });
-        hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
-            // Poista rajaukset
-            // TODO
+            hallintapaneeli.getRajaaPainike().setOnAction(e -> {
+                // TODO: rajauslogiikka
+            });
 
+            hallintapaneeli.getPoistaRajauksetPainike().setOnAction(e -> {
+                hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+            });
 
-            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
-        });
+            Taulukkopaneeli<TaulukonData> taulukkopaneeli = asiakkaatPaneeli.getTaulukkopaneeli();
+            ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
+            // Näytä asiakkaan tiedot
+            kontekstivalikonKohdat.get(0).setOnAction(e -> {
+                AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(
+                        taulukkopaneeli.palautaRivinTiedot(), "Asiakkaan tiedot");
+                tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                tiedotIkkuna.showAndWait();
+            });
 
-        Taulukkopaneeli<TaulukonData> taulukkopaneeli = asiakkaatPaneeli.getTaulukkopaneeli();
-        ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+            // Muokkaa asiakkaan tietoja
+            kontekstivalikonKohdat.get(1).setOnAction(e -> {
+                TaulukonData asiakkaanTiedot = taulukkopaneeli.palautaRivinTiedot();
+                AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(
+                        asiakkaanTiedot, "Muuta asiakkaan tietoja");
+                tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+                if (tulos) {
+                    asiakkaanTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                    // TODO: Päivitä tietokantaan
+                }
+            });
 
-        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
-            // Asiakkaan tiedot näytetään
-            AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(
-                    taulukkopaneeli.palautaRivinTiedot(), "Asiakkaan tiedot");
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            tiedotIkkuna.showAndWait();
+            // Poista asiakas
+            kontekstivalikonKohdat.get(2).setOnAction(e -> {
+                TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
+                Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
+                        "Haluatko varmasti poistaa asiakkaan " + valittu.palautaKuvausteksti() + "?");
+                Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
+                if (tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
+                    // TODO: Poista tietokannasta
+                    taulukonSisalto.remove(valittu);
+                }
+            });
 
-        });
-        kontekstivalikonKohdat.get(1).setOnAction(e -> {
-            // Asiakkaan tietoja muutetaan
-            TaulukonData asiakkaanTiedot = taulukkopaneeli.palautaRivinTiedot();
-            AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(asiakkaanTiedot,
-                    "Muuta asiakkaan tietoja");
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
-            if (tulos) {
-                // TODO: Kohteen tietoja muutetaan tietokannassa.
-
-                // Kohteen tiedot muutetaan käyttöliittymän taulukossa.
-                asiakkaanTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
-            }
-        });
-
-        kontekstivalikonKohdat.get(2).setOnAction(e -> {
-            // Asiakas poistetaan
-            Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
-                    "Haluatko varmasti poistaa asiakkaan " +
-                            taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
-            Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
-
-            if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // TODO: asiakas poistetaan tietokannasta
-
-                // Asiakas poistetaan taulukon sisällöstä
-                taulukonSisalto.remove(taulukkopaneeli.palautaRivinTiedot());
-            }
-        });
+        } catch (SQLException e) {
+            System.err.println("Tietokantayhteyden muodostaminen epäonnistui: " + e.getMessage());
+            e.printStackTrace();
+            // TODO: Näytä virheilmoitus käyttöliittymässä, jos tarvitaan
+        }
     }
-
     private void alustaLaskutPaneeli() {
         // Dummy-dataa
         ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
@@ -391,6 +389,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
         Valilehtipaneeli valilehtipaneeli = new Valilehtipaneeli(
                 new String[] {"Kohteet", "Varaukset", "Asiakkaat", "Laskut", "Raportit"});
         valilehtipaneeli.asetaFonttikoko((int)Math.round(fonttikoko * 1.3));

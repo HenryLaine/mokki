@@ -11,7 +11,7 @@ import java.sql.Date;
 
 /** Loin tämän luokan testitarkoituksessa, tätä ei ole tarkoitus jättää lopulliseen ohjelmaan.
  * Halusin harjoitella, että kuinka yhteys muodostetaan ja kuinka tietoja haetaan tietokannasta.
- */
+
 
 public class Raportit {
 
@@ -155,7 +155,7 @@ public class Raportit {
     /** testi-pääohjelma raporttien ajamista ja tietokantayhteyden
      * testaamista varten.
      * @param args
-     */
+
     public static void main(String[] args) throws SQLException {
 
         DatabaseCreator.ensureDatabaseExists();
@@ -167,5 +167,6 @@ public class Raportit {
         MokkiDAO mokkidao=new MokkiDAO(conn);
         mokkidao.lisaaMokki(moksa);
         raportti.tulostaMokit();
+        mokkidao.haeMokit();
     }
-}
+}*/

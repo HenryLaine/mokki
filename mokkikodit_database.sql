@@ -52,7 +52,8 @@ CREATE TABLE IF NOT EXISTS Mokki (
     sijainti VARCHAR(100),
     hinta DECIMAL(10,2),
     huoneala INT,
-    henkilo_maara INT
+    henkilo_maara INT,
+    huomioitavaa VARCHAR(1000)
 );
 
 -- Taulu: Varaus
