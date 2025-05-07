@@ -165,7 +165,6 @@ public class Main extends Application {
             hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
         });
 
-        // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
         Taulukkopaneeli<TaulukonData> taulukkopaneeli = varauksetPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
@@ -175,18 +174,49 @@ public class Main extends Application {
                     "Varauksen tiedot");
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             tiedotIkkuna.showAndWait();
-
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
-            // Mökin tiedot näytetään
+            // Kohteen tiedot näytetään
+            // TODO: selvitä kohteen tunnus, hae tietokannasta kohteen tiedot ja luo KohteenTiedotIkkuna
+            String kohteenTunnus = taulukkopaneeli.palautaRivinTiedot().palautaKenttienArvot()[1];
 
+            /* Luo kohteen tiedot sisältävä TaulukonData-olio ja syötä se KohteenTiedotIkkuna-olioon
+            TaulukonData kohteenTiedot = new KohteetWrapper();
+            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(kohteenTiedot,
+                    false, true, "Kohteen tiedot", new String[] {"", "Sulje"});
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            tiedotIkkuna.showAndWait();
+             */
         });
         kontekstivalikonKohdat.get(2).setOnAction(e -> {
             // Asiakkaan tiedot näytetään
+            // TODO: selvitä asiakkaan sähköpostiosoite, hae tietokannasta asiakkaan tiedot
+            //  ja luo AsiakkaanTiedotIkkuna
 
+            VarauksetWrapper varauksenTiedot = (VarauksetWrapper)taulukkopaneeli.palautaRivinTiedot();
+            String asiakkaanSahkoposti = varauksenTiedot.getAsiakkaanSahkoposti();
+
+            /* Luo asiakkaan tiedot sisältävä TaulukonData-olio ja syötä se AsiakkaanTiedotIkkuna-olioon
+            TaulukonData asiakkaanTiedot = new AsiakkaatWrapper();
+            AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(asiakkaanTiedot, "Asiakkaan tiedot");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            tiedotIkkuna.showAndWait();
+             */
         });
         kontekstivalikonKohdat.get(3).setOnAction(e -> {
             // Varauksen tietoja muutetaan
+            TaulukonData varauksenTiedot = taulukkopaneeli.palautaRivinTiedot();
+            VarauksenTiedotIkkuna tiedotIkkuna = new VarauksenTiedotIkkuna(varauksenTiedot,
+                    "Muuta varauksen tietoja");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+            if (tulos) {
+                String[] kenttienTiedot = tiedotIkkuna.palautaKenttienTiedot();
+                // TODO: Varauksen tietoja muutetaan tietokannassa.
+
+                // Kohteen tiedot muutetaan käyttöliittymän taulukossa.
+                varauksenTiedot.paivitaKenttienArvot(kenttienTiedot);
+            }
 
         });
         kontekstivalikonKohdat.get(4).setOnAction(e -> {
@@ -223,7 +253,6 @@ public class Main extends Application {
                 TaulukonData uusiAsiakas = new AsiakkaatWrapper("", "", "", "", "", "");
                 AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(uusiAsiakas, "Lisää asiakas");
                 tiedotIkkuna.asetaFonttikoko(fonttikoko);
-
                 boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
                 if (tulos) {
                     uusiAsiakas.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
@@ -315,29 +344,31 @@ public class Main extends Application {
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
-            // Varauksen tiedot näytetään
+            // Laskun tiedot näytetään
 
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
-            // Mökin tiedot näytetään
+            // Laskun tietoja muutetaan
 
         });
 
         kontekstivalikonKohdat.get(2).setOnAction(e -> {
-            // Mökin tiedot näytetään
+            // Lasku merkitään maksetuksi
 
         });
 
         kontekstivalikonKohdat.get(3).setOnAction(e -> {
+            // Lasku poistetaan
             Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
                     "Haluatko varmasti poistaa laskun " +
                             taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
             Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
 
             if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // Asiakas poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+                // TODO: lasku poistetaan tietokannasta
 
-                taulukonSisalto.remove(taulukkopaneeli.getSelectionModel().getSelectedItem());
+                // Lasku poistetaan taulukon sisällöstä
+                taulukonSisalto.remove(taulukkopaneeli.palautaRivinTiedot());
             }
         });
     }
@@ -374,11 +405,24 @@ public class Main extends Application {
         // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
         Taulukkopaneeli<TaulukonData> taulukkopaneeli = raportitPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
-        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
 
+        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
+            // Kohteen tiedot näytetään
+            // TODO: selvitä kohteen tunnus, hae tietokannasta kohteen tiedot ja luo KohteenTiedotIkkuna
+            String kohteenTunnus = taulukkopaneeli.palautaRivinTiedot().palautaTunniste();
+
+            /* Luo kohteen tiedot sisältävä TaulukonData-olio ja syötä se KohteenTiedotIkkuna-olioon
+            TaulukonData kohteenTiedot = new KohteetWrapper();
+            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(kohteenTiedot,
+                    false, true, "Kohteen tiedot", new String[] {"", "Sulje"});
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            tiedotIkkuna.showAndWait();
+             */
         });
 
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
+            // Kohteen varaukset näytetään
+            // TODO: Siiry Varaukset-välilehdelle ja aseta rajaukseksi kohteen tunnus.
 
         });
     }

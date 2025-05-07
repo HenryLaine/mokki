@@ -25,7 +25,7 @@ public class VarauksetPaneeli extends VBox {
         hallintapaneeli.asetaFonttikoko(fonttikoko);
         taulukkopaneeli = new Taulukkopaneeli<>(
                 taulukonSisalto.getFirst().getMaaritykset(),
-                new String[] {"Näytä varauksen tiedot", "Näytä mökin tiedot", "Näytä asiakkaan tiedot",
+                new String[] {"Näytä varauksen tiedot", "Näytä kohteen tiedot", "Näytä asiakkaan tiedot",
                         "Muuta varauksen tietoja", "Poista varaus"}, taulukonSisalto);
         taulukkopaneeli.asetaFonttikoko(fonttikoko);
         this.getChildren().addAll(hallintapaneeli, taulukkopaneeli);
