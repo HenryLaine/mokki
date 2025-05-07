@@ -190,6 +190,7 @@ public class KohteenTiedotIkkuna extends Stage {
             peruutaPainike.setMinWidth(100);
             painikepaneeli.getChildren().addAll(hyvaksyPainike, peruutaPainike);
 
+            // TODO: varmista, että ikkuna ei sulkeudu ennen kuin kaikki arvot ovat hyväksyttäviä
             hyvaksyPainike.setOnAction(e -> {
                 int tunnisteenIndeksi = data.palautaTunnisteenIndeksi();
                 boolean arvotHyvaksyttavia = data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
