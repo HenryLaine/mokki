@@ -14,10 +14,7 @@ import mokki.mokki.gui.alipaneeli.Taulukkopaneeli;
 import mokki.mokki.gui.Valilehtipaneeli;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 import mokki.mokki.gui.paapaneeli.*;
-import mokki.mokki.gui.ponnahdusikkuna.AsiakkaanTiedotIkkuna;
-import mokki.mokki.gui.ponnahdusikkuna.KohteenTiedotIkkuna;
-import mokki.mokki.gui.ponnahdusikkuna.Vahvistusikkuna;
-import mokki.mokki.gui.ponnahdusikkuna.VarauksenTiedotIkkuna;
+import mokki.mokki.gui.ponnahdusikkuna.*;
 import mokki.mokki.gui.testiluokatTaulukonDatalle.*;
 import mokki.mokki.dao.*;
 import mokki.mokki.database.*;
@@ -328,8 +325,15 @@ public class Main extends Application {
         // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
         Hallintapaneeli hallintapaneeli = laskutPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
-
+            TaulukonData uusiLasku = new LaskutWrapper(0, "", "", 0, 0.0, "Avoin");
+            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+            if (tulos) {
+                taulukonSisalto.add(uusiLasku);
+            }
         });
+
         hallintapaneeli.getRajaaPainike().setOnAction(e -> {
 
             //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
@@ -345,15 +349,36 @@ public class Main extends Application {
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
             // Laskun tiedot näytetään
+            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(
+                    taulukkopaneeli.palautaRivinTiedot(), "Laskun tiedot");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            tiedotIkkuna.showAndWait();
 
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Laskun tietoja muutetaan
+            TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
+            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muokkaa laskua");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+            if (tulos) {
+                // TODO: Päivitä laskun tiedot tietokantaan.
+            }
 
         });
 
         kontekstivalikonKohdat.get(2).setOnAction(e -> {
             // Lasku merkitään maksetuksi
+            TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
+            laskunTiedot.paivitaKenttienArvot(new String[] {
+                    laskunTiedot.palautaKenttienArvot()[0], // Laskunumero
+                    laskunTiedot.palautaKenttienArvot()[1], // Tuote
+                    laskunTiedot.palautaKenttienArvot()[2], // Asiakas
+                    laskunTiedot.palautaKenttienArvot()[3], // Viitenumero
+                    laskunTiedot.palautaKenttienArvot()[4], // Maksettava
+                    "Maksettu" // Muutetaan tila
+            });
+            // TODO: Päivitä tietokantaan, että lasku on maksettu.
 
         });
 
