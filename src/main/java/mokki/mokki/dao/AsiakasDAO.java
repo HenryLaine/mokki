@@ -1,11 +1,11 @@
 package mokki.mokki.dao;
-import mokki.mokki.BackEnd.Asiakas;
+
+import mokki.mokki.gui.testiluokatTaulukonDatalle.AsiakkaatWrapper;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/** tämä luokka lisää, muokkaa, poistaa ja tulostaa tietoja asiakastaulusta.
-*/
 public class AsiakasDAO {
     private Connection conn;
 
@@ -13,34 +13,39 @@ public class AsiakasDAO {
         this.conn = conn;
     }
 
-    public void lisaaAsiakas(Asiakas asiakas) throws SQLException {
+    public void lisaaAsiakas(AsiakkaatWrapper a) throws SQLException {
+        if (a.getSahkoposti() == null || a.getSahkoposti().trim().isEmpty()) {
+            throw new IllegalArgumentException("Sähköpostiosoite ei saa olla tyhjä.");
+        }
+
         String sql = "INSERT INTO Asiakas (sahkoposti, asiakastyyppi) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, asiakas.getSahkoposti());
-            stmt.setString(2, asiakas.getAsiakastyyppi());
+            stmt.setString(1, a.getSahkoposti());
+            stmt.setString(2, a.getTyyppi());
             stmt.executeUpdate();
         }
 
-        if ("yksityinen".equalsIgnoreCase(asiakas.getAsiakastyyppi())) {
-            String sqlYksityinen = "INSERT INTO Yksityisasiakas (sahkoposti, nimi, osoite, puhelinnumero) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement stmt = conn.prepareStatement(sqlYksityinen)) {
-                stmt.setString(1, asiakas.getSahkoposti());
-                stmt.setString(2, asiakas.getNimi());
-                stmt.setString(3, asiakas.getOsoite());
-                stmt.setString(4, asiakas.getPuhelinnumero());
+        if ("yksityisasiakas".equalsIgnoreCase(a.getTyyppi())) {
+            String sqlYks = "INSERT INTO Yksityisasiakas (sahkoposti, nimi, osoite, puhelinnumero) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlYks)) {
+                stmt.setString(1, a.getSahkoposti());
+                stmt.setString(2, a.getNimi());
+                stmt.setString(3, a.getOsoite());
+                stmt.setString(4, a.getPuhelinnumero());
                 stmt.executeUpdate();
             }
-        } else if ("yritys".equalsIgnoreCase(asiakas.getAsiakastyyppi())) {
-            String sqlYritys = "INSERT INTO Yritysasiakas (sahkoposti, nimi, osoite, y_tunnus) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement stmt = conn.prepareStatement(sqlYritys)) {
-                stmt.setString(1, asiakas.getSahkoposti());
-                stmt.setString(2, asiakas.getNimi());
-                stmt.setString(3, asiakas.getOsoite());
-                stmt.setString(4, asiakas.getYTunnus());
+        } else if ("yritys".equalsIgnoreCase(a.getTyyppi())) {
+            String sqlYrt = "INSERT INTO Yritysasiakas (sahkoposti, nimi, osoite, y_tunnus) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlYrt)) {
+                stmt.setString(1, a.getSahkoposti());
+                stmt.setString(2, a.getNimi());
+                stmt.setString(3, a.getOsoite());
+                stmt.setString(4, a.getYtunnus());
                 stmt.executeUpdate();
             }
         }
     }
+
 
     public void poistaAsiakas(String sahkoposti) throws SQLException {
         String sql = "DELETE FROM Asiakas WHERE sahkoposti = ?";
@@ -50,49 +55,46 @@ public class AsiakasDAO {
         }
     }
 
-    // metodi asiakkaan tietojen muokkaamiseksi. Mikäli muokattava tieto on tyhjä,
-    // jää vanha tieto voimaan.
-
-    public void muokkaaAsiakasta(Asiakas asiakas) throws SQLException {
-        // 1. Haetaan vanha asiakas
-        Asiakas vanhaAsiakas = haeAsiakas(asiakas.getSahkoposti());
-        if (vanhaAsiakas == null) {
-            throw new SQLException("Asiakasta ei löydy sähköpostilla " + asiakas.getSahkoposti());
+    public void muokkaaAsiakasta(AsiakkaatWrapper uusi) throws SQLException {
+        AsiakkaatWrapper vanha = haeAsiakas(uusi.getSahkoposti());
+        if (vanha == null) {
+            throw new SQLException("Asiakasta ei löydy sähköpostilla " + uusi.getSahkoposti());
         }
 
-        // 2. Päivitetään Asiakas-taulu
         String sql = "UPDATE Asiakas SET asiakastyyppi = ? WHERE sahkoposti = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, asiakas.getAsiakastyyppi() != null ? asiakas.getAsiakastyyppi() : vanhaAsiakas.getAsiakastyyppi());
-            stmt.setString(2, asiakas.getSahkoposti());
+            stmt.setString(1, uusi.getTyyppi() != null ? uusi.getTyyppi() : vanha.getTyyppi());
+            stmt.setString(2, uusi.getSahkoposti());
             stmt.executeUpdate();
         }
 
-        // 3. Päivitetään joko yksityisasiakas tai yritysasiakas taulu
-        if ("yksityinen".equalsIgnoreCase(asiakas.getAsiakastyyppi())) {
-            String sqlYksityinen = "UPDATE Yksityisasiakas SET nimi = ?, osoite = ?, puhelinnumero = ? WHERE sahkoposti = ?";
-            try (PreparedStatement stmt = conn.prepareStatement(sqlYksityinen)) {
-                stmt.setString(1, asiakas.getNimi() != null && !asiakas.getNimi().isEmpty() ? asiakas.getNimi() : vanhaAsiakas.getNimi());
-                stmt.setString(2, asiakas.getOsoite() != null && !asiakas.getOsoite().isEmpty() ? asiakas.getOsoite() : vanhaAsiakas.getOsoite());
-                stmt.setString(3, asiakas.getPuhelinnumero() != null && !asiakas.getPuhelinnumero().isEmpty() ? asiakas.getPuhelinnumero() : vanhaAsiakas.getPuhelinnumero());
-                stmt.setString(4, asiakas.getSahkoposti());
+        if ("yksityisasiakas".equalsIgnoreCase(uusi.getTyyppi())) {
+            String sqlYks = "UPDATE Yksityisasiakas SET nimi = ?, osoite = ?, puhelinnumero = ? WHERE sahkoposti = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlYks)) {
+                stmt.setString(1, valitseArvo(uusi.getNimi(), vanha.getNimi()));
+                stmt.setString(2, valitseArvo(uusi.getOsoite(), vanha.getOsoite()));
+                stmt.setString(3, valitseArvo(uusi.getPuhelinnumero(), vanha.getPuhelinnumero()));
+                stmt.setString(4, uusi.getSahkoposti());
                 stmt.executeUpdate();
             }
-        } else if ("yritys".equalsIgnoreCase(asiakas.getAsiakastyyppi())) {
-            String sqlYritys = "UPDATE Yritysasiakas SET nimi = ?, osoite = ?, y_tunnus = ? WHERE sahkoposti = ?";
-            try (PreparedStatement stmt = conn.prepareStatement(sqlYritys)) {
-                stmt.setString(1, asiakas.getNimi() != null && !asiakas.getNimi().isEmpty() ? asiakas.getNimi() : vanhaAsiakas.getNimi());
-                stmt.setString(2, asiakas.getOsoite() != null && !asiakas.getOsoite().isEmpty() ? asiakas.getOsoite() : vanhaAsiakas.getOsoite());
-                stmt.setString(3, asiakas.getYTunnus() != null && !asiakas.getYTunnus().isEmpty() ? asiakas.getYTunnus() : vanhaAsiakas.getYTunnus());
-                stmt.setString(4, asiakas.getSahkoposti());
+        } else if ("yritys".equalsIgnoreCase(uusi.getTyyppi())) {
+            String sqlYrt = "UPDATE Yritysasiakas SET nimi = ?, osoite = ?, y_tunnus = ? WHERE sahkoposti = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlYrt)) {
+                stmt.setString(1, valitseArvo(uusi.getNimi(), vanha.getNimi()));
+                stmt.setString(2, valitseArvo(uusi.getOsoite(), vanha.getOsoite()));
+                stmt.setString(3, valitseArvo(uusi.getYtunnus(), vanha.getYtunnus()));
+                stmt.setString(4, uusi.getSahkoposti());
                 stmt.executeUpdate();
             }
         }
     }
-    // metodi palauttaa yhden asiakkaan sähköpostin perusteella
-    public Asiakas haeAsiakas(String sahkoposti) throws SQLException {
-        String sql = "SELECT a.*, " +
-                "y.nimi AS yksityis_nimi, y.osoite AS yksityis_osoite, y.puhelinnumero, " +
+
+    private String valitseArvo(String uusi, String vanha) {
+        return (uusi != null && !uusi.isEmpty()) ? uusi : vanha;
+    }
+
+    public AsiakkaatWrapper haeAsiakas(String sahkoposti) throws SQLException {
+        String sql = "SELECT a.*, y.nimi AS yksityis_nimi, y.osoite AS yksityis_osoite, y.puhelinnumero, " +
                 "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.y_tunnus " +
                 "FROM Asiakas a " +
                 "LEFT JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti " +
@@ -104,147 +106,129 @@ public class AsiakasDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    String asiakastyyppi = rs.getString("asiakastyyppi");
-                    Asiakas asiakas;
-
-                    if ("yksityinen".equalsIgnoreCase(asiakastyyppi)) {
-                        asiakas = new Asiakas(
-                                rs.getString("sahkoposti"),
-                                asiakastyyppi,
+                    String tyyppi = rs.getString("asiakastyyppi");
+                    if ("yksityisasiakas".equalsIgnoreCase(tyyppi)) {
+                        AsiakkaatWrapper a = new AsiakkaatWrapper(
+                                sahkoposti,
+                                tyyppi,
                                 rs.getString("yksityis_nimi"),
-                                rs.getString("yksityis_osoite")
+                                rs.getString("puhelinnumero"),
+                                rs.getString("yksityis_osoite"),
+                                null
                         );
-                        asiakas.setPuhelinnumero(rs.getString("puhelinnumero"));
-                    } else if ("yritys".equalsIgnoreCase(asiakastyyppi)) {
-                        asiakas = new Asiakas(
-                                rs.getString("sahkoposti"),
-                                asiakastyyppi,
+                        return a;
+                    } else if ("yritys".equalsIgnoreCase(tyyppi)) {
+                        AsiakkaatWrapper a = new AsiakkaatWrapper(
+                                sahkoposti,
+                                tyyppi,
                                 rs.getString("yritys_nimi"),
-                                rs.getString("yritys_osoite")
+                                null,
+                                rs.getString("yritys_osoite"),
+                                rs.getString("y_tunnus")
                         );
-                        asiakas.setYTunnus(rs.getString("y_tunnus"));
-                    } else {
-                        // Tuntematon asiakastyyppi
-                        return null;
+                        return a;
                     }
-                    return asiakas;
-                } else {
-                    // Ei löytynyt asiakasta
-                    return null;
                 }
+                return null;
             }
         }
     }
 
-    // Metodi palauttaa listauksen Asiakas-olioista
-
-    public List<Asiakas> haeAsiakkaat() throws SQLException {
-        List<Asiakas> asiakkaat = new ArrayList<>();
-
-        String sql = "SELECT a.sahkoposti, a.asiakastyyppi, "
-                + "y.nimi AS yksityis_nimi, y.osoite AS yksityis_osoite, y.puhelinnumero, "
-                + "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.y_tunnus "
-                + "FROM Asiakas a "
-                + "LEFT JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti "
-                + "LEFT JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti";
+    public List<AsiakkaatWrapper> haeAsiakkaat() throws SQLException {
+        List<AsiakkaatWrapper> lista = new ArrayList<>();
+        String sql = "SELECT a.*, y.nimi AS yksityis_nimi, y.osoite AS yksityis_osoite, y.puhelinnumero, " +
+                "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.y_tunnus " +
+                "FROM Asiakas a " +
+                "LEFT JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti " +
+                "LEFT JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-
             while (rs.next()) {
                 String sahkoposti = rs.getString("sahkoposti");
-                String asiakastyyppi = rs.getString("asiakastyyppi");
-                Asiakas asiakas;
+                String tyyppi = rs.getString("asiakastyyppi");
 
-                if ("yksityinen".equalsIgnoreCase(asiakastyyppi)) {
-                    asiakas = new Asiakas(sahkoposti, asiakastyyppi,
+                if ("yksityisasiakas".equalsIgnoreCase(tyyppi)) {
+                    lista.add(new AsiakkaatWrapper(
+                            sahkoposti, tyyppi,
                             rs.getString("yksityis_nimi"),
-                            rs.getString("yksityis_osoite"));
-                    asiakas.setPuhelinnumero(rs.getString("puhelinnumero"));
-                } else {
-                    asiakas = new Asiakas(sahkoposti, asiakastyyppi,
+                            rs.getString("puhelinnumero"),
+                            rs.getString("yksityis_osoite"),
+                            null
+                    ));
+                } else if ("yritys".equalsIgnoreCase(tyyppi)) {
+                    lista.add(new AsiakkaatWrapper(
+                            sahkoposti, tyyppi,
                             rs.getString("yritys_nimi"),
-                            rs.getString("yritys_osoite"));
-                    asiakas.setYTunnus(rs.getString("y_tunnus"));
+                            null,
+                            rs.getString("yritys_osoite"),
+                            rs.getString("y_tunnus")
+                    ));
                 }
-
-                asiakkaat.add(asiakas);
             }
         }
-        return asiakkaat;
+        return lista;
     }
-    // metodi rajaa asiakkaita hakusanojen perusteella
 
-    public List<Asiakas> rajaaAsiakkaat(String hakusana) throws SQLException {
-        List<Asiakas> asiakkaat = new ArrayList<>();
-
-        String baseSql = "SELECT a.sahkoposti, a.asiakastyyppi, "
-                + "y.nimi AS yksityis_nimi, y.osoite AS yksityis_osoite, y.puhelinnumero, "
-                + "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.y_tunnus "
-                + "FROM Asiakas a "
-                + "LEFT JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti "
-                + "LEFT JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti ";
-
+    public List<AsiakkaatWrapper> rajaaAsiakkaat(String hakusana) throws SQLException {
+        List<AsiakkaatWrapper> lista = new ArrayList<>();
+        StringBuilder where = new StringBuilder();
         List<String> sanat = new ArrayList<>();
-        if (hakusana != null && !hakusana.trim().isEmpty()) {
-            for (String sana : hakusana.toLowerCase().split("\\s+")) {
-                if (!sana.isBlank()) {
-                    sanat.add(sana);
-                }
+
+        if (hakusana != null && !hakusana.isBlank()) {
+            for (String s : hakusana.toLowerCase().split("\\s+")) {
+                if (!s.isBlank()) sanat.add(s);
             }
         }
 
-        StringBuilder whereClause = new StringBuilder();
         if (!sanat.isEmpty()) {
-            whereClause.append("WHERE ");
+            where.append("WHERE ");
             for (int i = 0; i < sanat.size(); i++) {
-                if (i > 0) whereClause.append(" AND ");
-
-                whereClause.append("(")
-                        .append("LOWER(a.sahkoposti) LIKE ? OR ")
-                        .append("LOWER(a.asiakastyyppi) LIKE ? OR ")
-                        .append("LOWER(y.nimi) LIKE ? OR ")
-                        .append("LOWER(y.puhelinnumero) LIKE ? OR ")
-                        .append("LOWER(yr.nimi) LIKE ? OR ")
-                        .append("LOWER(yr.y_tunnus) LIKE ?")
-                        .append(")");
+                if (i > 0) where.append(" AND ");
+                where.append("(LOWER(a.sahkoposti) LIKE ? OR LOWER(a.asiakastyyppi) LIKE ? " +
+                        "OR LOWER(y.nimi) LIKE ? OR LOWER(y.puhelinnumero) LIKE ? " +
+                        "OR LOWER(yr.nimi) LIKE ? OR LOWER(yr.y_tunnus) LIKE ?)");
             }
         }
 
-        String finalSql = baseSql + whereClause.toString();
+        String sql = "SELECT a.*, y.nimi AS yksityis_nimi, y.osoite AS yksityis_osoite, y.puhelinnumero, " +
+                "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.y_tunnus " +
+                "FROM Asiakas a " +
+                "LEFT JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti " +
+                "LEFT JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti " + where.toString();
 
-        try (PreparedStatement stmt = conn.prepareStatement(finalSql)) {
-            int paramIndex = 1;
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int idx = 1;
             for (String sana : sanat) {
                 String like = "%" + sana + "%";
-                for (int j = 0; j < 6; j++) {
-                    stmt.setString(paramIndex++, like);
-                }
+                for (int j = 0; j < 6; j++) stmt.setString(idx++, like);
             }
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     String sahkoposti = rs.getString("sahkoposti");
-                    String asiakastyyppi = rs.getString("asiakastyyppi");
-                    Asiakas asiakas;
+                    String tyyppi = rs.getString("asiakastyyppi");
 
-                    if ("yksityinen".equalsIgnoreCase(asiakastyyppi)) {
-                        asiakas = new Asiakas(sahkoposti, asiakastyyppi,
+                    if ("yksityisasiakas".equalsIgnoreCase(tyyppi)) {
+                        lista.add(new AsiakkaatWrapper(
+                                sahkoposti, tyyppi,
                                 rs.getString("yksityis_nimi"),
-                                rs.getString("yksityis_osoite"));
-                        asiakas.setPuhelinnumero(rs.getString("puhelinnumero"));
-                    } else {
-                        asiakas = new Asiakas(sahkoposti, asiakastyyppi,
+                                rs.getString("puhelinnumero"),
+                                rs.getString("yksityis_osoite"),
+                                null
+                        ));
+                    } else if ("yritys".equalsIgnoreCase(tyyppi)) {
+                        lista.add(new AsiakkaatWrapper(
+                                sahkoposti, tyyppi,
                                 rs.getString("yritys_nimi"),
-                                rs.getString("yritys_osoite"));
-                        asiakas.setYTunnus(rs.getString("y_tunnus"));
+                                null,
+                                rs.getString("yritys_osoite"),
+                                rs.getString("y_tunnus")
+                        ));
                     }
-
-                    asiakkaat.add(asiakas);
                 }
             }
         }
-        return asiakkaat;
+        return lista;
     }
-
 }

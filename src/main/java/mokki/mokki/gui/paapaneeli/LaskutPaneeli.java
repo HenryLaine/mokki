@@ -22,6 +22,7 @@ public class LaskutPaneeli extends VBox {
         hallintapaneeli = new Hallintapaneeli(
                 new String[] {"Lisää lasku", "Rajaa laskuja", "Poista rajaukset"});
         hallintapaneeli.asetaFonttikoko(fonttikoko);
+
         taulukkopaneeli = new Taulukkopaneeli<>(
                 taulukonSisalto.getFirst().getMaaritykset(),
                 new String[] {"Näytä laskun tiedot", "Muuta laskun tietoja", "Merkitse lasku maksetuksi",

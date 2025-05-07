@@ -12,6 +12,7 @@ public class AsiakkaatWrapper implements TaulukonData {
     private StringProperty sahkoposti;
     private StringProperty puhelinnumero;
     private StringProperty tyyppi;
+    private StringProperty osoite;
     private StringProperty ytunnus;
 
     /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
@@ -25,13 +26,14 @@ public class AsiakkaatWrapper implements TaulukonData {
      * @param tyyppi tyyppi
      * @param ytunnus Y-tunnus
      */
-    public AsiakkaatWrapper(String nimi, String sahkoposti, String puhelinnumero,
-                            String tyyppi, String ytunnus) {
+    public AsiakkaatWrapper(String sahkoposti,String tyyppi, String nimi,String puhelinnumero, String osoite,
+                            String ytunnus) {
 
-        this.nimi = new SimpleStringProperty(nimi);
         this.sahkoposti = new SimpleStringProperty(sahkoposti);
+        this.nimi = new SimpleStringProperty(nimi);
         this.puhelinnumero = new SimpleStringProperty(puhelinnumero);
         this.tyyppi = new SimpleStringProperty(tyyppi);
+        this.osoite= new SimpleStringProperty(osoite);
         this.ytunnus = new SimpleStringProperty(ytunnus);
 
         maaritykset = new String[][] {
@@ -39,6 +41,7 @@ public class AsiakkaatWrapper implements TaulukonData {
                 {"Sähköposti", "String", "sahkoposti"},
                 {"Puhelinnumero", "String", "puhelinnumero"},
                 {"Tyyppi", "String", "tyyppi"},
+                {"Osoite", "String", "osoite"},
                 {"Y-tunnus", "String", "ytunnus"}
         };
     }
@@ -91,6 +94,42 @@ public class AsiakkaatWrapper implements TaulukonData {
         return maaritykset;
     }
 
+    public String getOsoite() {
+        return osoite.get();
+    }
+
+    public void setNimi(String nimi) {
+        this.nimi.set(nimi);
+    }
+
+    public void setSahkoposti(String sahkoposti) {
+        this.sahkoposti.set(sahkoposti);
+    }
+
+    public void setPuhelinnumero(String puhelinnumero) {
+        this.puhelinnumero.set(puhelinnumero);
+    }
+
+    public void setTyyppi(String tyyppi) {
+        this.tyyppi.set(tyyppi);
+    }
+
+    public void setOsoite(String osoite) {
+        this.osoite.set(osoite);
+    }
+
+    public void setYtunnus(String ytunnus) {
+        this.ytunnus.set(ytunnus);
+    }
+
+    public void setMaaritykset(String[][] maaritykset) {
+        this.maaritykset = maaritykset;
+    }
+
+    public StringProperty osoiteProperty() {
+        return osoite;
+    }
+
     /**
      * Metodi palauttaa tietokokonaisuuden tunnisteen eli asiakkaan sähköpostiosoitteen.
      * @return tunniste
@@ -112,7 +151,7 @@ public class AsiakkaatWrapper implements TaulukonData {
      * @return kenttien arvot
      */
     public String[] palautaKenttienArvot() {
-        return new String[] {nimi.get(), sahkoposti.get(), puhelinnumero.get(), tyyppi.get(), ytunnus.get()};
+        return new String[] {nimi.get(), sahkoposti.get(), puhelinnumero.get(), tyyppi.get(), osoite.get(), ytunnus.get()};
     }
 
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
@@ -120,6 +159,15 @@ public class AsiakkaatWrapper implements TaulukonData {
     }
 
     public boolean paivitaKenttienArvot(String[] arvot) {
+        if (arvot.length < 6) return false;
+
+        setNimi(arvot[0]);
+        setSahkoposti(arvot[1]);
+        setPuhelinnumero(arvot[2]);
+        setTyyppi(arvot[3]);
+        setOsoite(arvot[4]);
+        setYtunnus(arvot[5]);
+
         return true;
     }
 

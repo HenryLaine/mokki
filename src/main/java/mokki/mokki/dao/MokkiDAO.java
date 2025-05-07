@@ -1,12 +1,10 @@
 package mokki.mokki.dao;
+
 import mokki.mokki.BackEnd.Mokki;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-/** Tämä luokka ottaa yhteyden tietokantaan ja muokkaa sekä hakee tietoa
- * Mökki-taulukosta.
-*/
+/**
 
 public class MokkiDAO {
     private Connection conn;
@@ -15,16 +13,14 @@ public class MokkiDAO {
         this.conn = conn;
     }
 
-    // Mökin lisääminen tietokantaan. MokkiID on automaattisesti tuleva luku.
-
-
     public void lisaaMokki(Mokki mokki) throws SQLException {
-        String sql = "INSERT INTO Mokki (sijainti, hinta, huoneala, henkilo_maara) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Mokki (sijainti, hinta, huoneala, henkilo_maara, huomioitavaa) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, mokki.getSijainti());
             stmt.setDouble(2, mokki.getHinta());
             stmt.setInt(3, mokki.getHuoneala());
             stmt.setInt(4, mokki.getHenkiloMaara());
+            stmt.setString(5, mokki.getHuomioitavaa());
             stmt.executeUpdate();
         }
     }
@@ -37,25 +33,24 @@ public class MokkiDAO {
         }
     }
 
-    // Metodi muokkaa olemassa olevaa mökkiä
-
     public void muokkaaMokki(Mokki mokki) throws SQLException {
         Mokki vanhaMokki = haeMokki(mokki.getMokkiID());
         if (vanhaMokki == null) {
             throw new SQLException("Mökkiä ei löydy ID:llä " + mokki.getMokkiID());
         }
 
-        String sql = "UPDATE Mokki SET sijainti = ?, hinta = ?, huoneala = ?, henkilo_maara = ? WHERE mokkiID = ?";
+        String sql = "UPDATE Mokki SET sijainti = ?, hinta = ?, huoneala = ?, henkilo_maara = ?, huomioitavaa = ? WHERE mokkiID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, mokki.getSijainti() != null && !mokki.getSijainti().isEmpty() ? mokki.getSijainti() : vanhaMokki.getSijainti());
             stmt.setDouble(2, mokki.getHinta() != 0.0 ? mokki.getHinta() : vanhaMokki.getHinta());
             stmt.setInt(3, mokki.getHuoneala() != 0 ? mokki.getHuoneala() : vanhaMokki.getHuoneala());
             stmt.setInt(4, mokki.getHenkiloMaara() != 0 ? mokki.getHenkiloMaara() : vanhaMokki.getHenkiloMaara());
-            stmt.setInt(5, mokki.getMokkiID());
+            stmt.setString(5, mokki.getHuomioitavaa() != null ? mokki.getHuomioitavaa() : vanhaMokki.getHuomioitavaa());
+            stmt.setInt(6, mokki.getMokkiID());
             stmt.executeUpdate();
         }
     }
-    // apumetodi hakee yhden mökin
+
     public Mokki haeMokki(int mokkiID) throws SQLException {
         String sql = "SELECT * FROM Mokki WHERE mokkiID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -67,7 +62,8 @@ public class MokkiDAO {
                             rs.getString("sijainti"),
                             rs.getDouble("hinta"),
                             rs.getInt("huoneala"),
-                            rs.getInt("henkilo_maara")
+                            rs.getInt("henkilo_maara"),
+                            rs.getString("huomioitavaa")
                     );
                 } else {
                     return null;
@@ -75,8 +71,6 @@ public class MokkiDAO {
             }
         }
     }
-
-    // Metodi hakee listauksen kaikista mökki-olioista.
 
     public List<Mokki> haeMokit() throws SQLException {
         List<Mokki> mokit = new ArrayList<>();
@@ -91,7 +85,8 @@ public class MokkiDAO {
                         rs.getString("sijainti"),
                         rs.getDouble("hinta"),
                         rs.getInt("huoneala"),
-                        rs.getInt("henkilo_maara")
+                        rs.getInt("henkilo_maara"),
+                        rs.getString("huomioitavaa")
                 );
                 mokit.add(mokki);
             }
@@ -99,4 +94,4 @@ public class MokkiDAO {
 
         return mokit;
     }
-}
+}*/
