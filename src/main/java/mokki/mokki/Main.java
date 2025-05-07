@@ -267,14 +267,13 @@ public class Main extends Application {
                 RajausIkkuna rajausIkkuna = new RajausIkkuna();
                 rajausIkkuna.setTitle("Rajaa asiakkaita hakusanalla");
 
-                // Saat hakusanan suoraan Stringinä
                 String hakusana = rajausIkkuna.naytaJaOdotaJaPalautaTulos();
 
                 // Tarkistetaan, onko hakusana null tai tyhjä
                 if (hakusana != null && !hakusana.isBlank()) {
                     try {
                         List<AsiakkaatWrapper> rajatut = asiakasDAO.rajaaAsiakkaat(hakusana);
-                        // päivitä näkymä (esim. taulukko) tuloksilla
+
                         taulukonSisalto.clear();
                         taulukonSisalto.addAll(rajatut);
                         hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET: " + hakusana);
