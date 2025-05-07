@@ -308,11 +308,21 @@ public class Main extends Application {
                 tiedotIkkuna.asetaFonttikoko(fonttikoko);
                 boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
                 if (tulos) {
+                    // Päivitä asiakastiedot
                     asiakkaanTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
 
                     try {
+                        // Päivitetään asiakas tietokannassa
                         AsiakkaatWrapper uusiData = (AsiakkaatWrapper) asiakkaanTiedot;
                         asiakasDAO.muokkaaAsiakasta(uusiData);
+
+                        // Päivitetään taulukon sisältö
+                        // Poista vanha asiakas taulukosta ja lisää päivitetty
+                        int index = taulukonSisalto.indexOf(asiakkaanTiedot);
+                        if (index >= 0) {
+                            taulukonSisalto.set(index, uusiData); // Päivitetään vanhan rivin tiedot
+                        }
+
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
@@ -393,7 +403,6 @@ public class Main extends Application {
             if (tulos) {
                 // TODO: Päivitä laskun tiedot tietokantaan.
             }
-
         });
 
         kontekstivalikonKohdat.get(2).setOnAction(e -> {
@@ -408,7 +417,6 @@ public class Main extends Application {
                     "Maksettu" // Muutetaan tila
             });
             // TODO: Päivitä tietokantaan, että lasku on maksettu.
-
         });
 
         kontekstivalikonKohdat.get(3).setOnAction(e -> {
