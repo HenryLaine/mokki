@@ -255,9 +255,9 @@ public class Main extends Application {
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
                 uusiAsiakas.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
-                // TODO: Kohde lisätään tietokantaan.
+                // TODO: Asiakas lisätään tietokantaan.
 
-                // Kohde lisätään käyttöliittymän taulukkoon.
+                // Asiakas lisätään käyttöliittymän taulukkoon.
                 taulukonSisalto.add(uusiAsiakas);
             }
 
@@ -296,9 +296,9 @@ public class Main extends Application {
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
-                // TODO: Kohteen tietoja muutetaan tietokannassa.
+                // TODO: Asiakkaan tietoja muutetaan tietokannassa.
 
-                // Kohteen tiedot muutetaan käyttöliittymän taulukossa.
+                // Asiakkaan tiedot muutetaan käyttöliittymän taulukossa.
                 asiakkaanTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
             }
         });
@@ -347,28 +347,30 @@ public class Main extends Application {
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
         kontekstivalikonKohdat.getFirst().setOnAction(e -> {
-            // Varauksen tiedot näytetään
+            // Laskun tiedot näytetään
 
         });
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
-            // Mökin tiedot näytetään
+            // Laskun tietoja muutetaan
 
         });
 
         kontekstivalikonKohdat.get(2).setOnAction(e -> {
-            // Mökin tiedot näytetään
+            // Lasku merkitään maksetuksi
 
         });
 
         kontekstivalikonKohdat.get(3).setOnAction(e -> {
+            // Lasku poistetaan
             Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
                     "Haluatko varmasti poistaa laskun " +
                             taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
             Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
 
             if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // Asiakas poistetaan ensin tietokannasta ja sitten taulukon sisällöstä.
+                // TODO: lasku poistetaan tietokannasta
 
+                // Lasku poistetaan taulukon sisällöstä
                 taulukonSisalto.remove(taulukkopaneeli.palautaRivinTiedot());
             }
         });
@@ -423,7 +425,7 @@ public class Main extends Application {
 
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Kohteen varaukset näytetään
-            // TODO:
+            // TODO: Siiry Varaukset-välilehdelle ja aseta rajaukseksi kohteen tunnus.
 
         });
     }
