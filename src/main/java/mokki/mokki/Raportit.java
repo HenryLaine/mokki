@@ -1,5 +1,7 @@
 package mokki.mokki;
 import mokki.mokki.database.*;
+import mokki.mokki.BackEnd.*;
+import mokki.mokki.dao.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +11,7 @@ import java.sql.Date;
 
 /** Loin tämän luokan testitarkoituksessa, tätä ei ole tarkoitus jättää lopulliseen ohjelmaan.
  * Halusin harjoitella, että kuinka yhteys muodostetaan ja kuinka tietoja haetaan tietokannasta.
- */
+
 
 public class Raportit {
 
@@ -153,7 +155,7 @@ public class Raportit {
     /** testi-pääohjelma raporttien ajamista ja tietokantayhteyden
      * testaamista varten.
      * @param args
-     */
+
     public static void main(String[] args) throws SQLException {
 
         DatabaseCreator.ensureDatabaseExists();
@@ -161,8 +163,10 @@ public class Raportit {
         Connection conn = DatabaseManager.getConnection();
         Raportit raportti=new Raportit(conn);
         raportti.haeKaikkiAsiakkaat();
+        Mokki moksa=new Mokki(1234, "Franska", 666.666, 69, 7);
+        MokkiDAO mokkidao=new MokkiDAO(conn);
+        mokkidao.lisaaMokki(moksa);
         raportti.tulostaMokit();
-        raportti.tulostaVaraukset();
-        raportti.tulostaLaskut();
+        mokkidao.haeMokit();
     }
-}
+}*/

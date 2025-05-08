@@ -9,32 +9,29 @@ import mokki.mokki.gui.alipaneeli.TaulukonData;
  */
 public class VarauksetWrapper implements TaulukonData {
     private StringProperty tunnus;
-    private StringProperty mokinTunnus;
+    private StringProperty kohteenTunnus;
     private StringProperty asiakas;
     private StringProperty alkaa;
     private StringProperty paattyy;
     private StringProperty tila;
     private StringProperty huomioitavaa;
 
+    private String asiakkaanNimi;
+    private String asiakkaanSahkoposti;
+
     /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
     private String[][] maaritykset;
 
-    /**
-     * Luokan alustaja
-     * @param tunnus tunnus
-     * @param mokinTunnus mökin tunnus
-     * @param asiakas asiakas
-     * @param alkaa alkaa
-     * @param paattyy päättyy
-     * @param tila tila
-     * @param huomioitavaa huomioitavaa
-     */
-    public VarauksetWrapper(String tunnus, String mokinTunnus, String asiakas,
+
+    public VarauksetWrapper(String tunnus, String kohteenTunnus, String asiakkaanNimi, String asiakkaanSahkoposti,
                             String alkaa, String paattyy, String tila, String huomioitavaa) {
 
+        this.asiakkaanNimi = asiakkaanNimi;
+        this.asiakkaanSahkoposti = asiakkaanSahkoposti;
+
         this.tunnus = new SimpleStringProperty(tunnus);
-        this.mokinTunnus = new SimpleStringProperty(mokinTunnus);
-        this.asiakas = new SimpleStringProperty(asiakas);
+        this.kohteenTunnus = new SimpleStringProperty(kohteenTunnus);
+        this.asiakas = new SimpleStringProperty(asiakkaanNimi + " (" +asiakkaanSahkoposti + ")");
         this.alkaa = new SimpleStringProperty(alkaa);
         this.paattyy = new SimpleStringProperty(paattyy);
         this.tila = new SimpleStringProperty(tila);
@@ -42,13 +39,21 @@ public class VarauksetWrapper implements TaulukonData {
 
         maaritykset = new String[][] {
                 {"Tunnus", "String", "tunnus"},
-                {"Mökin tunnus", "String", "mokinTunnus"},
+                {"Kohteen tunnus", "String", "kohteenTunnus"},
                 {"Asiakas", "String", "asiakas"},
                 {"Alkaa", "String", "alkaa"},
                 {"Päättyy", "String", "paattyy"},
                 {"Tila", "String", "tila"},
                 {"Huomioitavaa", "String", "huomioitavaa"},
         };
+    }
+
+    public String getAsiakkaanSahkoposti() {
+        return asiakkaanSahkoposti;
+    }
+
+    public String getAsiakkaanNimi() {
+        return asiakkaanNimi;
     }
 
     /**
@@ -60,11 +65,11 @@ public class VarauksetWrapper implements TaulukonData {
     }
 
     /**
-     * Metodi palauttaa mökinTunnus-kentän arvon.
-     * @return mökin tunnus
+     * Metodi palauttaa kohteenTunnus-kentän arvon.
+     * @return kohteen tunnus
      */
-    public String getMokinTunnus() {
-        return mokinTunnus.get();
+    public String getKohteenTunnus() {
+        return kohteenTunnus.get();
     }
 
     /**
@@ -136,12 +141,12 @@ public class VarauksetWrapper implements TaulukonData {
      * @return kenttien arvot
      */
     public String[] palautaKenttienArvot() {
-        return new String[] {tunnus.get(), mokinTunnus.get(), asiakas.get(),
+        return new String[] {tunnus.get(), kohteenTunnus.get(), asiakas.get(),
                 alkaa.get(), paattyy.get(), tila.get(), huomioitavaa.get()};
     }
 
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
-        return true;
+        return false;
     }
 
     public boolean paivitaKenttienArvot(String[] arvot) {
@@ -151,18 +156,22 @@ public class VarauksetWrapper implements TaulukonData {
     public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
         boolean[] totuusarvolista = new boolean[arvot.length];
         for (int i = 0; i < arvot.length; i++) {
-            totuusarvolista[i] = true;
+            totuusarvolista[i] = false;
         }
         return totuusarvolista;
     }
 
     public boolean onkoTunnisteUniikki(String tunniste) {
         // TODO: tarkista, että tunnistetta ei löydy tietokannasta.
-        return false;
+        return true;
     }
 
     public int palautaTunnisteenIndeksi() {
         return 0;
+    }
+
+    public boolean onkoSahkopostiTietokannassa(String asiakkaanSahkoposti) {
+        return true;
     }
 
 }

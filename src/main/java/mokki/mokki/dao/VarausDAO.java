@@ -16,9 +16,9 @@ public class VarausDAO {
     public void luoVaraus(Varaus varaus) throws SQLException {
         String sql = "INSERT INTO Varaus (aloitus_pvm, paattymis_pvm, henkilo_maara, sahkoposti, mokkiID) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setDate(1, varaus.getAloitusPvm());
-            stmt.setDate(2, varaus.getPaattymisPvm());
-            stmt.setInt(3, varaus.getHenkiloMaara());
+            stmt.setDate(1, varaus.getVarausAlkuPvm());
+            stmt.setDate(2, varaus.getVarausLoppuPvm());
+            stmt.setInt(3, varaus.getVaraajienMaara());
             stmt.setString(4, varaus.getSahkoposti());
             stmt.setInt(5, varaus.getMokkiID());
             stmt.executeUpdate();
@@ -26,19 +26,19 @@ public class VarausDAO {
     }
     // varauksen muokkaaminen
     public void muokkaaVarausta(Varaus varaus) throws SQLException {
-        Varaus vanhaVaraus = haeVaraus(varaus.getVarausID());
+        Varaus vanhaVaraus = haeVaraus(varaus.getVarausTunnus());
         if (vanhaVaraus == null) {
-            throw new SQLException("Varausta ei löydy ID:llä " + varaus.getVarausID());
+            throw new SQLException("Varausta ei löydy ID:llä " + varaus.getVarausTunnus());
         }
 
         String sql = "UPDATE Varaus SET aloitus_pvm = ?, paattymis_pvm = ?, henkilo_maara = ?, sahkoposti = ?, mokkiID = ? WHERE varausID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setDate(1, varaus.getAloitusPvm() != null ? varaus.getAloitusPvm() : vanhaVaraus.getAloitusPvm());
-            stmt.setDate(2, varaus.getPaattymisPvm() != null ? varaus.getPaattymisPvm() : vanhaVaraus.getPaattymisPvm());
-            stmt.setInt(3, varaus.getHenkiloMaara() != 0 ? varaus.getHenkiloMaara() : vanhaVaraus.getHenkiloMaara());
+            stmt.setDate(1, varaus.getVarausAlkuPvm() != null ? varaus.getVarausAlkuPvm() : vanhaVaraus.getVarausAlkuPvm());
+            stmt.setDate(2, varaus.getVarausLoppuPvm() != null ? varaus.getVarausLoppuPvm() : vanhaVaraus.getVarausLoppuPvm());
+            stmt.setInt(3, varaus.getVaraajienMaara() != 0 ? varaus.getVaraajienMaara() : vanhaVaraus.getVaraajienMaara());
             stmt.setString(4, varaus.getSahkoposti() != null && !varaus.getSahkoposti().isEmpty() ? varaus.getSahkoposti() : vanhaVaraus.getSahkoposti());
             stmt.setInt(5, varaus.getMokkiID() != 0 ? varaus.getMokkiID() : vanhaVaraus.getMokkiID());
-            stmt.setInt(6, varaus.getVarausID());
+            stmt.setInt(6, varaus.getVarausTunnus());
             stmt.executeUpdate();
         }
     }
@@ -50,10 +50,10 @@ public class VarausDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Varaus(
-                            rs.getInt("varausID"),
-                            rs.getDate("aloitus_pvm"),
-                            rs.getDate("paattymis_pvm"),
-                            rs.getInt("henkilo_maara"),
+                            rs.getInt("varausTunnus"),
+                            rs.getDate("varausAlkuPvm"),
+                            rs.getDate("varausLoppuPvm"),
+                            rs.getInt("varaajienMaara"),
                             rs.getString("sahkoposti"),
                             rs.getInt("mokkiID")
                     );
@@ -115,5 +115,4 @@ public class VarausDAO {
 
         return new Varaus(id, alku, loppu, maara, sahkoposti, mokkiID);
     }
-}
-*/
+}*/

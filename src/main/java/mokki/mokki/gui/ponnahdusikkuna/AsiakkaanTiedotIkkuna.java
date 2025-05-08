@@ -65,7 +65,7 @@ public class AsiakkaanTiedotIkkuna extends Stage {
                     (tyyppi.equals("Muuta asiakkaan tietoja") || tyyppi.equals("Lisää asiakas"))) {
                 VBox valintanappipaneeli = new VBox(10);
                 valintanapit = new ToggleGroup();
-                RadioButton valintanappi1 = new RadioButton("Yksityishenkilö");
+                RadioButton valintanappi1 = new RadioButton("Yksityisasiakas");
                 RadioButton valintanappi2 = new RadioButton("Yritys");
                 valintanappi1.setToggleGroup(valintanapit);
                 valintanappi1.setSelected(true);
@@ -143,6 +143,7 @@ public class AsiakkaanTiedotIkkuna extends Stage {
             peruutaPainike.setMinWidth(100);
             painikepaneeli.getChildren().addAll(hyvaksyPainike, peruutaPainike);
 
+            // TODO: varmista, että ikkuna ei sulkeudu ennen kuin kaikki arvot ovat hyväksyttäviä
             hyvaksyPainike.setOnAction(e -> {
                 int tunnisteenIndeksi = data.palautaTunnisteenIndeksi();
                 boolean arvotHyvaksyttavia = data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
@@ -225,26 +226,32 @@ public class AsiakkaanTiedotIkkuna extends Stage {
      * @return tekstikenttien tiedot
      */
     public String[] palautaKenttienTiedot() {
-        String[] tiedot = new String[] {""};
+        String[] tiedot;
         if (tyyppi.equals("Asiakkaan tiedot")) {
-            tiedot = new String[] {tekstikenttalista.get(0).getText(), tekstikenttalista.get(1).getText(),
-                    tekstikenttalista.get(2).getText(), tekstikenttalista.get(3).getText(),
-                    tekstikenttalista.get(4).getText()};
-        }
-        else if (tyyppi.equals("Muuta asiakkaan tietoja") || tyyppi.equals("Lisää asiakas")) {
-            String ytunnus;
-            if (valintanapit.getToggles().getFirst().isSelected()) {
-                ytunnus = tekstikenttalista.get(3).getText();
-            }
-            else {
-                ytunnus = "";
-            }
-            RadioButton valittuNappi = (RadioButton)valintanapit.getSelectedToggle();
+            tiedot = new String[] {
+                    tekstikenttalista.get(0).getText(), // nimi
+                    tekstikenttalista.get(1).getText(), // osoite
+                    tekstikenttalista.get(2).getText(), // puhelin
+                    tekstikenttalista.get(3).getText(), // sähköposti
+                    tekstikenttalista.get(4).getText(), // tyyppi
+                    tekstikenttalista.get(5).getText()  // ytunnus
+            };
+        } else if (tyyppi.equals("Muuta asiakkaan tietoja") || tyyppi.equals("Lisää asiakas")) {
+            RadioButton valittuNappi = (RadioButton) valintanapit.getSelectedToggle();
             String asiakastyyppi = valittuNappi.getText().toLowerCase();
-            tiedot = new String[] {tekstikenttalista.get(0).getText(), tekstikenttalista.get(1).getText(),
-                    tekstikenttalista.get(2).getText(), asiakastyyppi, ytunnus};
-        }
 
+            // 0: nimi, 1: asiakastyyppi, 2: puhelin, 3: sähköposti, 4: osoite, 5: ytunnus
+            tiedot = new String[] {
+                    tekstikenttalista.get(0).getText(), // nimi
+                    tekstikenttalista.get(1).getText(), // puhelin
+                    tekstikenttalista.get(2).getText(), // sähköposti
+                    asiakastyyppi,
+                    tekstikenttalista.get(3).getText(), // osoite
+                    tekstikenttalista.get(4).getText()   // ytunnus
+            };
+        } else {
+            tiedot = new String[] {""};
+        }
         return tiedot;
     }
 
