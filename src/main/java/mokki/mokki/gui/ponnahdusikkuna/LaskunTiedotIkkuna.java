@@ -1,3 +1,4 @@
+
 package mokki.mokki.gui.ponnahdusikkuna;
 
 import javafx.geometry.Insets;
@@ -9,107 +10,155 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
+import mokki.mokki.gui.testiluokatTaulukonDatalle.LaskutWrapper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class LaskunTiedotIkkuna extends Stage {
     private BorderPane paapaneeli;
     private TaulukonData data;
-    private ArrayList<TextField> tekstikenttaLista;
+    private ArrayList<TextField> tekstikenttalista;
+    private ArrayList<DatePicker> datePickerLista;
     private boolean tulos = false;
     private String tyyppi;
 
-    public LaskunTiedotIkkuna(TaulukonData data, String tyyppi) {
+    public LaskunTiedotIkkuna (TaulukonData data, String tyyppi) {
         this.data = data;
         this.tyyppi = tyyppi;
-        this.tekstikenttaLista = new ArrayList<>();
-        this.paapaneeli = new BorderPane();
-        paapaneeli.setPadding(new Insets(20));
+
+        tekstikenttalista = new ArrayList<>();
+        datePickerLista = new ArrayList<>();
+
+        paapaneeli = new BorderPane();
+        paapaneeli.setPadding(new Insets(30));
 
         VBox ylapaneeli = new VBox();
-        GridPane ruudukkopaneeli = luoRuudukkopaneeli(data, tyyppi);
-        ylapaneeli.getChildren().addAll(ruudukkopaneeli);
+
+        GridPane ruudukkopaneeli = luoRuudukkopaneeli();
+        ylapaneeli.getChildren().add(ruudukkopaneeli);
 
         VBox alapaneeli = new VBox();
-        alapaneeli.getChildren().addAll(luoPainikepaneeli(data,tyyppi));
+        alapaneeli.getChildren().add(luoPainikepaneeli());
 
         paapaneeli.setTop(ylapaneeli);
         paapaneeli.setBottom(alapaneeli);
 
         Scene kehys = new Scene(paapaneeli);
         this.initModality(Modality.APPLICATION_MODAL);
-        this.setTitle("Lisää lasku");
+        this.setTitle(tyyppi);
         this.setScene(kehys);
     }
 
-
-    private GridPane luoRuudukkopaneeli(TaulukonData data, String tyyppi) {
+    // TODO: Viitenumero puuttuu
+    private GridPane luoRuudukkopaneeli() {
         GridPane ruudukkopaneeli = new GridPane();
-        ruudukkopaneeli.setHgap(10);
-        ruudukkopaneeli.setVgap(10);
-        ruudukkopaneeli.setPadding(new Insets(10));
-
-        int riviIndeksi = 0;
+        ruudukkopaneeli.setVgap(20);
+        ruudukkopaneeli.setHgap(20);
 
         String[] kenttienArvot = data.palautaKenttienArvot();
         String[][] maaritykset = data.getMaaritykset();
 
         for (int i = 0; i < maaritykset.length; i++) {
-            Text otsikko = new Text(maaritykset[i][0] + ":");
-            otsikko.setStyle("-fx-font-weight: bold;");
-            TextField tekstikentta = new TextField(kenttienArvot[i]);
+            String otsikkoTeksti = maaritykset[i][0];
+            Text otsikko = new Text(otsikkoTeksti + ":");
 
-            // Jos tyyppi on "Laskun tiedot", kenttiä ei voi muokata
-            if (tyyppi.equals("Laskun tiedot")) {
-                tekstikentta.setEditable(false);
-                tekstikentta.setBackground(Background.fill(Color.GAINSBORO));
+            if (tyyppi.equals("Lisää lasku") && otsikkoTeksti.equals("Asiakas")) {
+                // Korvataan "Asiakas" kahdella kentällä: "Nimi" ja "Sähköposti"
+                Text otsikkoNimi = new Text("Nimi:");
+                TextField tekstikenttaNimi = new TextField();
+
+                Text otsikkoSahkoposti = new Text("Sähköposti:");
+                TextField tekstikenttaSahkoposti = new TextField();
+
+                tekstikenttalista.add(tekstikenttaNimi); // Lisää nimi listaan
+                tekstikenttalista.add(tekstikenttaSahkoposti); // Lisää sähköposti listaan
+
+                ruudukkopaneeli.add(otsikkoNimi, 0, i);
+                ruudukkopaneeli.add(tekstikenttaNimi, 1, i);
+                i++; // Siirrytään seuraavalle riville
+                ruudukkopaneeli.add(otsikkoSahkoposti, 0, i);
+                ruudukkopaneeli.add(tekstikenttaSahkoposti, 1, i);
+
+                continue; // Ohitetaan "Asiakas"-kenttä
             }
 
-            tekstikenttaLista.add(tekstikentta);
-            ruudukkopaneeli.add(otsikko, 0, riviIndeksi);
-            ruudukkopaneeli.add(tekstikentta, 1, riviIndeksi++);
+            if (otsikkoTeksti.equals("Viitenumero")) {
+                // Erityiskäsittely viitenumerolle
+                TextField tekstikenttaViitenumero = new TextField();
+                if (!tyyppi.equals("Lisää lasku")) {
+                    tekstikenttaViitenumero.setText(kenttienArvot[i]);
+                }
+                if (tyyppi.equals("Laskun tiedot")) {
+                    tekstikenttaViitenumero.setEditable(false);
+                    tekstikenttaViitenumero.setBackground(new Background(new BackgroundFill(Color.GAINSBORO, CornerRadii.EMPTY, Insets.EMPTY)));
+                }
+
+                tekstikenttalista.add(tekstikenttaViitenumero);
+                ruudukkopaneeli.add(otsikko, 0, i);
+                ruudukkopaneeli.add(tekstikenttaViitenumero, 1, i);
+            } else if (otsikkoTeksti.equals("Päivämäärä") || otsikkoTeksti.equals("Eräpäivä")) {
+                // Päivämäärä ja eräpäivä käsitellään DatePickerillä
+                DatePicker datePicker = new DatePicker();
+
+                if (!tyyppi.equals("Lisää lasku")) {
+                    if (!kenttienArvot[i].isEmpty()) {
+                        datePicker.setValue(LocalDate.parse(kenttienArvot[i]));
+                    }
+                    if (tyyppi.equals("Laskun tiedot")) {
+                        datePicker.setDisable(true);
+                    }
+                }
+
+                datePickerLista.add(datePicker);
+                ruudukkopaneeli.add(otsikko, 0, i);
+                ruudukkopaneeli.add(datePicker, 1, i);
+            } else {
+                // Muut kentät pysyvät tekstikenttinä
+                TextField tekstikentta = new TextField();
+                if (!tyyppi.equals("Lisää lasku")) {
+                    tekstikentta.setText(kenttienArvot[i]);
+                }
+                if (tyyppi.equals("Laskun tiedot")) {
+                    tekstikentta.setEditable(false);
+                    tekstikentta.setBackground(new Background(new BackgroundFill(Color.GAINSBORO, CornerRadii.EMPTY, Insets.EMPTY)));
+                }
+
+                tekstikenttalista.add(tekstikentta);
+                ruudukkopaneeli.add(otsikko, 0, i);
+                ruudukkopaneeli.add(tekstikentta, 1, i);
+            }
         }
+
         return ruudukkopaneeli;
     }
-    private void lisaaSeparaattori(GridPane paneeli, String otsikko, int riviIndex) {
-        Text erotusOtsikko = new Text(otsikko);
-        erotusOtsikko.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        paneeli.add(erotusOtsikko, 0, riviIndex, 2, 1);
-    }
 
-
-    private HBox luoPainikepaneeli(TaulukonData data, String tyyppi) {
-        HBox painikepaneeli = new HBox(20);
-        painikepaneeli.setPadding(new Insets(20, 0, 0, 0));
+    private HBox luoPainikepaneeli() {
+        HBox painikepaneeli = new HBox();
+        painikepaneeli.setPadding(new Insets(10, 0, 0, 0));
+        painikepaneeli.setSpacing(10);
 
         if (tyyppi.equals("Laskun tiedot")) {
             Button suljePainike = new Button("Sulje");
-            suljePainike.setMinWidth(100);
             suljePainike.setOnAction(e -> this.close());
-            painikepaneeli.getChildren().addAll(suljePainike);
-
-        } else if (tyyppi.equals("Lisää lasku") || tyyppi.equals("Muuta laskun tietoja")) {
-            Button hyvaksyPainike = new Button("Muuta tiedot");
+            painikepaneeli.getChildren().add(suljePainike);
+        } else if (tyyppi.equals("Lisää lasku")) {
+            Button lisaaPainike = new Button("Lisää lasku");
             Button peruutaPainike = new Button("Peruuta");
 
-            if (tyyppi.equals("Lisää lasku")) {
-                hyvaksyPainike.setText("Lisää lasku");
-            }
-
-            hyvaksyPainike.setMinWidth(100);
-            peruutaPainike.setMinWidth(100);
-            painikepaneeli.getChildren().addAll(hyvaksyPainike, peruutaPainike);
-
-            hyvaksyPainike.setOnAction(e -> {
-                boolean arvotHyvat = data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
-
-                if (arvotHyvat) {
-                    data.paivitaKenttienArvot(palautaKenttienTiedot());
-                    tulos = true;
-                    this.close();
+            lisaaPainike.setOnAction(e -> {
+                String[] syotteet = palautaKenttienTiedot();
+                boolean arvotHyvaksyttavia = data.ovatkoArvotHyvaksyttavia(syotteet);
+                if (arvotHyvaksyttavia) {
+                    boolean paivitysOnnistui = data.paivitaKenttienArvot(syotteet);
+                    if (paivitysOnnistui) {
+                        tulos = true;
+                        this.close();
+                    } else {
+                        naytaVirheIlmoitus("Tietojen tallennuksessa tapahtui virhe. Tarkista syötteet.");
+                    }
                 } else {
-                    Virheikkuna virheikkuna = new Virheikkuna("Tietokenttävirhe", "Joidenkin kenttien arvot virheelliset");
-                    virheikkuna.show();
+                    naytaVirheIlmoitus("Jotkin kentät sisältävät virheellisiä arvoja. Tarkista arvot.");
                 }
             });
 
@@ -118,20 +167,78 @@ public class LaskunTiedotIkkuna extends Stage {
                 this.close();
             });
 
+            painikepaneeli.getChildren().addAll(lisaaPainike, peruutaPainike);
+        } else if (tyyppi.equals("Muuta laskun tietoja")) {
+            Button muutaPainike = new Button("Muuta tiedot");
+            Button peruutaPainike = new Button("Peruuta");
+
+            muutaPainike.setOnAction(e -> {
+                String[] syotteet = palautaKenttienTiedot();
+                boolean arvotHyvaksyttavia = data.ovatkoArvotHyvaksyttavia(syotteet);
+                if (arvotHyvaksyttavia) {
+                    boolean paivitysOnnistui = data.paivitaKenttienArvot(syotteet);
+                    if (paivitysOnnistui) {
+                        tulos = true;
+                        this.close();
+                    } else {
+                        naytaVirheIlmoitus("Tietojen tallennuksessa tapahtui virhe. Tarkista syötteet.");
+                    }
+                } else {
+                    naytaVirheIlmoitus("Jotkin kentät sisältävät virheellisiä arvoja. Tarkista arvot.");
+                }
+            });
+
+            peruutaPainike.setOnAction(e -> {
+                tulos = false;
+                this.close();
+            });
+
+            painikepaneeli.getChildren().addAll(muutaPainike, peruutaPainike);
         }
+
         return painikepaneeli;
     }
 
-    public String[] palautaKenttienTiedot() {
-        return tekstikenttaLista.stream().map(TextField::getText).toArray(String[]::new);
-    }
-
-    public boolean naytaJaOdotaJaPalautaTulos() {
-        this.showAndWait();
-        return tulos;
+    private void naytaVirheIlmoitus(String virheteksti) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Virhe");
+        alert.setHeaderText("Tietokenttävirhe");
+        alert.setContentText(virheteksti);
+        alert.showAndWait();
     }
 
     public void asetaFonttikoko(int fonttikoko) {
-        paapaneeli.setStyle("-fx-font-size:" + fonttikoko + "px;");
+        paapaneeli.setStyle("-fx-font-size: " + fonttikoko + "px;");
+    }
+
+    public String[] palautaKenttienTiedot() {
+        ArrayList<String> arvot = new ArrayList<>();
+
+        int tekstikenttaIndeksi = 0;
+        int datePickerIndeksi = 0;
+
+        for (String[] maaritys : data.getMaaritykset()) {
+            String otsikkoTeksti = maaritys[0];
+            if (otsikkoTeksti.equals("Päivämäärä") || otsikkoTeksti.equals("Eräpäivä")) {
+                DatePicker datePicker = datePickerLista.get(datePickerIndeksi++);
+                LocalDate date = datePicker.getValue();
+                arvot.add(date != null ? date.toString() : ""); // Lisätään päivämäärä merkkijonona
+            } else {
+                TextField tekstikentta = tekstikenttalista.get(tekstikenttaIndeksi++);
+                arvot.add(tekstikentta.getText());
+            }
+        }
+
+        return arvot.toArray(new String[0]);
+    }
+
+    /**
+     * Näyttää ikkunan ja odottaa käyttäjän toimintaa.
+     *
+     * @return true, jos tekstikenttien arvot hyväksyttiin; false, jos peruutettiin
+     */
+    public boolean naytaJaOdotaJaPalautaTulos() {
+        this.showAndWait();
+        return tulos;
     }
 }

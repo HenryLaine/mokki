@@ -376,17 +376,19 @@ public class Main extends Application {
     private void alustaLaskutPaneeli() {
         // Dummy-dataa
         ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
-                new LaskutWrapper(3950359, "Vuokraus: JOE001; 15.03.2025-16.03.2025",
-                        "Jaska Jokunen (jaska@gmail.com)", 90405964, 150.35, 230, 32,
-                        new Date(231231), new Date(32141251), "Testi@gmail", "Testikatu", "Testi Testonen", "Avoin")
+                new LaskutWrapper(3950359, "Vuokraus: JOE001", "Jaska Jokunen",
+                        90405964, 150.35, 123.45, 24.0,
+                        Date.valueOf("2025-03-15"), Date.valueOf("2025-03-20"),
+                        "jaska@gmail.com", "Katuosoite 1, 90100 Oulu",
+                        "Jaska Jokunen", "Avoin")
         );
         laskutPaneeli = new LaskutPaneeli(fonttikoko, taulukonSisalto);
 
         // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
         Hallintapaneeli hallintapaneeli = laskutPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
-            TaulukonData uusiLasku = new LaskutWrapper(0, "", "", 0, 0.0, 0,
-                    0, new Date(0), new Date(0) , "", "" , "","Avoin");
+            TaulukonData uusiLasku = new LaskutWrapper(0, "", "", 0, 0.0, 0.0,
+                    0.0, null, null, "", "", "", "Avoin");
             LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
 

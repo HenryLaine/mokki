@@ -47,7 +47,7 @@ public class LaskutWrapper implements TaulukonData {
 
         this.laskunumero = new SimpleIntegerProperty(laskunumero);
         this.tuote = new SimpleStringProperty(tuote);
-        this.asiakas = new SimpleStringProperty(asiakas);
+        this.asiakas = new SimpleStringProperty(nimi + " " + sahkoposti);
         this.viitenumero = new SimpleIntegerProperty(viitenumero);
         this.maksettava = new SimpleDoubleProperty(maksettava);
         this.tila = new SimpleStringProperty(tila);
@@ -251,12 +251,19 @@ public class LaskutWrapper implements TaulukonData {
         try {
             this.laskunumero.set(Integer.parseInt(arvot[0]));
             this.tuote.set(arvot[1]);
-            this.asiakas.set(arvot[2]);
-            this.viitenumero.set(Integer.parseInt(arvot[3]));
-            this.maksettava.set(Double.parseDouble(arvot[4]));
-            this.tila.set(arvot[5]);
+            this.nimi.set(arvot[2]); // Nimi
+            this.sahkposti.set(arvot[3]); // Sähköposti
+            this.asiakas.set(nimi.get() + " " + sahkposti.get()); // Asiakas muodostetaan
+            this.viitenumero.set(Integer.parseInt(arvot[4]));
+            this.maksettava.set(Double.parseDouble(arvot[5]));
+            this.verotonHinta.set(Double.parseDouble(arvot[6]));
+            this.alv.set(Double.parseDouble(arvot[7]));
+            this.paivamaara = Date.valueOf(arvot[8]); // Päivämäärä
+            this.eraPaiva = Date.valueOf(arvot[9]); // Eräpäivä
+            this.tila.set(arvot[10]);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false; // Virheellinen syöte
         }
     }
