@@ -246,7 +246,17 @@ public class LaskutWrapper implements TaulukonData {
     }
 
     public boolean paivitaKenttienArvot(String[] arvot) {
-        return true;
+        try {
+            this.laskunumero.set(Integer.parseInt(arvot[0]));
+            this.tuote.set(arvot[1]);
+            this.asiakas.set(arvot[2]);
+            this.viitenumero.set(Integer.parseInt(arvot[3]));
+            this.maksettava.set(Double.parseDouble(arvot[4]));
+            this.tila.set(arvot[5]);
+            return true;
+        } catch (Exception e) {
+            return false; // Virheellinen syöte
+        }
     }
 
     public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
@@ -266,4 +276,7 @@ public class LaskutWrapper implements TaulukonData {
         return 0;
     }
 
+    public void setTila(String uusiTila) {
+        this.tila.set(uusiTila);
+    }
 }

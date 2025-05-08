@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import mokki.mokki.BackEnd.AsiakasData;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 import java.util.ArrayList;
