@@ -4,6 +4,10 @@ package mokki.mokki.gui.testiluokatTaulukonDatalle;
 import javafx.beans.property.*;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+
+
 /**
  * Wrapper-luokka laskujen tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
@@ -14,6 +18,15 @@ public class LaskutWrapper implements TaulukonData {
     private IntegerProperty viitenumero;
     private DoubleProperty maksettava;
     private StringProperty tila;
+
+    private DoubleProperty alv;
+    private Date paivamaara;
+    private Date eraPaiva;
+    private StringProperty sahkposti;
+    private StringProperty osoite;
+    private StringProperty nimi;
+    private DoubleProperty verotonHinta;
+
 
     /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
     private String[][] maaritykset;
@@ -28,7 +41,9 @@ public class LaskutWrapper implements TaulukonData {
      * @param tila tila
      */
     public LaskutWrapper(int laskunumero, String tuote, String asiakas,
-                         int viitenumero, double maksettava, String tila) {
+                         int viitenumero, double maksettava, double verotonhinta,
+                         double alv, Date paivamaara, Date erapaiva, String sahkoposti,
+                         String osoite, String nimi, String tila) {
 
         this.laskunumero = new SimpleIntegerProperty(laskunumero);
         this.tuote = new SimpleStringProperty(tuote);
@@ -36,6 +51,13 @@ public class LaskutWrapper implements TaulukonData {
         this.viitenumero = new SimpleIntegerProperty(viitenumero);
         this.maksettava = new SimpleDoubleProperty(maksettava);
         this.tila = new SimpleStringProperty(tila);
+        this.alv = new SimpleDoubleProperty(alv);
+        this.eraPaiva = erapaiva;
+        this.paivamaara = paivamaara;
+        this.verotonHinta = new SimpleDoubleProperty(verotonhinta);
+        this.osoite = new SimpleStringProperty(osoite);
+        this.nimi = new SimpleStringProperty(nimi);
+        this.sahkposti = new SimpleStringProperty(sahkoposti);
 
         maaritykset = new String[][] {
                 {"Laskunumero", "Integer", "laskunumero"},
@@ -43,8 +65,40 @@ public class LaskutWrapper implements TaulukonData {
                 {"Asiakas", "String", "asiakas"},
                 {"Viitenumero", "Integer", "viitenumero"},
                 {"Maksettava", "Double", "maksettava"},
+                {"Veroton hinta", "Double", "verotonHinta"},
+                {"ALV", "Double", "alv"},
+                {"Päivämäärä", "Date", "paivamaara"},
+                {"Eräpäivä", "Date", "erapaiva"},
                 {"Tila", "String", "tila"}
         };
+    }
+
+    public double getVerotonHinta() {
+        return verotonHinta.get();
+    }
+
+    public Date getEraPaiva() {
+        return eraPaiva;
+    }
+
+    public Date getPaivamaara() {
+        return paivamaara;
+    }
+
+    public double getAlv() {
+        return alv.get();
+    }
+
+    public String getOsoite() {
+        return osoite.get();
+    }
+
+    public String getSahkposti() {
+        return sahkposti.get();
+    }
+
+    public String getNimi() {
+        return nimi.get();
     }
 
     /**
@@ -95,6 +149,63 @@ public class LaskutWrapper implements TaulukonData {
         return tila.get();
     }
 
+    public void setEraPaiva(Date eraPaiva) {
+        this.eraPaiva = eraPaiva;
+    }
+
+    public void setPaivamaara(Date paivamaara) {
+        this.paivamaara = paivamaara;
+    }
+
+    public void setAlv(double alv) {
+        this.alv.set(alv);
+    }
+
+    public void setAsiakas(String asiakas) {
+        this.asiakas.set(asiakas);
+    }
+
+    public void setLaskunumero(int laskunumero) {
+        this.laskunumero.set(laskunumero);
+    }
+
+    public void setMaksettava(double maksettava) {
+        this.maksettava.set(maksettava);
+    }
+
+    public void setOsoite(String osoite) {
+        this.osoite.set(osoite);
+    }
+
+    public void setSahkposti(String sahkposti) {
+        this.sahkposti.set(sahkposti);
+    }
+
+    public void setNimi(String nimi) {
+        this.nimi.set(nimi);
+    }
+
+    public void setTila(String tila) {
+        this.tila.set(tila);
+    }
+
+    public void setTuote(String tuote) {
+        this.tuote.set(tuote);
+    }
+
+    public void setViitenumero(int viitenumero) {
+        this.viitenumero.set(viitenumero);
+    }
+
+    public void setMaaritykset(String[][] maaritykset) {
+        this.maaritykset = maaritykset;
+    }
+
+    public void setVerotonHinta(double verotonHinta) {
+        this.verotonHinta.set(verotonHinta);
+    }
+
+
     /**
      * Metodi palauttaa taulukkomääritykset.
      * @return taulukkomääritykset
@@ -127,7 +238,9 @@ public class LaskutWrapper implements TaulukonData {
      */
     public String[] palautaKenttienArvot() {
         return new String[] {""+laskunumero.get(), tuote.get(), asiakas.get(),
-                ""+viitenumero.get(), ""+maksettava.get(), tila.get()};
+                ""+viitenumero.get(), ""+maksettava.get(), ""+verotonHinta.get(),
+                ""+alv.get(), ""+paivamaara, ""+eraPaiva, sahkposti.get(),
+                osoite.get(), nimi.get(), tila.get()};
     }
 
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
@@ -165,7 +278,5 @@ public class LaskutWrapper implements TaulukonData {
         return 0;
     }
 
-    public void setTila(String uusiTila) {
-        this.tila.set(uusiTila);
-    }
+
 }

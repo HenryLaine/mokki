@@ -42,6 +42,7 @@ public class LaskunTiedotIkkuna extends Stage {
         this.setScene(kehys);
     }
 
+
     private GridPane luoRuudukkopaneeli(TaulukonData data, String tyyppi) {
         GridPane ruudukkopaneeli = new GridPane();
         ruudukkopaneeli.setHgap(10);

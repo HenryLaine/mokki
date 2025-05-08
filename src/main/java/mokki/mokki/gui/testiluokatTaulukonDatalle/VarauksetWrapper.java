@@ -4,6 +4,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 /**
  * Wrapper-luokka varausten tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
@@ -18,6 +21,8 @@ public class VarauksetWrapper implements TaulukonData {
 
     private String asiakkaanNimi;
     private String asiakkaanSahkoposti;
+    private Date alkamisPaiva;
+    private Date loppumisPaiva;
 
     /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
     private String[][] maaritykset;
@@ -54,6 +59,14 @@ public class VarauksetWrapper implements TaulukonData {
 
     public String getAsiakkaanNimi() {
         return asiakkaanNimi;
+    }
+
+    public Date getAlkamisPaiva() {
+        return alkamisPaiva;
+    }
+
+    public Date getLoppumisPaiva() {
+        return loppumisPaiva;
     }
 
     /**
