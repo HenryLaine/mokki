@@ -132,6 +132,7 @@ public class AsiakkaatWrapper implements TaulukonData {
 
     /**
      * Metodi palauttaa tietokokonaisuuden tunnisteen eli asiakkaan sähköpostiosoitteen.
+     *
      * @return tunniste
      */
     public String palautaTunniste() {
@@ -140,6 +141,7 @@ public class AsiakkaatWrapper implements TaulukonData {
 
     /**
      * Metodi palauttaa tietokokonaisuuden kuvaustekstin, joka on asiakkaan nimi ja sähköpostiosoite.
+     *
      * @return tunniste
      */
     public String palautaKuvausteksti() {

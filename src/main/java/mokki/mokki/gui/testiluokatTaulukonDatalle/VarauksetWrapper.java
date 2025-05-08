@@ -122,6 +122,7 @@ public class VarauksetWrapper implements TaulukonData {
 
     /**
      * Metodi palauttaa tietokokonaisuuden tunnisteen eli varauksen tunnuksen.
+     *
      * @return tunniste
      */
     public String palautaTunniste() {
@@ -130,6 +131,7 @@ public class VarauksetWrapper implements TaulukonData {
 
     /**
      * Metodi palauttaa tietokokonaisuuden kuvaustekstin eli varauksen tunnuksen.
+     *
      * @return kuvausteksti
      */
     public String palautaKuvausteksti() {

@@ -50,8 +50,9 @@ JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti;
 CREATE TABLE IF NOT EXISTS Mokki (
     mokkiID INT AUTO_INCREMENT PRIMARY KEY,
     sijainti VARCHAR(100),
-    hinta DECIMAL(10,2),
-    huoneala INT,
+    huoneita INT,
+    hinta DOUBLE(10,2),
+    huoneala DOUBLE,
     henkilo_maara INT,
     huomioitavaa VARCHAR(1000)
 );

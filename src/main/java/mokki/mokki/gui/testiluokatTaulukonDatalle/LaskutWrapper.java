@@ -105,6 +105,7 @@ public class LaskutWrapper implements TaulukonData {
 
     /**
      * Metodi palauttaa tietokokonaisuuden tunnisteen eli laskun numeron.
+     *
      * @return tunniste
      */
     public String palautaTunniste() {
@@ -113,6 +114,7 @@ public class LaskutWrapper implements TaulukonData {
 
     /**
      * Metodi palauttaa tietokokonaisuuden kuvaustekstin eli laskun numeron.
+     *
      * @return tunniste
      */
     public String palautaKuvausteksti() {
