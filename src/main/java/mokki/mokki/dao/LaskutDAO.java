@@ -1,15 +1,21 @@
 package mokki.mokki.dao;
 import mokki.mokki.BackEnd.Lasku;
 import mokki.mokki.BackEnd.Varaus;
+import mokki.mokki.gui.testiluokatTaulukonDatalle.LaskutWrapper;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * Tietokantayhteyden ottaminen ja laskuihin liittyvien sql kyselyiden tekeminen.
  * Luokka lisää laskuja, muokkaa laskuja, poistaa laskuja sekä raportoi laskuja.
+*/
 
+
+/* Lisäilin metodeja jotka sopivat laskutwrapperin kanssa, koska vanhat näyttää siltä, että
+ne käyttävät lasku luokka
+*/
 
 public class LaskutDAO {
     private Connection conn;
@@ -17,6 +23,23 @@ public class LaskutDAO {
     public LaskutDAO(Connection conn) {
         this.conn = conn;
     }
+
+
+    // tämä blokki tässä käyttää laskutwrapper luokkaa ja tämä siis lisää laskun
+    public void lisaaLasku(LaskutWrapper lasku)throws SQLException{
+        String sql = "INSERT INTO Laskut(laskuID, tuote, asiakas, viitenumero, maksettava,status) VALUES(?,?,?,?,?,?)";
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1,lasku.getLaskunumero());
+            stmt.setString(2,lasku.getTuote());
+            stmt.setString(3,lasku.getAsiakas());
+            stmt.setInt(4,lasku.getViitenumero());
+            stmt.setDouble(5,lasku.getMaksettava());
+            stmt.setString(6,lasku.getTila());
+            stmt.executeUpdate();
+        }
+    }
+
+
 
     // Uuden laskun luominen
     public void lisaaLasku(Varaus varaus, String status) throws SQLException {
@@ -78,6 +101,24 @@ public class LaskutDAO {
         }
     }
 
+    // sopii wrapperluokan kanssa ja muokkaa laskua
+    public void muokkaaLaskua(LaskutWrapper lasku) throws SQLException {
+        String sql = "UPDATE Laskut SET tuote = ?, asiakas = ?, viitenumero = ?, maksettava = ?, status = ? WHERE laskuID = ?";
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, lasku.getTuote());
+            stmt.setString(2,lasku.getAsiakas());
+            stmt.setInt(3,lasku.getViitenumero());
+            stmt.setDouble(4,lasku.getMaksettava());
+            stmt.setString(5, lasku.getTila());
+            stmt.setInt(6,lasku.getLaskunumero());
+            stmt.executeUpdate();
+
+        }
+    }
+
+
+
+
     // Koko laskun muokkaaminen
     public void muokkaaLaskua(Lasku lasku) throws SQLException {
         Lasku vanhaLasku = haeLasku(lasku.getLaskunumero());
@@ -137,6 +178,9 @@ public class LaskutDAO {
         }
     }
 
+
+
+
     // Laskun poistaminen
     public void poistaLasku(int laskuID) throws SQLException {
         String sql = "DELETE FROM Laskut WHERE laskuID = ?";
@@ -145,6 +189,7 @@ public class LaskutDAO {
             stmt.executeUpdate();
         }
     }
+
 
     // Laskujen raportointi
     public List<Lasku> haeKaikkiLaskut() throws SQLException {
@@ -159,6 +204,33 @@ public class LaskutDAO {
         }
         return laskut;
     }
+
+
+
+
+    // hakee kaikki laskut ja sopii laskutwrapper kanssa
+    public List<LaskutWrapper> haeKaikkiLaskut()throws SQLException{
+        List<LaskutWrapper> lista = new ArrayList<>();
+        String sql = "SELECT * FROM Laskut";
+        try (Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                LaskutWrapper lasku = new LaskutWrapper(
+                        rs.getInt("laskuID"),
+                        rs.getString("tuote"),
+                        rs.getString("asiakas"),
+                        rs.getInt("viitenumero"),
+                        rs.getDouble("maksettava"),
+                        rs.getString("status"));
+                lista.add(lasku);
+            }
+
+        }
+        return lista;
+    }
+
+
+
 
     // Laskujen hakminen statuksen mukaan
     public List<Lasku> haeLaskutStatuksella(String status) throws SQLException {
@@ -190,4 +262,4 @@ public class LaskutDAO {
                 rs.getString("nimi")
         );
     }
-}*/
+}
