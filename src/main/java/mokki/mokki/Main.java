@@ -387,8 +387,10 @@ public class Main extends Application {
             TaulukonData uusiLasku = new LaskutWrapper(0, "", "", 0, 0.0, "Avoin");
             LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
+
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
+                uusiLasku.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
                 taulukonSisalto.add(uusiLasku);
             }
         });
@@ -417,10 +419,11 @@ public class Main extends Application {
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Laskun tietoja muutetaan
             TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
-            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muokkaa laskua");
+            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muuta laskun tietoja");
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
+                laskunTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
                 // TODO: Päivitä laskun tiedot tietokantaan.
             }
         });
@@ -428,14 +431,16 @@ public class Main extends Application {
         kontekstivalikonKohdat.get(2).setOnAction(e -> {
             // Lasku merkitään maksetuksi
             TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
-            laskunTiedot.paivitaKenttienArvot(new String[] {
-                    laskunTiedot.palautaKenttienArvot()[0], // Laskunumero
-                    laskunTiedot.palautaKenttienArvot()[1], // Tuote
-                    laskunTiedot.palautaKenttienArvot()[2], // Asiakas
-                    laskunTiedot.palautaKenttienArvot()[3], // Viitenumero
-                    laskunTiedot.palautaKenttienArvot()[4], // Maksettava
-                    "Maksettu" // Muutetaan tila
-            });
+            if (laskunTiedot instanceof LaskutWrapper) {
+                LaskutWrapper lasku = (LaskutWrapper) laskunTiedot;
+                lasku.setTila("Maksettu");
+
+                // Päivitä ObservableList
+                int index = taulukonSisalto.indexOf(lasku);
+                if (index >= 0) {
+                    taulukonSisalto.set(index, lasku); // Tämä pakottaa TableView:n päivityksen
+                }
+            }
             // TODO: Päivitä tietokantaan, että lasku on maksettu.
         });
 
