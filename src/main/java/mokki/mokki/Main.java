@@ -21,6 +21,7 @@ import mokki.mokki.dao.*;
 import mokki.mokki.database.*;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -358,16 +359,18 @@ public class Main extends Application {
     private void alustaLaskutPaneeli() {
         // Dummy-dataa
         ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
-                new LaskutWrapper(3950359, "Vuokraus: JOE001; 15.03.2025-16.03.2025",
-                        "Jaska Jokunen (jaska@gmail.com)", 90405964, 150.35,
-                        "Avoin")
+                new LaskutWrapper(123124, "JOE123", "Niklas ekmanni", 1241254124,
+                        399, 350, 49, new Date(1234456456), new Date(1245565764),
+                        "Niklas@opiskelija.com", "Torikatu 567", "Niklas Ekman", "Avoin")
         );
         laskutPaneeli = new LaskutPaneeli(fonttikoko, taulukonSisalto);
 
         // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
         Hallintapaneeli hallintapaneeli = laskutPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
-            TaulukonData uusiLasku = new LaskutWrapper(0, "", "", 0, 0.0, "Avoin");
+            TaulukonData uusiLasku = new LaskutWrapper(0, "", "", 0,
+                    0, 0, 0, new Date(0), new Date(0),
+                    "", "", "", "Avoin");
             LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
