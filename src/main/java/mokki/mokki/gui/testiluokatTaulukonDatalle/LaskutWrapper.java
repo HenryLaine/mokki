@@ -276,7 +276,5 @@ public class LaskutWrapper implements TaulukonData {
         return 0;
     }
 
-    public void setTila(String uusiTila) {
-        this.tila.set(uusiTila);
-    }
+
 }

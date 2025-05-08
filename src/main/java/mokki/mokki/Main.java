@@ -360,7 +360,7 @@ public class Main extends Application {
         // Dummy-dataa
         ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
                 new LaskutWrapper(123124, "JOE123", "Niklas ekmanni", 1241254124,
-                        399, 350, 49, new Date(1234456456), new Date(1245565764),
+                        399, 350, 49, new Date(1234456456), new Date(1445565764),
                         "Niklas@opiskelija.com", "Torikatu 567", "Niklas Ekman", "Avoin")
         );
         laskutPaneeli = new LaskutPaneeli(fonttikoko, taulukonSisalto);
