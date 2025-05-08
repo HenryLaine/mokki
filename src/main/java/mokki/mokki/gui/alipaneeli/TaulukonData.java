@@ -41,12 +41,14 @@ public interface TaulukonData {
      * Metodi palauttaa tietokokonaisuuden tunnisteen, joka yksilöi tietkokokonaisuuden eli taulukossa
      * näytettävän rivin. Tunnisteen tulee olla jokin luokan kentistä. Kentän arvo tulee muuntaa
      * merkkijonoksi.
+     *
      * @return tunniste
      */
     String palautaTunniste();
 
     /**
      * Metodi palauttaa merkkijonon, joka kuvaa tietokokonaisuutta eli taulukossa näytettävää riviä.
+     *
      * @return kuvausteksti
      */
     String palautaKuvausteksti();

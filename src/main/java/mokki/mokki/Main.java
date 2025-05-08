@@ -8,7 +8,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.stage.Stage;
-import mokki.mokki.BackEnd.Asiakas;
 import mokki.mokki.gui.alipaneeli.Hallintapaneeli;
 import mokki.mokki.gui.alipaneeli.RaportitHallintapaneeli;
 import mokki.mokki.gui.alipaneeli.Taulukkopaneeli;
@@ -21,7 +20,6 @@ import mokki.mokki.dao.*;
 import mokki.mokki.database.*;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,101 +35,119 @@ public class Main extends Application {
 
 
     private void alustaKohteetPaneeli() {
-        // Dummy-dataa
-        List<TaulukonData> kohteet = List.of(
-                new KohteetWrapper("JOE001", "Joensuu", 1,
-                        46, 250, "Kohteessa on poreallas."),
-                new KohteetWrapper("KON005", "Kontiolahti", 5,
-                        25, 85, ""),
-                new KohteetWrapper("LIP003", "Liperi", 2, 15,
-                        130, "Kohde on remontoitavana 16.3.2025 asti.")
-        );
-        // Käyttöliittymän taulukon sisältö
-        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(kohteet);
-        kohteetPaneeli = new KohteetPaneeli(fonttikoko, taulukonSisalto);
+        try {
+            Connection conn = DatabaseManager.getConnection();
+            MokkiDAO mokkiDAO = new MokkiDAO(conn);
 
-        Taulukkopaneeli<TaulukonData> taulukkopaneeli = kohteetPaneeli.getTaulukkopaneeli();
-        Hallintapaneeli hallintapaneeli = kohteetPaneeli.getHallintapaneeli();
+            List<KohteetWrapper> kohteet = mokkiDAO.haeMokit();
+            ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(kohteet);
+            kohteetPaneeli = new KohteetPaneeli(fonttikoko, taulukonSisalto);
 
-        hallintapaneeli.getLisaaPainike().setOnAction(e -> {
-            // Uusi kohde luodaan.
-            TaulukonData uusiKohde = new KohteetWrapper();
-            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(uusiKohde, true,
-                    "Lisää kohde", new String[] {"Lisää kohde", "Peruuta"});
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
-            if (tulos) {
-                uusiKohde.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
-                // TODO: Kohde lisätään tietokantaan.
+            Hallintapaneeli hallintapaneeli = kohteetPaneeli.getHallintapaneeli();
+            Taulukkopaneeli<TaulukonData> taulukkopaneeli = kohteetPaneeli.getTaulukkopaneeli();
 
+            // Lisää kohde
+            hallintapaneeli.getLisaaPainike().setOnAction(e -> {
+                TaulukonData uusiKohde = new KohteetWrapper(); // Tyhjä konstruktori
+                KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(uusiKohde, true, "Lisää kohde", new String[]{"Lisää kohde", "Peruuta"});
+                tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
 
+                if (tulos) {
+                    uusiKohde.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                    try {
+                        mokkiDAO.lisaaMokki((KohteetWrapper) uusiKohde);
+                        taulukonSisalto.add(uusiKohde);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
 
-                // Kohde lisätään käyttöliittymän taulukkoon.
-                taulukonSisalto.add(uusiKohde);
-            }
+            // Rajaa kohteita
+            hallintapaneeli.getRajaaPainike().setOnAction(e -> {
+                RajausIkkuna rajausIkkuna = new RajausIkkuna();
+                rajausIkkuna.setTitle("Rajaa mökkejä hakusanalla");
 
-        });
-        hallintapaneeli.getRajaaPainike().setOnAction(e -> {
-            // Kohteita rajataan.
-            // TODO: Rajausten hallintapaneeli avataan.
+                String hakusana = rajausIkkuna.naytaJaOdotaJaPalautaTulos();
+                if (hakusana != null && !hakusana.isBlank()) {
+                    try {
+                        List<KohteetWrapper> rajatut = mokkiDAO.rajaaMokit(hakusana);
+                        taulukonSisalto.clear();
+                        taulukonSisalto.addAll(rajatut);
+                        hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET: " + hakusana);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        new Virheikkuna("Tietokantavirhe", "Mökkien haku epäonnistui.").show();
+                    }
+                }
+            });
 
+            // Poista rajaukset
+            hallintapaneeli.getPoistaRajauksetPainike().setOnAction(e -> {
+                try {
+                    List<KohteetWrapper> kaikki = mokkiDAO.haeMokit();
+                    taulukonSisalto.setAll(kaikki);
+                    hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            });
 
-            // TODO: Ylimääräiset kohteet poistetaan taulukon sisällöstä.
+            ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
-            // Rajaukset-teksti päivitetään vastaamaan rajauksia.
-            //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
-        });
-        hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
-            // Rajaukset poistetaan
-            // TODO: Taulukon sisältöön lisätään jollain logiikalla kaikki näytettävät kohteet.
-            //taulukonSisalto.clear();
-            //taulukonSisalto.addAll();
+            // Näytä tiedot
+            kontekstivalikonKohdat.get(0).setOnAction(e -> {
+                KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(
+                        taulukkopaneeli.palautaRivinTiedot(), false, true, "Kohteen tiedot", new String[]{"", "Sulje"});
+                tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                tiedotIkkuna.showAndWait();
+            });
 
-            // Rajaukset-teksti alustetaan.
-            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
-        });
+            // Muokkaa kohdetta
+            kontekstivalikonKohdat.get(1).setOnAction(e -> {
+                TaulukonData kohteenTiedot = taulukkopaneeli.palautaRivinTiedot();
+                KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(
+                        kohteenTiedot, true, true, "Muuta kohteen tietoja", new String[]{"Muuta tiedot", "Peruuta"});
+                tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+                if (tulos) {
+                    kohteenTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                    try {
+                        mokkiDAO.muokkaaMokki((KohteetWrapper) kohteenTiedot);
+                        int index = taulukonSisalto.indexOf(kohteenTiedot);
+                        if (index >= 0) {
+                            taulukonSisalto.set(index, kohteenTiedot);
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
 
-        ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+            // Poista kohde
+            kontekstivalikonKohdat.get(2).setOnAction(e -> {
+                TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
+                Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
+                        "Haluatko varmasti poistaa kohteen " + valittu.palautaKuvausteksti() + "?");
+                Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
 
-        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
-            // Kohteen tiedot näytetään.
-            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(taulukkopaneeli.palautaRivinTiedot(),
-                    false, true, "Kohteen tiedot", new String[] {"", "Sulje"});
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            tiedotIkkuna.showAndWait();
-        });
-        kontekstivalikonKohdat.get(1).setOnAction(e -> {
-            // Kohteen tietoja muutetaan.
-            TaulukonData kohteenTiedot = taulukkopaneeli.palautaRivinTiedot();
-            KohteenTiedotIkkuna
-                    tiedotIkkuna = new KohteenTiedotIkkuna(kohteenTiedot, true, true,
-                    "Muuta kohteen tietoja", new String[] {"Muuta tiedot", "Peruuta"});
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
-            if (tulos) {
-                // TODO: Kohteen tietoja muutetaan tietokannassa.
+                if (tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
+                    try {
+                        mokkiDAO.poistaMokki(Integer.parseInt(valittu.palautaTunniste()));
+                        taulukonSisalto.remove(valittu);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
 
-                // Kohteen tiedot muutetaan käyttöliittymän taulukossa.
-                kohteenTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
-            }
-        });
-        kontekstivalikonKohdat.get(2).setOnAction(e -> {
-            // Kohteen tiedot poistetaan.
-            Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
-                    "Haluatko varmasti poistaa kohteen " +
-                    taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
-            Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
-
-            if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // TODO: Kohde poistetaan tietokannasta.
-
-
-
-                // Kohde poistetaan käyttöliittymän taulukosta.
-                taulukonSisalto.remove(taulukkopaneeli.palautaRivinTiedot());
-            }
-        });
+        } catch (SQLException e) {
+            System.err.println("Tietokantayhteyden muodostaminen epäonnistui: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
 
     private void alustaVarauksetPaneeli() {
         // Dummy-dataa
@@ -359,17 +375,16 @@ public class Main extends Application {
     private void alustaLaskutPaneeli() {
         // Dummy-dataa
         ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
-                new LaskutWrapper(3950359, "Vuokraus: JOE001", "Jaska Jokunen (Jaska@gmail.com)", 1241254124,
-                        150.35, 123.45, 24.0, Date.valueOf("2025-03-15"), Date.valueOf("2025-03-20"),
-                        "jaska@gmail.com",  "Katuosoite 1, 90100 Oulu", "Jaska Jokunen", "Avoin")
+                new LaskutWrapper(3950359, "Vuokraus: JOE001; 15.03.2025-16.03.2025",
+                        "Jaska Jokunen (jaska@gmail.com)", 90405964, 150.35,
+                        "Avoin")
         );
         laskutPaneeli = new LaskutPaneeli(fonttikoko, taulukonSisalto);
 
         // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
         Hallintapaneeli hallintapaneeli = laskutPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
-            TaulukonData uusiLasku = new LaskutWrapper(0, "", "", 0, 0.0, 0.0,
-                    0.0, null, null, "", "", "", "Avoin");
+            TaulukonData uusiLasku = new LaskutWrapper(0, "", "", 0, 0.0, "Avoin");
             LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
 

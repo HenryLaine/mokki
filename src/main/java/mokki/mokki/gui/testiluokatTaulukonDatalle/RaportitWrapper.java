@@ -115,6 +115,7 @@ public class RaportitWrapper implements TaulukonData {
 
     /**
      * Metodi palauttaa tietokokonaisuuden tunnisteen eli kohteen tunnuksen.
+     *
      * @return tunniste
      */
     public String palautaTunniste() {
@@ -123,6 +124,7 @@ public class RaportitWrapper implements TaulukonData {
 
     /**
      * Metodi palauttaa tietokokonaisuuden kuvaustekstin eli kohteen tunnuksen.
+     *
      * @return tunniste
      */
     public String palautaKuvausteksti() {

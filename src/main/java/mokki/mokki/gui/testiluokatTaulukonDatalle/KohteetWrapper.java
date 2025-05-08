@@ -4,17 +4,16 @@ import javafx.beans.property.*;
 import mokki.mokki.BackEnd.Mokki;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
-import java.util.Arrays;
-
 /**
  * Testiluokka kohteiden tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
 public class KohteetWrapper implements TaulukonData {
-    private StringProperty tunnus;
+    private IntegerProperty tunnus;
     private StringProperty sijainti;
     private IntegerProperty huoneita;
     private DoubleProperty pintaAla;
     private DoubleProperty hinta;
+    private IntegerProperty henkilomaara;
     private StringProperty huomioitavaa;
 
     /** Määrityksiä tarvitaan taulukon luomisessa */
@@ -23,24 +22,17 @@ public class KohteetWrapper implements TaulukonData {
     /**
      * Luokan parametriton alustaja
      */
-    public KohteetWrapper() {
+    public KohteetWrapper(){
         maaritykset = new String[][] {
-                {"Tunnus", "String", "tunnus"},
+                {"Tunnus", "Integer", "tunnus"},
                 {"Sijainti", "String", "sijainti"},
                 {"Huoneita", "Integer", "huoneita"},
                 {"Pinta-ala", "Double", "pintaAla"},
                 {"Hinta", "Double", "hinta"},
+                {"Henkilömäärä", "Integer", "henkilomaara"},
                 {"Huomioitavaa", "String", "huomioitavaa"},
         };
-
-        setTunnus("");
-        setSijainti("");
-        setHuoneita(0);
-        setPintaAla(0);
-        setHinta(0);
-        setHuomioitavaa("");
     }
-
     /**
      * Luokan parametrillinen alustaja
      * @param tunnus tunnus
@@ -50,23 +42,25 @@ public class KohteetWrapper implements TaulukonData {
      * @param hinta hinta
      * @param huomioitavaa huomioitavaa
      */
-    public KohteetWrapper(String tunnus, String sijainti, int huoneita,
-                          int pintaAla, int hinta, String huomioitavaa) {
+    public KohteetWrapper(Integer tunnus, String sijainti, int huoneita,
+                          double pintaAla, double hinta, int henkilomaara, String huomioitavaa) {
 
         maaritykset = new String[][] {
-                {"Tunnus", "String", "tunnus"},
+                {"Tunnus", "Integer", "tunnus"},
                 {"Sijainti", "String", "sijainti"},
                 {"Huoneita", "Integer", "huoneita"},
                 {"Pinta-ala", "Double", "pintaAla"},
                 {"Hinta", "Double", "hinta"},
+                {"Henkilömäärä", "Integer", "henkilomaara"},
                 {"Huomioitavaa", "String", "huomioitavaa"},
         };
 
-        setTunnus(tunnus);
+        setTunnus(String.valueOf(tunnus));
         setSijainti(sijainti);
         setHuoneita(huoneita);
         setPintaAla(pintaAla);
         setHinta(hinta);
+        setHenkilomaara(henkilomaara);
         setHuomioitavaa(huomioitavaa);
     }
 
@@ -74,8 +68,20 @@ public class KohteetWrapper implements TaulukonData {
      * Metodi asettaa tunnuksen arvon.
      * @param tunnus tunnuksen arvon
      */
-    public void setTunnus(String tunnus) {
+    public void setTunnus(int tunnus) {
         tunnusProperty().set(tunnus);
+    }
+    public void setTunnus(String tunnus) {
+        if (tunnus == null || tunnus.trim().isEmpty()) {
+            this.setTunnus(0); // vaihtoehtoisesti: jätä asettamatta
+        } else {
+            try {
+                this.setTunnus(Integer.parseInt(tunnus.trim()));
+            } catch (NumberFormatException e) {
+                System.err.println("Virheellinen tunnus: " + tunnus);
+                this.setTunnus(0); // tai heitä poikkeus, tai jätä asettamatta
+            }
+        }
     }
 
     /**
@@ -83,18 +89,33 @@ public class KohteetWrapper implements TaulukonData {
      * @return tunnuksen arvo
      */
     public String getTunnus() {
-        return tunnusProperty().get();
+        return String.valueOf(tunnusProperty().get());
     }
 
     /**
      * Metodi alustaa tunnuksen, jos se on alustamaton.
      * @return tunnus
      */
-    public StringProperty tunnusProperty() {
+    public IntegerProperty tunnusProperty() {
         if (tunnus == null) {
-            tunnus = new SimpleStringProperty(this, maaritykset[0][2]);
+            tunnus = new SimpleIntegerProperty(this, maaritykset[0][2]);
         }
         return tunnus;
+    }
+
+    public int getHenkilomaara() {
+        return henkilomaara.get();
+    }
+
+    public IntegerProperty henkilomaaraProperty() {
+        if (henkilomaara == null) {
+            henkilomaara = new SimpleIntegerProperty(this, maaritykset[5][2]);
+        }
+        return henkilomaara;
+    }
+
+    public void setHenkilomaara(int henkilomaara) {
+        henkilomaaraProperty().set(henkilomaara);
     }
 
     /**
@@ -227,7 +248,7 @@ public class KohteetWrapper implements TaulukonData {
      */
     public StringProperty huomioitavaaProperty() {
         if (huomioitavaa == null) {
-            huomioitavaa = new SimpleStringProperty(this, maaritykset[5][2]);
+            huomioitavaa = new SimpleStringProperty(this, maaritykset[6][2]);
         }
         return huomioitavaa;
     }
@@ -242,18 +263,20 @@ public class KohteetWrapper implements TaulukonData {
 
     /**
      * Metodi palauttaa tietokokonaisuuden tunnisteen eli kohteen tunnuksen.
+     *
      * @return tunniste
      */
     public String palautaTunniste() {
-        return tunnus.get();
+        return String.valueOf(tunnus.get());
     }
 
     /**
      * Metodi palauttaa tietokokonaisuuden kuvaustekstin eli kohteen tunnuksen.
+     *
      * @return tunniste
      */
     public String palautaKuvausteksti() {
-        return tunnus.get();
+        return "";
     }
 
     /**
@@ -261,20 +284,31 @@ public class KohteetWrapper implements TaulukonData {
      * @return kenttien arvot
      */
     public String[] palautaKenttienArvot() {
-
-        return new String[] {tunnus.get(), sijainti.get(), ""+huoneita.get(),
-                ""+pintaAla.get(), ""+hinta.get(), huomioitavaa.get()};
+        return new String[] {
+                "" + tunnusProperty().get(),
+                "" + sijaintiProperty().get(),
+                "" + huoneitaProperty().get(),
+                "" + pintaAlaProperty().get(),
+                "" + hintaProperty().get(),
+                "" + henkilomaaraProperty().get(),
+                "" + huomioitavaaProperty().get()
+        };
     }
 
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
-        // TODO: tarkista, ovatko arvot hyväksyttäviä
-        if (arvot.length != 6) {
+        // Huom: tunnus ei ole pakollinen kenttä
+        if (arvot.length < 7) return false;
+
+        try {
+            Integer.parseInt(arvot[2]); // huoneita
+            Double.parseDouble(arvot[3]); // pinta-ala
+            Double.parseDouble(arvot[4]); // hinta
+            Integer.parseInt(arvot[5]); // henkilömäärä
+        } catch (NumberFormatException e) {
             return false;
         }
-        else if (arvot[0].trim().isEmpty()) {
-            return false;
-        }
-        return true;
+
+        return !arvot[1].trim().isEmpty(); // sijainti ei saa olla tyhjä
     }
 
     /**
@@ -289,7 +323,8 @@ public class KohteetWrapper implements TaulukonData {
             setHuoneita(Integer.parseInt(arvot[2]));
             setPintaAla(Double.parseDouble(arvot[3]));
             setHinta(Double.parseDouble(arvot[4]));
-            setHuomioitavaa(arvot[5]);
+            setHenkilomaara(Integer.parseInt(arvot[5]));
+            setHuomioitavaa(arvot[6]);
             return true;
         }
         return false;
@@ -313,13 +348,7 @@ public class KohteetWrapper implements TaulukonData {
 
 
     public boolean onkoTunnisteUniikki(String tunniste) {
-        if (tunnus.get().equals(tunniste)) {
-            return true;
-        }
-        else {
-            // TODO: tarkista, että tunniste ei ole sama kuin jonkin muun kohteen tunniste tietokannassa
-            return true;
-        }
+        return true;
     }
 
     public int palautaTunnisteenIndeksi() {
