@@ -366,8 +366,10 @@ public class Main extends Application {
             TaulukonData uusiLasku = new LaskutWrapper(0, "", "", 0, 0.0, "Avoin");
             LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
+
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
+                uusiLasku.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
                 taulukonSisalto.add(uusiLasku);
             }
         });
@@ -396,10 +398,11 @@ public class Main extends Application {
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Laskun tietoja muutetaan
             TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
-            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muokkaa laskua");
+            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muuta laskun tietoja");
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
+                laskunTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
                 // TODO: Päivitä laskun tiedot tietokantaan.
             }
         });
