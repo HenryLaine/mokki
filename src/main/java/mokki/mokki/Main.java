@@ -410,14 +410,16 @@ public class Main extends Application {
         kontekstivalikonKohdat.get(2).setOnAction(e -> {
             // Lasku merkitään maksetuksi
             TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
-            laskunTiedot.paivitaKenttienArvot(new String[] {
-                    laskunTiedot.palautaKenttienArvot()[0], // Laskunumero
-                    laskunTiedot.palautaKenttienArvot()[1], // Tuote
-                    laskunTiedot.palautaKenttienArvot()[2], // Asiakas
-                    laskunTiedot.palautaKenttienArvot()[3], // Viitenumero
-                    laskunTiedot.palautaKenttienArvot()[4], // Maksettava
-                    "Maksettu" // Muutetaan tila
-            });
+            if (laskunTiedot instanceof LaskutWrapper) {
+                LaskutWrapper lasku = (LaskutWrapper) laskunTiedot;
+                lasku.setTila("Maksettu");
+
+                // Päivitä ObservableList
+                int index = taulukonSisalto.indexOf(lasku);
+                if (index >= 0) {
+                    taulukonSisalto.set(index, lasku); // Tämä pakottaa TableView:n päivityksen
+                }
+            }
             // TODO: Päivitä tietokantaan, että lasku on maksettu.
         });
 
