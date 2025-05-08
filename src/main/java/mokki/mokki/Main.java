@@ -8,6 +8,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.stage.Stage;
+import mokki.mokki.BackEnd.Asiakas;
 import mokki.mokki.gui.alipaneeli.Hallintapaneeli;
 import mokki.mokki.gui.alipaneeli.RaportitHallintapaneeli;
 import mokki.mokki.gui.alipaneeli.Taulukkopaneeli;
@@ -62,6 +63,8 @@ public class Main extends Application {
                 uusiKohde.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
                 // TODO: Kohde lisätään tietokantaan.
 
+
+
                 // Kohde lisätään käyttöliittymän taulukkoon.
                 taulukonSisalto.add(uusiKohde);
             }
@@ -99,7 +102,8 @@ public class Main extends Application {
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Kohteen tietoja muutetaan.
             TaulukonData kohteenTiedot = taulukkopaneeli.palautaRivinTiedot();
-            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(kohteenTiedot, true, true,
+            KohteenTiedotIkkuna
+                    tiedotIkkuna = new KohteenTiedotIkkuna(kohteenTiedot, true, true,
                     "Muuta kohteen tietoja", new String[] {"Muuta tiedot", "Peruuta"});
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
