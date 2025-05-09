@@ -377,19 +377,22 @@ public class Main extends Application {
     private void alustaLaskutPaneeli() {
         // Dummy-dataa
         ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
-                new LaskutWrapper(3950359, "Vuokraus: JOE001", "Jaska Jokunen",
-                        90405964, 150.35, 123.45, 24.0,
-                        Date.valueOf("2025-03-15"), Date.valueOf("2025-03-20"),
-                        "jaska@gmail.com", "Katuosoite 1, 90100 Oulu",
-                        "Jaska Jokunen", "Avoin")
+                new LaskutWrapper(345, "Vuokraus: JOE001", "", 3245445,
+                        0, 100, 10, Date.valueOf("2025-05-16"), Date.valueOf("2025-06-30"),
+                        "MikkoJokinen@gmail.com", "Testikatu 10, turku", "Mikko Jokinen",
+                        "Avoin"
+                )
         );
         laskutPaneeli = new LaskutPaneeli(fonttikoko, taulukonSisalto);
 
         // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
         Hallintapaneeli hallintapaneeli = laskutPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
-            TaulukonData uusiLasku = new LaskutWrapper(0, "", "", 0, 0.0, 0.0,
-                    0.0, null, null, "", "", "", "Avoin");
+            TaulukonData uusiLasku =  new LaskutWrapper(
+                    0, "Vuokraus: ", "", 0,
+                    0, 100, 10, null, null,
+                    "", "", "", "Avoin"
+            );
             LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
 
@@ -424,7 +427,7 @@ public class Main extends Application {
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Laskun tietoja muutetaan
             TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
-            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muuta laskun tietoja");
+            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muuta tiedot");
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
