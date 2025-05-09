@@ -269,6 +269,9 @@ public class VarauksenTiedotIkkuna extends Stage {
                 // Kaikki arvot ovat hyväksyttäviä, joten ikkuna voidaan sulkea.
                 else {
                     tulos = true;
+                    // Päivitetään samalla asiakkaan nimi ja sähköpostiosoite
+                    ((VarauksetWrapper)data).setAsiakkaanSahkoposti(tekstikenttalista.get(2).getText().strip());
+                    ((VarauksetWrapper)data).setAsiakkaanNimi(tekstikenttalista.get(3).getText().strip());
                     this.close();
                 }
             });
