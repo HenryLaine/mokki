@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS Yksityisasiakas (
 CREATE TABLE IF NOT EXISTS Yritysasiakas (
     sahkoposti VARCHAR(100) PRIMARY KEY,
     y_tunnus VARCHAR(20),
+    puhelinnumero VARCHAR(20),
     osoite VARCHAR(255),
     nimi VARCHAR(100),
     FOREIGN KEY (sahkoposti) REFERENCES Asiakas(sahkoposti) ON DELETE CASCADE

@@ -73,13 +73,13 @@ public class KohteetWrapper implements TaulukonData {
     }
     public void setTunnus(String tunnus) {
         if (tunnus == null || tunnus.trim().isEmpty()) {
-            this.setTunnus(0); // vaihtoehtoisesti: jätä asettamatta
+            this.setTunnus(0);
         } else {
             try {
                 this.setTunnus(Integer.parseInt(tunnus.trim()));
             } catch (NumberFormatException e) {
                 System.err.println("Virheellinen tunnus: " + tunnus);
-                this.setTunnus(0); // tai heitä poikkeus, tai jätä asettamatta
+                this.setTunnus(0);
             }
         }
     }
@@ -291,9 +291,11 @@ public class KohteetWrapper implements TaulukonData {
                 "" + pintaAlaProperty().get(),
                 "" + hintaProperty().get(),
                 "" + henkilomaaraProperty().get(),
-                "" + huomioitavaaProperty().get()
+                huomioitavaaProperty().get()
         };
     }
+
+
 
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
         // Huom: tunnus ei ole pakollinen kenttä
