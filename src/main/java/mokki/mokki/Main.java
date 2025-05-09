@@ -24,6 +24,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -155,10 +156,10 @@ public class Main extends Application {
         // Dummy-dataa
         List<TaulukonData> varaukset = List.of(
                 new VarauksetWrapper("A003", "JOE001",
-                        "Matti Meikäläinen", "matti@gmail.com", "05.04.2025",
-                        "08.04.2025", "Päättynyt", "Lisäpalvelu: ylimääräinen sänky"),
+                        "Matti Meikäläinen", "matti@gmail.com", LocalDate.of(2020, 3, 2),
+                        LocalDate.of(2024, 3, 2), "Päättynyt", "Lisäpalvelu: ylimääräinen sänky"),
                 new VarauksetWrapper("J046", "KUO004", "Jukka Jokunen" ,
-                        "jukka@gmail.com", "08.06.2025", "14.07.2025",
+                        "jukka@gmail.com", LocalDate.of(2029, 3, 2), LocalDate.of(2032, 3, 2),
                         "Aktiivinen", "")
         );
         ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(varaukset);
@@ -398,7 +399,9 @@ public class Main extends Application {
 
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
+                System.out.println(Arrays.toString(tiedotIkkuna.palautaKenttienTiedot()));
                 uusiLasku.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                System.out.println(Arrays.toString(uusiLasku.palautaKenttienArvot()));
                 taulukonSisalto.add(uusiLasku);
             }
         });

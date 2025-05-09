@@ -1,7 +1,6 @@
 package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 import java.time.LocalDate;
@@ -14,8 +13,8 @@ public class VarauksetWrapper implements TaulukonData {
     private StringProperty tunnus;
     private StringProperty kohteenTunnus;
     private StringProperty asiakas;
-    private StringProperty alkaa;
-    private StringProperty paattyy;
+    private ObjectProperty<LocalDate> alkaa;
+    private ObjectProperty<LocalDate> paattyy;
     private StringProperty tila;
     private StringProperty huomioitavaa;
 
@@ -29,7 +28,7 @@ public class VarauksetWrapper implements TaulukonData {
 
 
     public VarauksetWrapper(String tunnus, String kohteenTunnus, String asiakkaanNimi, String asiakkaanSahkoposti,
-                            String alkaa, String paattyy, String tila, String huomioitavaa) {
+                            LocalDate alkaa, LocalDate paattyy, String tila, String huomioitavaa) {
 
         this.asiakkaanNimi = asiakkaanNimi;
         this.asiakkaanSahkoposti = asiakkaanSahkoposti;
@@ -37,8 +36,8 @@ public class VarauksetWrapper implements TaulukonData {
         this.tunnus = new SimpleStringProperty(tunnus);
         this.kohteenTunnus = new SimpleStringProperty(kohteenTunnus);
         this.asiakas = new SimpleStringProperty(asiakkaanNimi + " (" +asiakkaanSahkoposti + ")");
-        this.alkaa = new SimpleStringProperty(alkaa);
-        this.paattyy = new SimpleStringProperty(paattyy);
+        this.alkaa = new SimpleObjectProperty<>(alkaa);
+        this.paattyy = new SimpleObjectProperty<>(paattyy);
         this.tila = new SimpleStringProperty(tila);
         this.huomioitavaa = new SimpleStringProperty(huomioitavaa);
 
@@ -46,8 +45,8 @@ public class VarauksetWrapper implements TaulukonData {
                 {"Tunnus", "String", "tunnus"},
                 {"Kohteen tunnus", "String", "kohteenTunnus"},
                 {"Asiakas", "String", "asiakas"},
-                {"Alkaa", "String", "alkaa"},
-                {"Päättyy", "String", "paattyy"},
+                {"Alkaa", "LocalDate", "alkaa"},
+                {"Päättyy", "LocalDate", "paattyy"},
                 {"Tila", "String", "tila"},
                 {"Huomioitavaa", "String", "huomioitavaa"},
         };
@@ -97,9 +96,22 @@ public class VarauksetWrapper implements TaulukonData {
      * Metodi palauttaa alkaa-kentän arvon.
      * @return alkaa
      */
-    public String getAlkaa() {
+    public LocalDate getAlkaa() {
         return alkaa.get();
     }
+
+    public ObjectProperty<LocalDate> alkaaProperty() {
+        if (alkaa == null) {
+            alkaa = new SimpleObjectProperty<>(this, maaritykset[5][2]);
+        }
+        return alkaa;
+    }
+
+    public void setAlkaa(LocalDate alkaa) {
+        alkaaProperty().set(alkaa);
+    }
+
+
 
     /**
      * Metodi palauttaa asiakas-kentän arvon.
@@ -113,7 +125,7 @@ public class VarauksetWrapper implements TaulukonData {
      * Metodi palauttaa päättyy-kentän arvon
      * @return päättyy
      */
-    public String getPaattyy() {
+    public LocalDate getPaattyy() {
         return paattyy.get();
     }
 
@@ -157,7 +169,7 @@ public class VarauksetWrapper implements TaulukonData {
      */
     public String[] palautaKenttienArvot() {
         return new String[] {tunnus.get(), kohteenTunnus.get(), asiakas.get(),
-                alkaa.get(), paattyy.get(), tila.get(), huomioitavaa.get()};
+                String.valueOf(alkaa.get()), String.valueOf(paattyy.get()), tila.get(), huomioitavaa.get()};
     }
 
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {

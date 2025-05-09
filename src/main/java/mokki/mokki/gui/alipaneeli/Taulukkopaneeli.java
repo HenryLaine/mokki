@@ -5,7 +5,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Luokka toteuttaa käytöliittymän taulukkopaneelin. Taulukko tukee String, Integer ja
@@ -98,6 +100,11 @@ public class Taulukkopaneeli<T> extends TableView<T> {
                         }
                     }
                 });
+            }
+            else if (tiedot[1].equals("LocalDate")) {
+                TableColumn<T, LocalDate> sarake = new TableColumn<>(tiedot[0]);
+                this.getColumns().add(sarake);
+                sarake.setCellValueFactory(new PropertyValueFactory<>(tiedot[2]));
             }
         }
     }
