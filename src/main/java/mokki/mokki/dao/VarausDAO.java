@@ -85,6 +85,7 @@ public class VarausDAO {
      */
 
     // apumetodi hakee yhden varauksen
+    /*
     public Varaus haeVaraus(int varausID) throws SQLException {
         String sql = "SELECT * FROM Varaus WHERE varausID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -104,7 +105,8 @@ public class VarausDAO {
                 }
             }
         }
-    }
+    }*/
+
     // varauksen poistaminen
     public void poistaVaraus(int varaustunnus) throws SQLException {
         String sql = "DELETE FROM Varaus WHERE varaustunnus = ?";
@@ -128,8 +130,8 @@ public class VarausDAO {
                         String.valueOf(rs.getInt("mokkiID")),
                         rs.getString("nimi"),
                         rs.getString("sahkoposti"),
-                        rs.getString("aloitus_pvm"),
-                        rs.getString("paattymis_pvm"),
+                        rs.getDate("aloitus_pvm").toLocalDate(),
+                        rs.getDate("paattymis_pvm").toLocalDate(),
                         "Aktiivinen",
                         ""
                 );
@@ -162,6 +164,7 @@ public class VarausDAO {
     } */
 
     // varausten hakeminen aikavälillä
+    /*
     public List<Varaus> haeVarauksetPaivamaaranPerusteella(Date alku, Date loppu) throws SQLException {
         List<Varaus> varaukset = new ArrayList<>();
         String sql = "SELECT * FROM Varaus WHERE aloitus_pvm >= ? AND paattymis_pvm <= ?";
@@ -177,9 +180,12 @@ public class VarausDAO {
             }
         }
         return varaukset;
-    }
+    } */
+
+
 
     // apuluokka: resultSet -> Varaus
+    /*
     private Varaus ResultSetToVaraus(ResultSet rs) throws SQLException {
         int id = rs.getInt("varaustunnus");
         Date alku = rs.getDate("aloitus_pvm");
@@ -189,6 +195,6 @@ public class VarausDAO {
         int mokkiID = rs.getInt("mokkiID");
 
         return new Varaus(id, alku, loppu, maara, sahkoposti, mokkiID);
-    }
+    } */
 }
 
