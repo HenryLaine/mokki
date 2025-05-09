@@ -35,12 +35,13 @@ public class AsiakasDAO {
                 stmt.executeUpdate();
             }
         } else if ("yritys".equalsIgnoreCase(a.getTyyppi())) {
-            String sqlYrt = "INSERT INTO Yritysasiakas (sahkoposti, nimi, osoite, y_tunnus) VALUES (?, ?, ?, ?)";
+            String sqlYrt = "INSERT INTO Yritysasiakas (sahkoposti, nimi, puhelinnumero, osoite, y_tunnus) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(sqlYrt)) {
                 stmt.setString(1, a.getSahkoposti());
                 stmt.setString(2, a.getNimi());
-                stmt.setString(3, a.getOsoite());
-                stmt.setString(4, a.getYtunnus());
+                stmt.setString(3, a.getPuhelinnumero());
+                stmt.setString(4, a.getOsoite());
+                stmt.setString(5, a.getYtunnus());
                 stmt.executeUpdate();
             }
         }
@@ -95,7 +96,7 @@ public class AsiakasDAO {
 
     public AsiakkaatWrapper haeAsiakas(String sahkoposti) throws SQLException {
         String sql = "SELECT a.*, y.nimi AS yksityis_nimi, y.osoite AS yksityis_osoite, y.puhelinnumero, " +
-                "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.y_tunnus " +
+                "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.puhelinnumero AS yritys_puhelinnumero, yr.y_tunnus " +
                 "FROM Asiakas a " +
                 "LEFT JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti " +
                 "LEFT JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti " +
@@ -122,7 +123,7 @@ public class AsiakasDAO {
                                 sahkoposti,
                                 tyyppi,
                                 rs.getString("yritys_nimi"),
-                                null,
+                                rs.getString("yritys_puhelinnumero"),
                                 rs.getString("yritys_osoite"),
                                 rs.getString("y_tunnus")
                         );
@@ -137,7 +138,7 @@ public class AsiakasDAO {
     public List<AsiakkaatWrapper> haeAsiakkaat() throws SQLException {
         List<AsiakkaatWrapper> lista = new ArrayList<>();
         String sql = "SELECT a.*, y.nimi AS yksityis_nimi, y.osoite AS yksityis_osoite, y.puhelinnumero, " +
-                "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.y_tunnus " +
+                "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.puhelinnumero AS yritys_puhelinnumero, yr.y_tunnus " +
                 "FROM Asiakas a " +
                 "LEFT JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti " +
                 "LEFT JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti";
@@ -160,7 +161,7 @@ public class AsiakasDAO {
                     lista.add(new AsiakkaatWrapper(
                             sahkoposti, tyyppi,
                             rs.getString("yritys_nimi"),
-                            null,
+                            rs.getString("yritys_puhelinnumero"),
                             rs.getString("yritys_osoite"),
                             rs.getString("y_tunnus")
                     ));
@@ -192,7 +193,7 @@ public class AsiakasDAO {
         }
 
         String sql = "SELECT a.*, y.nimi AS yksityis_nimi, y.osoite AS yksityis_osoite, y.puhelinnumero, " +
-                "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.y_tunnus " +
+                "yr.nimi AS yritys_nimi, yr.osoite AS yritys_osoite, yr.puhelinnumero AS yritys_puhelinnumero, yr.y_tunnus " +
                 "FROM Asiakas a " +
                 "LEFT JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti " +
                 "LEFT JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti " + where.toString();
@@ -221,7 +222,7 @@ public class AsiakasDAO {
                         lista.add(new AsiakkaatWrapper(
                                 sahkoposti, tyyppi,
                                 rs.getString("yritys_nimi"),
-                                null,
+                                rs.getString("yritys_puhelinnumero"),
                                 rs.getString("yritys_osoite"),
                                 rs.getString("y_tunnus")
                         ));
