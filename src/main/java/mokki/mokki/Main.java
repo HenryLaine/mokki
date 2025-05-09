@@ -22,6 +22,7 @@ import mokki.mokki.database.*;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -465,42 +466,76 @@ public class Main extends Application {
     }
 
     private void alustaRaportitPaneeli() {
-        // Dummy-dataa
-        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
-                new RaportitWrapper("JOE001", 45, 21,
-                        20, 46.4, 100, 10000)
-        );
-        raportitPaneeli = new RaportitPaneeli(fonttikoko, taulukonSisalto);
+        try {
+            // Oletuspäivämäärät
+            LocalDate oletusAlku = LocalDate.of(2025, 1, 1);
+            LocalDate oletusLoppu = LocalDate.now();
 
-        // TODO: Aseta elementtien toiminnallisuus.
-        RaportitHallintapaneeli hallintapaneeli = raportitPaneeli.getHallintapaneeli();
-        /*
-        hallintapaneeli.getAlkuvuosivalikko().*(e -> {
+            // Luodaan yhteys ja haetaan alkuraportti
+            try (Connection conn = DatabaseManager.getConnection()) {
+                MokkiDAO raporttiDAO = new MokkiDAO(conn);
+                List<RaportitWrapper> raportit = raporttiDAO.haeRaportti(oletusAlku, oletusLoppu);
+                ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(raportit);
 
-        });
-        hallintapaneeli.getAlkukuukausivalikko().*(e -> {
+                // Luodaan käyttöliittymäkomponentit
+                raportitPaneeli = new RaportitPaneeli(fonttikoko, taulukonSisalto);
+                RaportitHallintapaneeli hallintapaneeli = raportitPaneeli.getHallintapaneeli();
 
-        });
-        hallintapaneeli.getLoppuvuosivalikko().*(e -> {
+                // Asetetaan oletuspäivämäärät
+                hallintapaneeli.getAlkupaivamaaraPicker().setValue(oletusAlku);
+                hallintapaneeli.getLoppupaivamaaraPicker().setValue(oletusLoppu);
 
-        });
-        hallintapaneeli.getLoppukuukausivalikko().*(e -> {
+                // Päivitä taulukko, kun päivämäärävalinnat muuttuvat
+                hallintapaneeli.getAlkupaivamaaraPicker().valueProperty().addListener((obs, oldVal, newVal) -> {
+                    try {
+                        haeJaPaivitaRaportti(taulukonSisalto, hallintapaneeli);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
 
-        });
-        hallintapaneeli.getRajauksetKentta().*(e -> {
+                hallintapaneeli.getLoppupaivamaaraPicker().valueProperty().addListener((obs, oldVal, newVal) -> {
+                    try {
+                        haeJaPaivitaRaportti(taulukonSisalto, hallintapaneeli);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
 
-        });
+                // Kontekstivalikon toiminto
+                Taulukkopaneeli<TaulukonData> taulukkopaneeli = raportitPaneeli.getTaulukkopaneeli();
+                ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+                if (!kontekstivalikonKohdat.isEmpty()) {
+                    kontekstivalikonKohdat.get(0).setOnAction(e -> {
+                        TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
+                        if (valittu != null) {
+                            String kohteenTunnus = valittu.palautaTunniste();
+                            System.out.println("Näytetään tiedot kohteesta: " + kohteenTunnus);
+                        }
+                    });
+                }
+            }
 
-         */
+        } catch (SQLException e) {
+            e.printStackTrace(); // Voit halutessasi näyttää virheilmoituksen myös käyttöliittymässä
+        }
+    }
 
-        // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
-        Taulukkopaneeli<TaulukonData> taulukkopaneeli = raportitPaneeli.getTaulukkopaneeli();
-        ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+    private void haeJaPaivitaRaportti(ObservableList<TaulukonData> taulukonSisalto, RaportitHallintapaneeli hallintapaneeli) throws SQLException {
+        LocalDate alku = hallintapaneeli.getAlkupaivamaaraPicker().getValue();
+        LocalDate loppu = hallintapaneeli.getLoppupaivamaaraPicker().getValue();
 
-        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
-            // Kohteen tiedot näytetään
-            // TODO: selvitä kohteen tunnus, hae tietokannasta kohteen tiedot ja luo KohteenTiedotIkkuna
-            String kohteenTunnus = taulukkopaneeli.palautaRivinTiedot().palautaTunniste();
+        if (alku == null || loppu == null || alku.isAfter(loppu)) {
+            System.out.println("Virheellinen päivämääräväli");
+            return;
+        }
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            MokkiDAO raporttiDao = new MokkiDAO(conn);
+            List<RaportitWrapper> raportit = raporttiDao.haeRaportti(alku, loppu);
+            taulukonSisalto.setAll(raportit);
+        }
+    }
 
             /* Luo kohteen tiedot sisältävä TaulukonData-olio ja syötä se KohteenTiedotIkkuna-olioon
             TaulukonData kohteenTiedot = new KohteetWrapper();
@@ -508,15 +543,15 @@ public class Main extends Application {
                     false, true, "Kohteen tiedot", new String[] {"", "Sulje"});
             tiedotIkkuna.asetaFonttikoko(fonttikoko);
             tiedotIkkuna.showAndWait();
-             */
-        });
+
+
 
         kontekstivalikonKohdat.get(1).setOnAction(e -> {
             // Kohteen varaukset näytetään
             // TODO: Siiry Varaukset-välilehdelle ja aseta rajaukseksi kohteen tunnus.
 
         });
-    }
+    }*/
 
     public static void main(String[] args) {
         DatabaseCreator.ensureDatabaseExists();
@@ -527,7 +562,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws SQLException {
 
         Valilehtipaneeli valilehtipaneeli = new Valilehtipaneeli(
                 new String[] {"Kohteet", "Varaukset", "Asiakkaat", "Laskut", "Raportit"});
