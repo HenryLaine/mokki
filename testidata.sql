@@ -25,17 +25,17 @@ INSERT IGNORE INTO Asiakas (sahkoposti, asiakastyyppi) VALUES
 ('yritys9@example.com', 'yritys'),
 ('yritys10@example.com', 'yritys');
 
-INSERT IGNORE INTO Yritysasiakas (sahkoposti, y_tunnus, osoite, nimi) VALUES
-('yritys1@example.com', '1234567-1', 'Yrityskatu 1, Helsinki', 'Yritys 1'),
-('yritys2@example.com', '1234567-2', 'Yrityskatu 2, Espoo', 'Yritys 2'),
-('yritys3@example.com', '1234567-3', 'Yrityskatu 3, Vantaa', 'Yritys 3'),
-('yritys4@example.com', '1234567-4', 'Yrityskatu 4, Turku', 'Yritys 4'),
-('yritys5@example.com', '1234567-5', 'Yrityskatu 5, Tampere', 'Yritys 5'),
-('yritys6@example.com', '1234567-6', 'Yrityskatu 6, Oulu', 'Yritys 6'),
-('yritys7@example.com', '1234567-7', 'Yrityskatu 7, Jyväskylä', 'Yritys 7'),
-('yritys8@example.com', '1234567-8', 'Yrityskatu 8, Kuopio', 'Yritys 8'),
-('yritys9@example.com', '1234567-9', 'Yrityskatu 9, Lahti', 'Yritys 9'),
-('yritys10@example.com', '1234567-10', 'Yrityskatu 10, Pori', 'Yritys 10');
+INSERT IGNORE INTO Yritysasiakas (sahkoposti, y_tunnus, puhelinnumero, osoite, nimi) VALUES
+('yritys1@example.com', '1234567-1', '12341234', 'Yrityskatu 1, Helsinki', 'Yritys 1'),
+('yritys2@example.com', '1234567-2','343523543', 'Yrityskatu 2, Espoo', 'Yritys 2'),
+('yritys3@example.com', '1234567-3', '3423453456', 'Yrityskatu 3, Vantaa', 'Yritys 3'),
+('yritys4@example.com', '1234567-4', '343462356', 'Yrityskatu 4, Turku', 'Yritys 4'),
+('yritys5@example.com', '1234567-5', '3566426643', 'Yrityskatu 5, Tampere', 'Yritys 5'),
+('yritys6@example.com', '1234567-6', '6676754325', 'Yrityskatu 6, Oulu', 'Yritys 6'),
+('yritys7@example.com', '1234567-7', '34543464', 'Yrityskatu 7, Jyväskylä', 'Yritys 7'),
+('yritys8@example.com', '1234567-8', '343454345', 'Yrityskatu 8, Kuopio', 'Yritys 8'),
+('yritys9@example.com', '1234567-9', '3454344564', 'Yrityskatu 9, Lahti', 'Yritys 9'),
+('yritys10@example.com', '1234567-10', '34546467787', 'Yrityskatu 10, Pori', 'Yritys 10');
 
 -- ASIAKKAAT: Yksityiset
 INSERT IGNORE INTO Asiakas (sahkoposti, asiakastyyppi) VALUES
