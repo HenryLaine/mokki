@@ -120,6 +120,9 @@ public class KohteenTiedotIkkuna extends Stage {
             Text otsikko = new Text(maaritykset[i][0] + ":");
             otsikko.setStyle("-fx-font-weight:bold;");
             TextField tekstikentta = new TextField("");
+            if (i == 0 && !esitayta) {
+                tekstikentta.setText("Järjestelmä täydentää");
+            }
             if (esitayta) {
                 if (maaritykset[i][1].equals("Double")) {
                     tekstikentta.setText(kenttienArvot[i].replaceAll("\\.", ","));
@@ -129,7 +132,7 @@ public class KohteenTiedotIkkuna extends Stage {
                 }
             }
             tekstikentta.setContextMenu(new ContextMenu());
-            if (!muokattavissa) {
+            if (!muokattavissa || i == 0) {
                 tekstikentta.setEditable(false);
                 tekstikentta.setFocusTraversable(false);
                 tekstikentta.setBackground(Background.fill(Color.GAINSBORO));
@@ -190,27 +193,16 @@ public class KohteenTiedotIkkuna extends Stage {
             peruutaPainike.setMinWidth(100);
             painikepaneeli.getChildren().addAll(hyvaksyPainike, peruutaPainike);
 
-            // TODO: varmista, että ikkuna ei sulkeudu ennen kuin kaikki arvot ovat hyväksyttäviä
+            // TODO: varmista, että KohteetWrapper-luokassa on toimivat metodit arvojen tarkistamiseen
             hyvaksyPainike.setOnAction(e -> {
-                int tunnisteenIndeksi = data.palautaTunnisteenIndeksi();
                 boolean arvotHyvaksyttavia = data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
-                boolean tunnisteUniikki = data.onkoTunnisteUniikki(
-                        tekstikenttalista.get(tunnisteenIndeksi).getText());
-                if (arvotHyvaksyttavia && tunnisteUniikki) {
+                if (arvotHyvaksyttavia) {
                     tulos = true;
                     this.close();
                 }
-                else if (!arvotHyvaksyttavia) {
+                else {
                     Virheikkuna virheikkuna = new Virheikkuna("Tietokenttävirhe",
                             muotoileTietokenttavirheteksti());
-                    virheikkuna.show();
-                }
-                else {
-                    String virheteksti = data.getMaaritykset()[tunnisteenIndeksi][0] + " " +
-                            tekstikenttalista.get(tunnisteenIndeksi).getText() +
-                            " löytyy jo tietokannasta. Valitse jokin toinen arvo.";
-                    Virheikkuna virheikkuna = new Virheikkuna("Tunnistevirhe",
-                            virheteksti);
                     virheikkuna.show();
                 }
             });

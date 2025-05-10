@@ -338,16 +338,44 @@ public class KohteetWrapper implements TaulukonData {
      * @return totuusarvolista tarkistuksen tuloksista
      */
     public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
-        boolean[] totuusarvolista = new boolean[arvot.length];
-        for (int i = 0; i < arvot.length; i++) {
-            // TODO: tarkista, mitkä arvot ovat hyväksyttäviä
-
-            totuusarvolista[i] = false;
-            //totuusarvolista[i] = true;
+        boolean[] totuusarvolista = new boolean[7];
+        // Tunnus (ei tarvitse tarkistaa)
+        totuusarvolista[0] = true;
+        // Sijainti (false, jos tyhjä)
+        totuusarvolista[1] = !arvot[1].trim().isEmpty();
+        // Huoneita (false, jos muunnos ei onnistu)
+        try {
+            Integer.parseInt(arvot[2]);
+            totuusarvolista[2] = true;
+        } catch (NumberFormatException e) {
+            totuusarvolista[2] = false;
         }
+        // Pinta-ala (false, jos muunnos ei onnistu)
+        try {
+            Double.parseDouble(arvot[3]);
+            totuusarvolista[3] = true;
+        } catch (NumberFormatException e) {
+            totuusarvolista[3] = false;
+        }
+        // Hinta (false, jos muunnos ei onnistu)
+        try {
+            Double.parseDouble(arvot[4]);
+            totuusarvolista[4] = true;
+        } catch (NumberFormatException e) {
+            totuusarvolista[4] = false;
+        }
+        // Henkilömäärä (false, jos muunnos ei onnistu)
+        try {
+            Integer.parseInt(arvot[5]);
+            totuusarvolista[5] = true;
+        } catch (NumberFormatException e) {
+            totuusarvolista[5] = false;
+        }
+        // Huomioitavaa (ei tarvitse tarkistaa)
+        totuusarvolista[6] = true;
+
         return totuusarvolista;
     }
-
 
     public boolean onkoTunnisteUniikki(String tunniste) {
         return true;
