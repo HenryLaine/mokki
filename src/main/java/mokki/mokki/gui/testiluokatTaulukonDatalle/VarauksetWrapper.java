@@ -23,6 +23,29 @@ public class VarauksetWrapper implements TaulukonData {
     /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
     private String[][] maaritykset;
 
+    public VarauksetWrapper() {
+        this.asiakkaanNimi = "";
+        this.asiakkaanSahkoposti = "";
+
+        this.tunnus = new SimpleStringProperty("");
+        this.kohteenTunnus = new SimpleStringProperty("");
+        this.asiakas = new SimpleStringProperty("");
+        this.alkaa = new SimpleObjectProperty<>(null);
+        this.paattyy = new SimpleObjectProperty<>(null);
+        this.tila = new SimpleStringProperty("");
+        this.huomioitavaa = new SimpleStringProperty("");
+
+        maaritykset = new String[][] {
+                {"Tunnus", "String", "tunnus"},
+                {"Kohteen tunnus", "String", "kohteenTunnus"},
+                {"Asiakas", "String", "asiakas"},
+                {"Alkaa", "LocalDate", "alkaa"},
+                {"Päättyy", "LocalDate", "paattyy"},
+                {"Tila", "String", "tila"},
+                {"Huomioitavaa", "String", "huomioitavaa"},
+        };
+    }
+
 
     public VarauksetWrapper(String tunnus, String kohteenTunnus, String asiakkaanNimi, String asiakkaanSahkoposti,
                             LocalDate alkaa, LocalDate paattyy, String tila, String huomioitavaa) {
@@ -208,6 +231,12 @@ public class VarauksetWrapper implements TaulukonData {
     }
 
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
+        boolean[] totuusarvolista = mitkaArvotHyvaksyttavia(arvot);
+        for (boolean arvo : totuusarvolista) {
+            if (!arvo) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -224,15 +253,27 @@ public class VarauksetWrapper implements TaulukonData {
     }
 
     public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
-        boolean[] totuusarvolista = new boolean[arvot.length];
-        for (int i = 0; i < arvot.length; i++) {
-            totuusarvolista[i] = true;
-        }
+        boolean[] totuusarvolista = new boolean[7];
+        // Tunnus (ei tarvitse tarkistaa)
+        totuusarvolista[0] = true;
+        // Kohteen tunnus (ei tarvitse tarkistaa)
+        totuusarvolista[1] = true;
+        // Asiakas (ei tarvitse tarkistaa)
+        totuusarvolista[2] = true;
+        // Alkaa (ei tarvitse tarkistaa)
+        totuusarvolista[3] = true;
+        // Päättyy (ei tarvitse tarkistaa)
+        totuusarvolista[4] = true;
+        // Tila (ei tarvitse tarkistaa)
+        totuusarvolista[5] = true;
+        // Huomioitavaa (ei tarvitse tarkistaa)
+        totuusarvolista[6] = true;
+
         return totuusarvolista;
     }
 
     public boolean onkoTunnisteUniikki(String tunniste) {
-        // TODO: tarkista, että tunnistetta ei löydy tietokannasta.
+        // Järjestelmä hoitaa tunnusten luomisen. Ei tarvitse tarkistaa.
         return true;
     }
 
@@ -240,8 +281,25 @@ public class VarauksetWrapper implements TaulukonData {
         return 0;
     }
 
-    public boolean onkoSahkopostiTietokannassa(String asiakkaanSahkoposti) {
+    /**
+     * Metodi tarkistaa, löytyykö tietyllä sähköpostiosoitteella asiakasta tietokannasta.
+     * @param asiakkaanSahkoposti asiakkaan sähköpostiosoite
+     * @return true, jos löytyy; false muussa tapauksessa
+     */
+    public boolean onkoAsiakasTietokannassa(String asiakkaanSahkoposti) {
+        // TODO:
         return true;
     }
+
+    /**
+     * Metodi tarkistaa, löytyykö tietyllä tunnuksella kohdetta tietokannasta.
+     * @param kohteenTunnus kohteen tunnus
+     * @return true, jos löytyy; false muussa tapauksessa
+     */
+    public boolean onkoKohdeTietokannassa(String kohteenTunnus) {
+        // TODO:
+        return true;
+    }
+
 
 }

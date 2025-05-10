@@ -168,7 +168,19 @@ public class Main extends Application {
         Hallintapaneeli hallintapaneeli = varauksetPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
             // Uusi varaus lisätään
-            // TODO
+            TaulukonData varauksenTiedot = new VarauksetWrapper();
+            VarauksenTiedotIkkuna tiedotIkkuna = new VarauksenTiedotIkkuna(varauksenTiedot,
+                    "Lisää varaus");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+            if (tulos) {
+                String[] kenttienTiedot = tiedotIkkuna.palautaKenttienTiedot();
+                // TODO: Varaus lisätään tietokantaan
+
+                // Varaus lisätään taulukkoon
+                varauksenTiedot.paivitaKenttienArvot(kenttienTiedot);
+                taulukonSisalto.add(varauksenTiedot);
+            }
 
         });
         hallintapaneeli.getRajaaPainike().setOnAction(e -> {

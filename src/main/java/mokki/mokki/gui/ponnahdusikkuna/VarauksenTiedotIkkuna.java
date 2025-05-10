@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 import mokki.mokki.gui.testiluokatTaulukonDatalle.VarauksetWrapper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -21,11 +22,18 @@ public class VarauksenTiedotIkkuna extends Stage {
     private TaulukonData data;
     private ArrayList<TextField> tekstikenttalista;
     private ArrayList<TextArea> tekstialuelista;
+    private ArrayList<DatePicker> paivamaaravalitsinlista;
     private ToggleGroup valintanapit;
     private boolean tulos = false;
     private String tyyppi;
     int fonttikoko = 16;
 
+    /**
+     * Luokan alustaja, joka luo tyypin perusteella varauksen tietoikkunan. Hyväksyttävät
+     * tyyppi-arvot ovat "Varauksen tiedot", "Muuta varauksen tietoja" ja "Lisää varaus".
+     * @param data asiakkaan tiedot
+     * @param tyyppi paneelin tyyppi
+     */
     public VarauksenTiedotIkkuna(TaulukonData data, String tyyppi) {
         this.data = data;
         this.tyyppi = tyyppi;
@@ -33,11 +41,15 @@ public class VarauksenTiedotIkkuna extends Stage {
         paapaneeli.setPadding(new Insets(20));
         tekstikenttalista = new ArrayList<>();
         tekstialuelista = new ArrayList<>();
+        paivamaaravalitsinlista = new ArrayList<>();
         if (tyyppi.equals("Varauksen tiedot")) {
-            varauksenTiedot();
+            luoStaattinenSisalto();
         }
-        else if(tyyppi.equals("Muuta varauksen tietoja")) {
-            muutaVarauksenTietoja();
+        else if (tyyppi.equals("Muuta varauksen tietoja")) {
+            luoMuokattavaSisalto();
+        }
+        else if (tyyppi.equals("Lisää varaus")) {
+            luoMuokattavaSisalto();
         }
 
         Scene kehys = new Scene(paapaneeli);
@@ -46,7 +58,11 @@ public class VarauksenTiedotIkkuna extends Stage {
         this.setScene(kehys);
     }
 
-    private void varauksenTiedot() {
+    /**
+     * Metodi luo pääpaneelin komponentit ja asettaa tiedot niin, että
+     * niitä ei voi muokata.
+     */
+    private void luoStaattinenSisalto() {
         VBox ylapaneeli = new VBox();
 
         // Luodaan ruudukkopaneeli
@@ -100,7 +116,11 @@ public class VarauksenTiedotIkkuna extends Stage {
         paapaneeli.setBottom(alapaneeli);
     }
 
-    private void muutaVarauksenTietoja() {
+    /**
+     * Metodi luo pääpaneelin komponentit ja asettaa tiedot niin, että
+     * niitä voi muokata.
+     */
+    private void luoMuokattavaSisalto() {
         VBox ylapaneeli = new VBox();
 
         // Luodaan ruudukkopaneeli
@@ -115,15 +135,37 @@ public class VarauksenTiedotIkkuna extends Stage {
                 sarake = 2;
                 rivi = 0;
             }
-            if (i == 2) {
+            if (i == 0) {
+                Text otsikko = new Text(maaritykset[i][0] + ":");
+                otsikko.setStyle("-fx-font-weight:bold;");
+                TextField tekstikentta = new TextField("Järjestelmä täydentää");
+                if (tyyppi.equals("Muuta varauksen tietoja")) {
+                    tekstikentta.setText(kenttienArvot[i]);
+                }
+                tekstikentta.setContextMenu(new ContextMenu());
+                tekstikentta.setEditable(false);
+                tekstikentta.setFocusTraversable(false);
+                tekstikentta.setBackground(Background.fill(Color.GAINSBORO));
+                ruudukkopaneeli.add(otsikko, sarake, rivi);
+                ruudukkopaneeli.add(tekstikentta, sarake + 1, rivi);
+                tekstikenttalista.add(tekstikentta);
+            }
+            else if (i == 2) {
                 // Lisätään asiakkaan sähköpostiosoite ja nimi ruudukkopaneeliin
                 Text otsikko1 = new Text("Asiakkaan sähköposti\n(tarkista painamalla Enter):");
                 otsikko1.setStyle("-fx-font-weight:bold;");
                 Text otsikko2 = new Text("Asiakkaan nimi:");
                 otsikko2.setStyle("-fx-font-weight:bold;");
-                TextField tekstikentta1 = new TextField(varauksenTiedot.getAsiakkaanSahkoposti());
+                TextField tekstikentta1 = new TextField("");
+                if (tyyppi.equals("Muuta varauksen tietoja")) {
+                    tekstikentta1.setText(varauksenTiedot.getAsiakkaanSahkoposti());
+                }
                 tekstikentta1.setContextMenu(new ContextMenu());
-                TextField tekstikentta2 = new TextField(varauksenTiedot.getAsiakkaanNimi());
+
+                TextField tekstikentta2 = new TextField("");
+                if (tyyppi.equals("Muuta varauksen tietoja")) {
+                    tekstikentta2.setText(kenttienArvot[i]);
+                }
                 tekstikentta2.setContextMenu(new ContextMenu());
                 tekstikentta2.setEditable(false);
                 tekstikentta2.setFocusTraversable(false);
@@ -140,16 +182,40 @@ public class VarauksenTiedotIkkuna extends Stage {
                     //  ja päivitä asiakkaan nimi -kenttä
 
                     String syotettySahkopostiosoite = tekstikentta1.getText().strip();
-                    if (((VarauksetWrapper) data).onkoSahkopostiTietokannassa(syotettySahkopostiosoite)) {
+                    if (((VarauksetWrapper) data).onkoAsiakasTietokannassa(syotettySahkopostiosoite)) {
                         // Etsi asiakkaan nimi ja syötä se tekstikenttään
                         tekstikentta2.setText("Asiakkaan nimi");
                     }
                     else {
-                        tekstikentta2.setText("Asiakasta ei löydy");
+                        tekstikentta2.setText("[Asiakasta ei löydy]");
                     }
                 });
                 tekstikenttalista.add(tekstikentta1);
                 tekstikenttalista.add(tekstikentta2);
+            }
+
+            else if (i == 3) {
+                Text otsikko = new Text(maaritykset[i][0] + ":");
+                otsikko.setStyle("-fx-font-weight:bold;");
+                DatePicker paivamaaravalitsin = new DatePicker(LocalDate.now());
+                if (tyyppi.equals("Muuta varauksen tietoja")) {
+                    paivamaaravalitsin.setValue(varauksenTiedot.getAlkaa());
+                }
+                ruudukkopaneeli.add(otsikko, sarake, rivi);
+                ruudukkopaneeli.add(paivamaaravalitsin, sarake + 1, rivi);
+                paivamaaravalitsinlista.add(paivamaaravalitsin);
+            }
+
+            else if (i == 4) {
+                Text otsikko = new Text(maaritykset[i][0] + ":");
+                otsikko.setStyle("-fx-font-weight:bold;");
+                DatePicker paivamaaravalitsin = new DatePicker(LocalDate.now());
+                if (tyyppi.equals("Muuta varauksen tietoja")) {
+                    paivamaaravalitsin.setValue(varauksenTiedot.getPaattyy());
+                }
+                ruudukkopaneeli.add(otsikko, sarake, rivi);
+                ruudukkopaneeli.add(paivamaaravalitsin, sarake + 1, rivi);
+                paivamaaravalitsinlista.add(paivamaaravalitsin);
             }
 
             else if (i == 5) {
@@ -162,7 +228,10 @@ public class VarauksenTiedotIkkuna extends Stage {
             else {
                 Text otsikko = new Text(maaritykset[i][0] + ":");
                 otsikko.setStyle("-fx-font-weight:bold;");
-                TextField tekstikentta = new TextField(kenttienArvot[i]);
+                TextField tekstikentta = new TextField("");
+                if (tyyppi.equals("Muuta varauksen tietoja")) {
+                    tekstikentta.setText(kenttienArvot[i]);
+                }
                 tekstikentta.setContextMenu(new ContextMenu());
                 ruudukkopaneeli.add(otsikko, sarake, rivi);
                 ruudukkopaneeli.add(tekstikentta, sarake + 1, rivi);
@@ -184,6 +253,10 @@ public class VarauksenTiedotIkkuna extends Stage {
 
     }
 
+    /**
+     * Metodi luo tekstialuepaneelin, johon voi syöttää huomioitavaa-kentän sisällön.
+     * @return tekstialuepaneeli
+     */
     private VBox luotekstialuepaneeli() {
         String[] kenttienArvot = data.palautaKenttienArvot();
         String[][] maaritykset = data.getMaaritykset();
@@ -192,7 +265,11 @@ public class VarauksenTiedotIkkuna extends Stage {
 
         Text otsikko = new Text(maaritykset[maaritykset.length - 1][0] + ":");
         otsikko.setStyle("-fx-font-weight:bold;");
-        TextArea tekstialue = new TextArea(kenttienArvot[kenttienArvot.length - 1]);
+        TextArea tekstialue = new TextArea("");
+        if (tyyppi.equals("Muuta varauksen tietoja") || tyyppi.equals("Varauksen tiedot")) {
+            tekstialue.setText(kenttienArvot[kenttienArvot.length - 1]);
+        }
+
         tekstialue.setWrapText(true);
         tekstialue.setContextMenu(new ContextMenu());
 
@@ -223,46 +300,43 @@ public class VarauksenTiedotIkkuna extends Stage {
                 this.close();
             });
         }
-        else if (tyyppi.equals("Muuta varauksen tietoja")) {
-            Button hyvaksyPainike = new Button("Muuta tiedot");
+        else if (tyyppi.equals("Muuta varauksen tietoja") || tyyppi.equals("Lisää varaus")) {
+            Button hyvaksyPainike = new Button("Lisää varaus");
+            if (tyyppi.equals("Muuta varauksen tietoja")) {
+                hyvaksyPainike.setText("Muuta tiedot");
+            }
             Button peruutaPainike = new Button("Peruuta");
             hyvaksyPainike.setMinWidth(100);
             peruutaPainike.setMinWidth(100);
             painikepaneeli.getChildren().addAll(hyvaksyPainike, peruutaPainike);
 
             hyvaksyPainike.setOnAction(e -> {
-                // TODO: tarkista, että tietojen tarkistukselle löytyy toimivat metodit
-                //  ja tarkistuken logiikka toimii oikein.
+                // TODO: tarkista, että tietojen tarkistukselle löytyy toimivat metodit VarauksetWrapper-luokassa
 
                 VarauksetWrapper data = (VarauksetWrapper)this.data;
-                boolean[] tulokset = data.mitkaArvotHyvaksyttavia(palautaKenttienTiedot());
-                if (!tulokset[data.palautaTunnisteenIndeksi()]) {
-                    String otsikko = "Tunnistevirhe";
-                    String virheteksti = "";
-                    // Tarkistetaan, että varauksen tunnus on hyväksyttävä.
-                    if (!data.onkoTunnisteUniikki(tekstikenttalista.getFirst().getText())) {
-                        virheteksti = "Tunnukselle " + tekstikenttalista.getFirst().getText() +
-                                " on jo luotu varaus. Valtse toinen tunnus.";
-                    }
-                    else {
-                        virheteksti = "Tunnus ei ole muodoltaa hyväksyttävä. Tarkista, että tunnus " +
-                                "noudattaa tunnisteiden muotoiluvaatimuksia.";
-                    }
+
+                // Tarkistetaan, että kohde löytyy tietokannasta.
+                if (!data.onkoKohdeTietokannassa(tekstikenttalista.get(1).getText().strip())) {
+                    String otsikko = "Kohdevirhe";
+                    String virheteksti = "Kohdetta ei löydy tietokannasta tunnuksella "
+                            + tekstikenttalista.get(1).getText().strip() + ". Lisää kohde ennen varauksen lisäämistä.";
                     Virheikkuna virheikkuna = new Virheikkuna(otsikko, virheteksti);
                     virheikkuna.show();
                 }
                 // Tarkistetaan, että asiakkaan sähköpostiosoite löytyy tietokannasta.
-                else if(!data.onkoSahkopostiTietokannassa(tekstikenttalista.get(2).getText())) {
+                else if(!data.onkoAsiakasTietokannassa(tekstikenttalista.get(2).getText().strip())) {
                     String otsikko = "Sähköpostiosoitevirhe";
                     String virheteksti = "Asiakasta ei löydy tietokannasta sähköpostiosoitteella "
-                            + tekstikenttalista.get(2).getText() + ". Lisää asiakas ennen varauksen lisäämistä.";
+                            + tekstikenttalista.get(2).getText().strip() + ". Lisää asiakas ennen varauksen lisäämistä.";
                     Virheikkuna virheikkuna = new Virheikkuna(otsikko, virheteksti);
                     virheikkuna.show();
                 }
-                // Tarkistetaan, että kaikkien kenttien arvot ovat hyväksyttäviä.
-                else if(!data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot())) {
-                    String otsikko = "Tietokenttävirhe";
-                    String virheteksti = muotoileTietokenttavirheteksti();
+                // Tarkistetaan, että päättymispäivä ei ole ennen alkamispäivää.
+                else if (paivamaaravalitsinlista.get(0).getValue().isAfter(
+                        paivamaaravalitsinlista.get(1).getValue())) {
+                    String otsikko = "Päivämäärävirhe";
+                    String virheteksti = "Varauksen päättymispäivä ei voi olla ennen varauksen alkamispäivää. " +
+                            "Tarkista valitut päivämäärät.";
                     Virheikkuna virheikkuna = new Virheikkuna(otsikko, virheteksti);
                     virheikkuna.show();
                 }
@@ -270,8 +344,8 @@ public class VarauksenTiedotIkkuna extends Stage {
                 else {
                     tulos = true;
                     // Päivitetään samalla asiakkaan nimi ja sähköpostiosoite
-                    ((VarauksetWrapper)data).setAsiakkaanSahkoposti(tekstikenttalista.get(2).getText().strip());
-                    ((VarauksetWrapper)data).setAsiakkaanNimi(tekstikenttalista.get(3).getText().strip());
+                    data.setAsiakkaanSahkoposti(tekstikenttalista.get(2).getText().strip());
+                    data.setAsiakkaanNimi(tekstikenttalista.get(3).getText().strip());
                     this.close();
                 }
             });
@@ -284,6 +358,10 @@ public class VarauksenTiedotIkkuna extends Stage {
         return painikepaneeli;
     }
 
+    /**
+     * Metodi luo valintanappipaneelin, jolla  valitaan varauksen tila.
+     * @return valintanappipaneeli
+     */
     private VBox luoValintanappipaneeli() {
         VBox valintanappipaneeli = new VBox(10);
         valintanapit = new ToggleGroup();
@@ -294,46 +372,25 @@ public class VarauksenTiedotIkkuna extends Stage {
         valintanappi2.setToggleGroup(valintanapit);
         valintanappi3.setToggleGroup(valintanapit);
 
-        String varauksenTila = data.palautaKenttienArvot()[5];
-        if (varauksenTila.equals("Aktiivinen")) {
-            valintanappi1.setSelected(true);
-        }
-        else if (varauksenTila.equals("Päättynyt")) {
-            valintanappi2.setSelected(true);
-        }
-        else if(varauksenTila.equals("Peruttu")) {
-            valintanappi3.setSelected(true);
+        valintanappi1.setSelected(true);
+
+        if (tyyppi.equals("Muuta varauksen tietoja")) {
+            String varauksenTila = data.palautaKenttienArvot()[5];
+            if (varauksenTila.equals("Aktiivinen")) {
+                valintanappi1.setSelected(true);
+            }
+            else if (varauksenTila.equals("Päättynyt")) {
+                valintanappi2.setSelected(true);
+            }
+            else if(varauksenTila.equals("Peruttu")) {
+                valintanappi3.setSelected(true);
+            }
+
         }
 
         valintanappipaneeli.getChildren().addAll(valintanappi1, valintanappi2, valintanappi3);
 
         return valintanappipaneeli;
-    }
-
-    /**
-     * Metodi muotoilee virhetekstin, joka näytetään, kun käyttäjä syöttää virheellisiä arvoja
-     * tietokenttiin.
-     * @return tietokenttävirheteksti
-     */
-    private String muotoileTietokenttavirheteksti() {
-        StringBuilder virheteksti = new StringBuilder("""
-                Joidenkin kenttien arvot ovat virheelliset. Tarkista, \
-                että pakolliset kentät on täytetty ja kaikkien kenttien arvot \
-                noudattavat muotoiluvaatimuksia.
-                
-                Seuraavien kenttien arvot ovat virheelliset:\s""");
-        String[][] maaritykset = data.getMaaritykset();
-        boolean[] virhearvot = data.mitkaArvotHyvaksyttavia(palautaKenttienTiedot());
-        for (int i = 0; i < virhearvot.length; i++) {
-            if (!virhearvot[i]) {
-                virheteksti.append(maaritykset[i][0]);
-                if (i != virhearvot.length - 1) {
-                    virheteksti.append(", ");
-                }
-            }
-        }
-
-        return virheteksti.toString();
     }
 
     /**
@@ -367,24 +424,27 @@ public class VarauksenTiedotIkkuna extends Stage {
         String[] tiedot = new String[7];
         if (tyyppi.equals("Varauksen tiedot")) {
             tiedot = new String[] {
-                    tekstikenttalista.get(0).getText().strip(),
-                    tekstikenttalista.get(1).getText().strip(),
-                    tekstialuelista.get(0).getText().strip(),
-                    tekstikenttalista.get(2).getText().strip(),
-                    tekstikenttalista.get(3).getText().strip(),
-                    tekstikenttalista.get(4).getText().strip(),
-                    tekstialuelista.get(1).getText().strip()};
+                    tekstikenttalista.get(0).getText().strip(), // tunnus
+                    tekstikenttalista.get(1).getText().strip(), // kohteen tunnus
+                    tekstialuelista.get(0).getText().strip(), // asiakas
+                    tekstikenttalista.get(2).getText().strip(), // alkaa
+                    tekstikenttalista.get(3).getText().strip(), // päättyy
+                    tekstikenttalista.get(4).getText().strip(), // tila
+                    tekstialuelista.get(1).getText().strip() // huomioitavaa
+            };
         }
-        else if (tyyppi.equals("Muuta varauksen tietoja")) {
+        else if (tyyppi.equals("Muuta varauksen tietoja") || tyyppi.equals("Lisää varaus")) {
             RadioButton valittuNappi = (RadioButton)valintanapit.getSelectedToggle();
             tiedot = new String[] {
-                    tekstikenttalista.get(0).getText().strip(),
-                    tekstikenttalista.get(1).getText().strip(),
-                    tekstikenttalista.get(3).getText().strip() + " (" + tekstikenttalista.get(2).getText().strip() + ")",
-                    tekstikenttalista.get(4).getText().strip(),
-                    tekstikenttalista.get(5).getText().strip(),
-                    valittuNappi.getText().strip(),
-                    tekstialuelista.getFirst().getText().strip()};
+                    tekstikenttalista.get(0).getText().strip(), // tunnus
+                    tekstikenttalista.get(1).getText().strip(), // kohteen tunnus
+                    tekstikenttalista.get(3).getText().strip() +
+                            " (" + tekstikenttalista.get(2).getText().strip() + ")", // asiakas
+                    paivamaaravalitsinlista.get(0).getValue().toString(), // alkaa
+                    paivamaaravalitsinlista.get(1).getValue().toString(), // päättyy
+                    valittuNappi.getText().strip(), // tila
+                    tekstialuelista.getFirst().getText().strip() // huomioitavaa
+            };
         }
 
         return tiedot;
