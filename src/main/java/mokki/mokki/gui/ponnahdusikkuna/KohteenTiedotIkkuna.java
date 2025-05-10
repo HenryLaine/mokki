@@ -275,7 +275,10 @@ public class KohteenTiedotIkkuna extends Stage {
         if (!tekstialueKaytossa) {
             tiedot = new String[tekstikenttalista.size()];
             for (int i = 0; i < tiedot.length; i++) {
-                if (data.getMaaritykset()[i][1].equals("Double")) {
+                if (i == 0) {
+                    tiedot[i] = "";
+                }
+                else if (data.getMaaritykset()[i][1].equals("Double")) {
                     tiedot[i] = tekstikenttalista.get(i).getText().replaceAll(",", ".");
                 }
                 else {
@@ -286,7 +289,10 @@ public class KohteenTiedotIkkuna extends Stage {
         else {
             tiedot = new String[tekstikenttalista.size() + 1];
             for (int i = 0; i < tiedot.length - 1; i++) {
-                if (data.getMaaritykset()[i][1].equals("Double")) {
+                if (i == 0) {
+                    tiedot[i] = "";
+                }
+                else if (data.getMaaritykset()[i][1].equals("Double")) {
                     tiedot[i] = tekstikenttalista.get(i).getText().replaceAll(",", ".");
                 }
                 else {

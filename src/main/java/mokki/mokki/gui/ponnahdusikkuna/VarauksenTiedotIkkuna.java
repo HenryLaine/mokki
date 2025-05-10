@@ -433,10 +433,23 @@ public class VarauksenTiedotIkkuna extends Stage {
                     tekstialuelista.get(1).getText().strip() // huomioitavaa
             };
         }
-        else if (tyyppi.equals("Muuta varauksen tietoja") || tyyppi.equals("Lisää varaus")) {
+        else if (tyyppi.equals("Muuta varauksen tietoja")) {
             RadioButton valittuNappi = (RadioButton)valintanapit.getSelectedToggle();
             tiedot = new String[] {
                     tekstikenttalista.get(0).getText().strip(), // tunnus
+                    tekstikenttalista.get(1).getText().strip(), // kohteen tunnus
+                    tekstikenttalista.get(3).getText().strip() +
+                            " (" + tekstikenttalista.get(2).getText().strip() + ")", // asiakas
+                    paivamaaravalitsinlista.get(0).getValue().toString(), // alkaa
+                    paivamaaravalitsinlista.get(1).getValue().toString(), // päättyy
+                    valittuNappi.getText().strip(), // tila
+                    tekstialuelista.getFirst().getText().strip() // huomioitavaa
+            };
+        }
+        else if (tyyppi.equals("Lisää varaus")) {
+            RadioButton valittuNappi = (RadioButton)valintanapit.getSelectedToggle();
+            tiedot = new String[] {
+                    "", // tunnus
                     tekstikenttalista.get(1).getText().strip(), // kohteen tunnus
                     tekstikenttalista.get(3).getText().strip() +
                             " (" + tekstikenttalista.get(2).getText().strip() + ")", // asiakas
