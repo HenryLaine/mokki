@@ -412,13 +412,22 @@ public class Main extends Application {
             boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
             if (tulos) {
                 System.out.println(Arrays.toString(tiedotIkkuna.palautaKenttienTiedot()));
-                uusiLasku.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
                 System.out.println(Arrays.toString(uusiLasku.palautaKenttienArvot()));
+
+                uusiLasku.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
                 taulukonSisalto.add(uusiLasku);
             }
         });
 
         hallintapaneeli.getRajaaPainike().setOnAction(e -> {
+            RajausIkkuna rajausIkkuna = new RajausIkkuna();
+            rajausIkkuna.setTitle("Rajaa laskuja päivämäärän mukaan");
+
+            String hakusana = rajausIkkuna.naytaJaOdotaJaPalautaTulos();
+            if (hakusana != null && !hakusana.isBlank()) {
+                // TODO: Hae rajatut laskut tietokannasta ja päivitä taulukon sisältö
+                hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET: " + hakusana);
+            }
 
             //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
         });
@@ -427,7 +436,6 @@ public class Main extends Application {
 
         });
 
-        // TODO: Aseta taulukkopaneelin kontekstivalikon toiminnallisuus.
         Taulukkopaneeli<TaulukonData> taulukkopaneeli = laskutPaneeli.getTaulukkopaneeli();
         ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 

@@ -56,6 +56,9 @@ public class LaskunTiedotIkkuna extends Stage {
         // Laskunumero
         Text laskunumeroOtsikko = new Text("Laskunumero:");
         TextField laskunumeroKentta = new TextField(kenttienArvot[0]);
+        laskunumeroKentta.setEditable(false);
+        laskunumeroKentta.setText("0");
+        laskunumeroKentta.setBackground(Background.fill(Color.GAINSBORO));
         if (tyyppi.equals("Laskun tiedot")) {
             laskunumeroKentta.setEditable(false);
             laskunumeroKentta.setFocusTraversable(false);
