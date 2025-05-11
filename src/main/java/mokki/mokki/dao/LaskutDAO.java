@@ -77,8 +77,8 @@ public class LaskutDAO {
 
             // Lasketaan yöpymisten määrä
             long yoMaara = ChronoUnit.DAYS.between(
-                    varaus.getAlkamisPaiva().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-                    varaus.getLoppumisPaiva().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                    varaus.getAlkaa(),
+                    varaus.getPaattyy()
             );
 
             double verotonHinta = yoMaara * hintaPerYo;

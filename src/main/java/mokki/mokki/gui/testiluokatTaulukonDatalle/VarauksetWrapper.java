@@ -4,7 +4,6 @@ import javafx.beans.property.*;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Wrapper-luokka varausten tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
@@ -20,11 +19,32 @@ public class VarauksetWrapper implements TaulukonData {
 
     private String asiakkaanNimi;
     private String asiakkaanSahkoposti;
-    private Date alkamisPaiva;
-    private Date loppumisPaiva;
 
     /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
     private String[][] maaritykset;
+
+    public VarauksetWrapper() {
+        this.asiakkaanNimi = "";
+        this.asiakkaanSahkoposti = "";
+
+        this.tunnus = new SimpleStringProperty("");
+        this.kohteenTunnus = new SimpleStringProperty("");
+        this.asiakas = new SimpleStringProperty("");
+        this.alkaa = new SimpleObjectProperty<>(null);
+        this.paattyy = new SimpleObjectProperty<>(null);
+        this.tila = new SimpleStringProperty("");
+        this.huomioitavaa = new SimpleStringProperty("");
+
+        maaritykset = new String[][] {
+                {"Tunnus", "String", "tunnus"},
+                {"Kohteen tunnus", "String", "kohteenTunnus"},
+                {"Asiakas", "String", "asiakas"},
+                {"Alkaa", "LocalDate", "alkaa"},
+                {"Päättyy", "LocalDate", "paattyy"},
+                {"Tila", "String", "tila"},
+                {"Huomioitavaa", "String", "huomioitavaa"},
+        };
+    }
 
 
     public VarauksetWrapper(String tunnus, String kohteenTunnus, String asiakkaanNimi, String asiakkaanSahkoposti,
@@ -52,90 +72,128 @@ public class VarauksetWrapper implements TaulukonData {
         };
     }
 
-    public String getAsiakkaanSahkoposti() {
-        return asiakkaanSahkoposti;
+    public void setTunnus(String tunnus) {
+        tunnusProperty().set(tunnus);
     }
 
-    public String getAsiakkaanNimi() {
-        return asiakkaanNimi;
-    }
-
-    public Date getAlkamisPaiva() {
-        return alkamisPaiva;
-    }
-
-    public Date getLoppumisPaiva() {
-        return loppumisPaiva;
-    }
-
-    /**
-     * Metodi palauttaa tunnus-kentän arvon.
-     * @return tunnus
-     */
     public String getTunnus() {
-        return tunnus.get();
+        return tunnusProperty().get();
     }
 
-    /**
-     * Metodi palauttaa kohteenTunnus-kentän arvon.
-     * @return kohteen tunnus
-     */
-    public String getKohteenTunnus() {
-        return kohteenTunnus.get();
-    }
-
-    /**
-     * Metodi palauttaa huomioitavaa-kentän arvon.
-     * @return huomioitavaa
-     */
-    public String getHuomioitavaa() {
-        return huomioitavaa.get();
-    }
-
-    /**
-     * Metodi palauttaa alkaa-kentän arvon.
-     * @return alkaa
-     */
-    public LocalDate getAlkaa() {
-        return alkaa.get();
-    }
-
-    public ObjectProperty<LocalDate> alkaaProperty() {
-        if (alkaa == null) {
-            alkaa = new SimpleObjectProperty<>(this, maaritykset[5][2]);
+    public StringProperty tunnusProperty() {
+        if (tunnus == null) {
+            tunnus = new SimpleStringProperty(this, maaritykset[0][2]);
         }
-        return alkaa;
+        return tunnus;
+    }
+
+    public void setKohteenTunnus(String kohteenTunnus) {
+        kohteenTunnusProperty().set(kohteenTunnus);
+    }
+
+    public String getKohteenTunnus() {
+        return kohteenTunnusProperty().get();
+    }
+
+    public StringProperty kohteenTunnusProperty() {
+        if (kohteenTunnus == null) {
+            kohteenTunnus = new SimpleStringProperty(this, maaritykset[1][2]);
+        }
+        return kohteenTunnus;
+    }
+
+    public void setAsiakas(String asiakas) {
+        asiakasProperty().set(asiakas);
+    }
+
+    public String getAsiakas() {
+        return asiakasProperty().get();
+    }
+
+    public StringProperty asiakasProperty() {
+        if (asiakas == null) {
+            asiakas = new SimpleStringProperty(this, maaritykset[2][2]);
+        }
+        return asiakas;
     }
 
     public void setAlkaa(LocalDate alkaa) {
         alkaaProperty().set(alkaa);
     }
 
-
-
-    /**
-     * Metodi palauttaa asiakas-kentän arvon.
-     * @return asiakas
-     */
-    public String getAsiakas() {
-        return asiakas.get();
+    public LocalDate getAlkaa() {
+        return alkaa.get();
     }
 
-    /**
-     * Metodi palauttaa päättyy-kentän arvon
-     * @return päättyy
-     */
+    public ObjectProperty<LocalDate> alkaaProperty() {
+        if (alkaa == null) {
+            alkaa = new SimpleObjectProperty<>(this, maaritykset[3][2]);
+        }
+        return alkaa;
+    }
+
+    public void setPaattyy(LocalDate paattyy) {
+        paattyyProperty().set(paattyy);
+    }
+
     public LocalDate getPaattyy() {
         return paattyy.get();
     }
 
-    /**
-     * Metodi palauttaa tila-kentän arvon
-     * @return tila
-     */
-    public String getTila() {
-        return tila.get();
+    public ObjectProperty<LocalDate> paattyyProperty() {
+        if (paattyy == null) {
+            paattyy = new SimpleObjectProperty<>(this, maaritykset[4][2]);
+        }
+        return paattyy;
     }
+
+    public void setTila(String tila) {
+        tilaProperty().set(tila);
+    }
+
+    public String getTila() {
+        return tilaProperty().get();
+    }
+
+    public StringProperty tilaProperty() {
+        if (tila == null) {
+            tila = new SimpleStringProperty(this, maaritykset[5][2]);
+        }
+        return tila;
+    }
+
+    public void setHuomioitavaa(String huomioitavaa) {
+        huomioitavaaProperty().set(huomioitavaa);
+    }
+
+    public String getHuomioitavaa() {
+        return huomioitavaaProperty().get();
+    }
+
+    public StringProperty huomioitavaaProperty() {
+        if (huomioitavaa == null) {
+            huomioitavaa = new SimpleStringProperty(this, maaritykset[6][2]);
+        }
+        return huomioitavaa;
+    }
+
+    public void setAsiakkaanSahkoposti(String asiakkaanSahkoposti) {
+        this.asiakkaanSahkoposti = asiakkaanSahkoposti;
+    }
+
+    public String getAsiakkaanSahkoposti() {
+        return asiakkaanSahkoposti;
+    }
+
+    public void setAsiakkaanNimi(String asiakkaanNimi) {
+        this.asiakkaanNimi = asiakkaanNimi;
+    }
+
+    public String getAsiakkaanNimi() {
+        return asiakkaanNimi;
+    }
+
+
 
     /**
      * Metodi palauttaa taulukkomääritykset.
@@ -173,23 +231,49 @@ public class VarauksetWrapper implements TaulukonData {
     }
 
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
-        return false;
+        boolean[] totuusarvolista = mitkaArvotHyvaksyttavia(arvot);
+        for (boolean arvo : totuusarvolista) {
+            if (!arvo) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean paivitaKenttienArvot(String[] arvot) {
+        setTunnus(arvot[0]);
+        setKohteenTunnus(arvot[1]);
+        setAsiakas(arvot[2]);
+        setAlkaa(LocalDate.parse(arvot[3]));
+        setPaattyy(LocalDate.parse(arvot[4]));
+        setTila(arvot[5]);
+        setHuomioitavaa(arvot[6]);
+
         return true;
     }
 
     public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
-        boolean[] totuusarvolista = new boolean[arvot.length];
-        for (int i = 0; i < arvot.length; i++) {
-            totuusarvolista[i] = false;
-        }
+        boolean[] totuusarvolista = new boolean[7];
+        // Tunnus (ei tarvitse tarkistaa)
+        totuusarvolista[0] = true;
+        // Kohteen tunnus (ei tarvitse tarkistaa)
+        totuusarvolista[1] = true;
+        // Asiakas (ei tarvitse tarkistaa)
+        totuusarvolista[2] = true;
+        // Alkaa (ei tarvitse tarkistaa)
+        totuusarvolista[3] = true;
+        // Päättyy (ei tarvitse tarkistaa)
+        totuusarvolista[4] = true;
+        // Tila (ei tarvitse tarkistaa)
+        totuusarvolista[5] = true;
+        // Huomioitavaa (ei tarvitse tarkistaa)
+        totuusarvolista[6] = true;
+
         return totuusarvolista;
     }
 
     public boolean onkoTunnisteUniikki(String tunniste) {
-        // TODO: tarkista, että tunnistetta ei löydy tietokannasta.
+        // Järjestelmä hoitaa tunnusten luomisen. Ei tarvitse tarkistaa.
         return true;
     }
 
@@ -197,8 +281,25 @@ public class VarauksetWrapper implements TaulukonData {
         return 0;
     }
 
-    public boolean onkoSahkopostiTietokannassa(String asiakkaanSahkoposti) {
+    /**
+     * Metodi tarkistaa, löytyykö tietyllä sähköpostiosoitteella asiakasta tietokannasta.
+     * @param asiakkaanSahkoposti asiakkaan sähköpostiosoite
+     * @return true, jos löytyy; false muussa tapauksessa
+     */
+    public boolean onkoAsiakasTietokannassa(String asiakkaanSahkoposti) {
+        // TODO:
         return true;
     }
+
+    /**
+     * Metodi tarkistaa, löytyykö tietyllä tunnuksella kohdetta tietokannasta.
+     * @param kohteenTunnus kohteen tunnus
+     * @return true, jos löytyy; false muussa tapauksessa
+     */
+    public boolean onkoKohdeTietokannassa(String kohteenTunnus) {
+        // TODO:
+        return true;
+    }
+
 
 }

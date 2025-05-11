@@ -155,10 +155,10 @@ public class Main extends Application {
     private void alustaVarauksetPaneeli() {
         // Dummy-dataa
         List<TaulukonData> varaukset = List.of(
-                new VarauksetWrapper("A003", "JOE001",
+                new VarauksetWrapper("A003", "3",
                         "Matti Meikäläinen", "matti@gmail.com", LocalDate.of(2020, 3, 2),
                         LocalDate.of(2024, 3, 2), "Päättynyt", "Lisäpalvelu: ylimääräinen sänky"),
-                new VarauksetWrapper("J046", "KUO004", "Jukka Jokunen" ,
+                new VarauksetWrapper("J046", "8", "Jukka Jokunen" ,
                         "jukka@gmail.com", LocalDate.of(2029, 3, 2), LocalDate.of(2032, 3, 2),
                         "Aktiivinen", "")
         );
@@ -168,7 +168,19 @@ public class Main extends Application {
         Hallintapaneeli hallintapaneeli = varauksetPaneeli.getHallintapaneeli();
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
             // Uusi varaus lisätään
-            // TODO
+            TaulukonData varauksenTiedot = new VarauksetWrapper();
+            VarauksenTiedotIkkuna tiedotIkkuna = new VarauksenTiedotIkkuna(varauksenTiedot,
+                    "Lisää varaus");
+            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+            if (tulos) {
+                String[] kenttienTiedot = tiedotIkkuna.palautaKenttienTiedot();
+                // TODO: Varaus lisätään tietokantaan
+
+                // Varaus lisätään taulukkoon
+                varauksenTiedot.paivitaKenttienArvot(kenttienTiedot);
+                taulukonSisalto.add(varauksenTiedot);
+            }
 
         });
         hallintapaneeli.getRajaaPainike().setOnAction(e -> {
@@ -235,7 +247,7 @@ public class Main extends Application {
                 String[] kenttienTiedot = tiedotIkkuna.palautaKenttienTiedot();
                 // TODO: Varauksen tietoja muutetaan tietokannassa.
 
-                // Kohteen tiedot muutetaan käyttöliittymän taulukossa.
+                // Varauksen tiedot muutetaan käyttöliittymän taulukossa.
                 varauksenTiedot.paivitaKenttienArvot(kenttienTiedot);
             }
 
