@@ -27,8 +27,7 @@ public class RaportitHallintapaneeli extends FlowPane {
         VBox alkupaivamaaralaatikko = luoPaivamaaralaatikko("Alkupäivämäärä", alkupaivamaaraPicker);
         VBox loppupaivamaaralaatikko = luoPaivamaaralaatikko("Loppupäivämäärä", loppupaivamaaraPicker);
         GridPane tilastolaatikko = luoTilastolaatikko();
-        VBox rajauspaneeli = luoRajauslaatikko();
-        this.getChildren().addAll(alkupaivamaaralaatikko, loppupaivamaaralaatikko, rajauspaneeli, tilastolaatikko);
+        this.getChildren().addAll(alkupaivamaaralaatikko, loppupaivamaaralaatikko, tilastolaatikko);
         this.setHgap(40);
         this.setVgap(0);
     }
@@ -56,27 +55,7 @@ public class RaportitHallintapaneeli extends FlowPane {
         tilastolaatikko.setPadding(new Insets(10));
         tilastolaatikko.setVgap(15);
         tilastolaatikko.setHgap(10);
-        kokonaiskayttoasteTeksti = new Text("");
-        kokonaistulotTeksti = new Text("");
-        tilastolaatikko.add(new Text("Kokonaiskäyttöaste: "), 0, 0);
-        tilastolaatikko.add(new Text("Kokonaistulot: "), 0, 1);
-        tilastolaatikko.add(kokonaiskayttoasteTeksti, 1, 0);
-        tilastolaatikko.add(kokonaistulotTeksti, 1, 1);
         return tilastolaatikko;
-    }
-
-    /**
-     * Metodi luo hallintapaneeliin sijoitettavan rajauslaatikon.
-     * @return rajauslaatikko
-     */
-    private VBox luoRajauslaatikko() {
-        VBox rajauslaatikko = new VBox(10);
-        rajauslaatikko.setPadding(new Insets(10));
-        rajauksetKentta = new TextField();
-        Text rajausteksti = new Text("Rajaa kohteita");
-        rajausteksti.setStyle("-fx-font-weight:bold;");
-        rajauslaatikko.getChildren().addAll(rajausteksti, rajauksetKentta);
-        return rajauslaatikko;
     }
 
     /**
@@ -109,24 +88,5 @@ public class RaportitHallintapaneeli extends FlowPane {
      * Metodi palauttaa kokonaiskäyttöasteen näyttävän tekstin.
      * @return kokonaiskäyttöaste
      */
-    public Text getKokonaiskayttoasteTeksti() {
-        return kokonaiskayttoasteTeksti;
-    }
-
-    /**
-     * Metodi palauttaa kokonaistulot näyttävän tekstin.
-     * @return kokonaistuloteksti
-     */
-    public Text getKokonaistulotTeksti() {
-        return kokonaistulotTeksti;
-    }
-
-    /**
-     * Metodi palauttaa rajaukset sisältävän tekstikentän.
-     * @return Rajaukset-tekstikenttä
-     */
-    public TextField getRajauksetKentta() {
-        return rajauksetKentta;
-    }
 
 }
