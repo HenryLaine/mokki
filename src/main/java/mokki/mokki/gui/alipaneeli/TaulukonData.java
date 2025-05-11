@@ -1,5 +1,9 @@
 package mokki.mokki.gui.alipaneeli;
 
+import mokki.mokki.dao.AsiakasDAO;
+
+import java.sql.SQLException;
+
 /**
  * <p>
  * Rajapinta sisältää metodimäärittelyt sellaisille luokille, jotka on tarkoitettu taulukkopaneeliin
@@ -87,7 +91,10 @@ public interface TaulukonData {
      * @return true, jos tunniste on uniikki tai jos tunniste-ehdokas on sama kuin nykyinen tunniste;
      * false muussa tapauksessa
      */
+
+
     boolean onkoTunnisteUniikki(String tunniste);
+
 
     /**
      * Metodi palauttaa tunnisteen indeksin. Indeksin avulla pitää pystyä noutamaan tunnisteen määritykset

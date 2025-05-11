@@ -1,8 +1,13 @@
 package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
+import mokki.mokki.dao.AsiakasDAO;
+import mokki.mokki.database.DatabaseManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * Wrapper-luokka asiakkaiden tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
@@ -17,6 +22,8 @@ public class AsiakkaatWrapper implements TaulukonData {
 
     /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
     private String[][] maaritykset;
+    private AsiakasDAO asiakasDAO;
+    private DatabaseManager databaseManager;
 
     /**
      * Luokan alustaja
@@ -181,13 +188,20 @@ public class AsiakkaatWrapper implements TaulukonData {
         return totuusarvolista;
     }
 
+
     public boolean onkoTunnisteUniikki(String tunniste) {
         if (sahkoposti.get().equals(tunniste)) {
             return true;
-        }
-        else {
-            // TODO: tarkista, että tunniste ei ole sama kuin jonkin muun kohteen tunniste tietokannassa
-            return true;
+        } else {
+            try {
+                Connection conn = DatabaseManager.getConnection();
+                asiakasDAO=new AsiakasDAO(conn);
+                return asiakasDAO.onkoSahkopostiUniikki(tunniste);
+            } catch (SQLException e) {
+                // Kirjaa virhe ja oletetaan ettei ole uniikki
+                e.printStackTrace();
+                return false;
+            }
         }
     }
 

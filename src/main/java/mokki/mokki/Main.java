@@ -474,12 +474,12 @@ public class Main extends Application {
     private void alustaRaportitPaneeli() {
         try {
             // Oletuspäivämäärät
-            LocalDate oletusAlku = LocalDate.of(2025, 1, 1);
-            LocalDate oletusLoppu = LocalDate.now();
+            LocalDate oletusAlku = LocalDate.of(2023, 1, 1);
+            LocalDate oletusLoppu = LocalDate.of(2025, 12, 31);
 
             // Luodaan yhteys ja haetaan alkuraportti
             try (Connection conn = DatabaseManager.getConnection()) {
-                MokkiDAO raporttiDAO = new MokkiDAO(conn);
+                RaportitDAO raporttiDAO = new RaportitDAO(conn);
                 List<RaportitWrapper> raportit = raporttiDAO.haeRaportti(oletusAlku, oletusLoppu);
                 ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(raportit);
 
@@ -537,10 +537,14 @@ public class Main extends Application {
         }
 
         try (Connection conn = DatabaseManager.getConnection()) {
-            MokkiDAO raporttiDao = new MokkiDAO(conn);
+            RaportitDAO raporttiDao = new RaportitDAO(conn);
             List<RaportitWrapper> raportit = raporttiDao.haeRaportti(alku, loppu);
             taulukonSisalto.setAll(raportit);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Virhe haettaessa raporttia tietokannasta.");
         }
+
     }
 
             /* Luo kohteen tiedot sisältävä TaulukonData-olio ja syötä se KohteenTiedotIkkuna-olioon

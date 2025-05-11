@@ -1,7 +1,13 @@
 package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 import javafx.beans.property.*;
+import mokki.mokki.dao.RaportitDAO;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  *
@@ -16,29 +22,21 @@ public class RaportitWrapper implements TaulukonData {
     private DoubleProperty kokonaistulot;
 
     private String[][] maaritykset;
+    private RaportitDAO dao;
 
     /**
      * Luokan alustaja
-     * @param kohde kohde
-     * @param kayttoaste käyttöaste
-     * @param varaustenMaara varausten määrä
-     * @param paivatulot päivätulot
-     * @param viikkotulot viikkotulot
-     * @param kuukausitulot kuukausitulot
-     * @param kokonaistulot kokonaistulot
      */
-    public RaportitWrapper(String kohde, int kayttoaste, int varaustenMaara,
-                           double paivatulot, double viikkotulot, double kuukausitulot, double kokonaistulot) {
+    public RaportitWrapper(ResultSet rs) throws SQLException {
+        this.kohde = new SimpleStringProperty(rs.getString("kohde"));
+        this.kayttoaste = new SimpleIntegerProperty(rs.getInt("kayttoaste_prosentti"));
+        this.varaustenMaara = new SimpleIntegerProperty(rs.getInt("varausten_maara"));
+        this.paivatulot = new SimpleDoubleProperty(rs.getDouble("paivatulot"));
+        this.viikkotulot = new SimpleDoubleProperty(rs.getDouble("viikkotulot"));
+        this.kuukausitulot = new SimpleDoubleProperty(rs.getDouble("kuukausitulot"));
+        this.kokonaistulot = new SimpleDoubleProperty(rs.getDouble("kokonaistulot"));
 
-        this.kohde = new SimpleStringProperty(kohde);
-        this.kayttoaste = new SimpleIntegerProperty(kayttoaste);
-        this.varaustenMaara = new SimpleIntegerProperty(varaustenMaara);
-        this.paivatulot = new SimpleDoubleProperty(paivatulot);
-        this.viikkotulot = new SimpleDoubleProperty(viikkotulot);
-        this.kuukausitulot = new SimpleDoubleProperty(kuukausitulot);
-        this.kokonaistulot = new SimpleDoubleProperty(kokonaistulot);
-
-        maaritykset = new String[][] {
+        this.maaritykset = new String[][] {
                 {"Kohde", "String", "kohde"},
                 {"Käyttöaste", "Integer", "kayttoaste"},
                 {"Varausten määrä", "Integer", "varaustenMaara"},
@@ -48,6 +46,7 @@ public class RaportitWrapper implements TaulukonData {
                 {"Kokonaistulot", "Double", "kokonaistulot"}
         };
     }
+
 
     /**
      * Metodi palauttaa kohteen.
@@ -144,8 +143,34 @@ public class RaportitWrapper implements TaulukonData {
         return true;
     }
 
+    @Override
     public boolean paivitaKenttienArvot(String[] arvot) {
-        return true;
+        return false;
+    }
+
+    public boolean paivitaKenttienArvot(String[] arvot, LocalDate alku, LocalDate loppu) {
+        try {
+            if (dao == null) return false;
+
+            // Haetaan tietokannasta raportti uudestaan – vain tälle kohteelle
+            List<RaportitWrapper> raportit = dao.haeRaportti(alku, loppu);
+
+            if (!raportit.isEmpty()) {
+                RaportitWrapper uusi = raportit.get(0); // Oletetaan että 1 vastaus
+
+                this.kayttoaste.set(uusi.getKayttoaste());
+                this.varaustenMaara.set(uusi.getVaraustenMaara());
+                this.paivatulot.set(uusi.getPaivatulot());
+                this.viikkotulot.set(uusi.getViikkotulot());
+                this.kuukausitulot.set(uusi.getKuukausitulot());
+                this.kokonaistulot.set(uusi.getKokonaistulot());
+
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {

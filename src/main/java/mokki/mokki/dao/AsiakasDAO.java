@@ -232,4 +232,17 @@ public class AsiakasDAO {
         }
         return lista;
     }
+    public boolean onkoSahkopostiUniikki(String sahkoposti) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Asiakas WHERE sahkoposti = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, sahkoposti);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    return count == 0;
+                }
+            }
+        }
+        return false;
+    }
 }
