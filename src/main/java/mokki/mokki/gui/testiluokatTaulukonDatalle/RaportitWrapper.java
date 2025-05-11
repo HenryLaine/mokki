@@ -1,13 +1,10 @@
 package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 import javafx.beans.property.*;
-import mokki.mokki.dao.RaportitDAO;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  *
@@ -22,7 +19,6 @@ public class RaportitWrapper implements TaulukonData {
     private DoubleProperty kokonaistulot;
 
     private String[][] maaritykset;
-    private RaportitDAO dao;
 
     /**
      * Luokan alustaja
@@ -145,31 +141,6 @@ public class RaportitWrapper implements TaulukonData {
 
     @Override
     public boolean paivitaKenttienArvot(String[] arvot) {
-        return false;
-    }
-
-    public boolean paivitaKenttienArvot(String[] arvot, LocalDate alku, LocalDate loppu) {
-        try {
-            if (dao == null) return false;
-
-            // Haetaan tietokannasta raportti uudestaan – vain tälle kohteelle
-            List<RaportitWrapper> raportit = dao.haeRaportti(alku, loppu);
-
-            if (!raportit.isEmpty()) {
-                RaportitWrapper uusi = raportit.get(0); // Oletetaan että 1 vastaus
-
-                this.kayttoaste.set(uusi.getKayttoaste());
-                this.varaustenMaara.set(uusi.getVaraustenMaara());
-                this.paivatulot.set(uusi.getPaivatulot());
-                this.viikkotulot.set(uusi.getViikkotulot());
-                this.kuukausitulot.set(uusi.getKuukausitulot());
-                this.kokonaistulot.set(uusi.getKokonaistulot());
-
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return false;
     }
 
