@@ -32,15 +32,7 @@ public class LaskutWrapper implements TaulukonData {
     /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
     private String[][] maaritykset;
 
-    /**
-     * Luokan alustaja
-     * @param laskunumero laskunumero
-     * @param tuote tuote
-     * @param asiakas asiakas
-     * @param viitenumero viitenumero
-     * @param maksettava maksettava määrä
-     * @param tila tila
-     */
+
 
     public LaskutWrapper() {
 

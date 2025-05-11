@@ -6,7 +6,6 @@ import mokki.mokki.gui.testiluokatTaulukonDatalle.VarauksetWrapper;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,10 +121,12 @@ public class LaskutDAO {
 
 
 
-/**
+
     // Koko laskun muokkaaminen
     public void muokkaaLaskua(LaskutWrapper lasku) throws SQLException {
         LaskutWrapper vanhaLasku = haeLasku(lasku.getLaskunumero());
+
+        Date laskunPaivamaara = Date.valueOf(lasku.getPaivamaara());
         if (vanhaLasku == null) {
             throw new SQLException("Laskua ei löydy laskuID:llä " + lasku.getLaskunumero());
         }
@@ -136,8 +137,8 @@ public class LaskutDAO {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDouble(1, lasku.getVerotonHinta() != 0.0 ? lasku.getVerotonHinta() : vanhaLasku.getVerotonHinta());
             stmt.setDouble(2, lasku.getAlv() != 0.0 ? lasku.getAlv() : vanhaLasku.getAlv());
-            stmt.setDate(3, lasku.getPaivamaara() != null ? lasku.getPaivamaara() : vanhaLasku.getPaivamaara());
-            stmt.setDate(4, lasku.getEraPaiva() != null ? lasku.getEraPaiva() : vanhaLasku.getEraPaiva());
+            stmt.setDate(3, laskunPaivamaara != null ? laskunPaivamaara : laskunPaivamaara);
+            stmt.setDate(4, laskunPaivamaara != null ? laskunPaivamaara : laskunPaivamaara);
             stmt.setString(5, lasku.getTila() != null ? lasku.getTila() : vanhaLasku.getTila());
             stmt.setString(6, lasku.getSahkposti() != null ? lasku.getSahkposti() : vanhaLasku.getSahkposti());
             stmt.setString(7, lasku.getOsoite() != null ? lasku.getOsoite() : vanhaLasku.getOsoite());
@@ -161,8 +162,8 @@ public class LaskutDAO {
                             rs.getDouble("maksettava"),
                             rs.getDouble("veroton_hinta"),
                             rs.getDouble("alv"),
-                            rs.getDate("paivamaara"),
-                            rs.getDate("erapaiva"),
+                            rs.getDate("paivamaara").toLocalDate(),
+                            rs.getDate("erapaiva").toLocalDate(),
                             rs.getString("sahkoposti"),
                             rs.getString("osoite"),
                             rs.getString("nimi"),
@@ -231,8 +232,8 @@ public class LaskutDAO {
                         rs.getDouble("maksettava"),
                         rs.getDouble("veroton_hinta"),
                         rs.getDouble("alv"),
-                        rs.getDate("paivamaara"),
-                        rs.getDate("erapaiva"),
+                        rs.getDate("paivamaara").toLocalDate(),
+                        rs.getDate("erapaiva").toLocalDate(),
                         rs.getString("sahkoposti"),
                         rs.getString("osoite"),
                         rs.getString("nimi"),
@@ -244,8 +245,6 @@ public class LaskutDAO {
         }
         return lista;
     }
-
-
 
 
     // Laskujen hakminen statuksen mukaan
@@ -274,13 +273,13 @@ public class LaskutDAO {
                 rs.getDouble("maksettava"),
                 rs.getDouble("veroton_hinta"),
                 rs.getDouble("alv"),
-                rs.getDate("paivamaara"),
-                rs.getDate("erapaiva"),
+                rs.getDate("paivamaara").toLocalDate(),
+                rs.getDate("erapaiva").toLocalDate(),
                 rs.getString("sahkoposti"),
                 rs.getString("osoite"),
                 rs.getString("nimi"),
                 rs.getString("status")
         );
     }
- */
+
 }

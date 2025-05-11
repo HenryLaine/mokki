@@ -153,122 +153,111 @@ public class Main extends Application {
 
 
     private void alustaVarauksetPaneeli() {
-        // Dummy-dataa
-        List<TaulukonData> varaukset = List.of(
-                new VarauksetWrapper("A003", "3",
-                        "Matti Meikäläinen", "matti@gmail.com", LocalDate.of(2020, 3, 2),
-                        LocalDate.of(2024, 3, 2), "Päättynyt", "Lisäpalvelu: ylimääräinen sänky"),
-                new VarauksetWrapper("J046", "8", "Jukka Jokunen" ,
-                        "jukka@gmail.com", LocalDate.of(2029, 3, 2), LocalDate.of(2032, 3, 2),
-                        "Aktiivinen", "")
-        );
-        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(varaukset);
-        varauksetPaneeli = new VarauksetPaneeli(fonttikoko, taulukonSisalto);
+        try {
+            Connection conn = DatabaseManager.getConnection();
+            VarausDAO varausDAO = new VarausDAO(conn);
 
-        Hallintapaneeli hallintapaneeli = varauksetPaneeli.getHallintapaneeli();
-        hallintapaneeli.getLisaaPainike().setOnAction(e -> {
-            // Uusi varaus lisätään
-            TaulukonData varauksenTiedot = new VarauksetWrapper();
-            VarauksenTiedotIkkuna tiedotIkkuna = new VarauksenTiedotIkkuna(varauksenTiedot,
-                    "Lisää varaus");
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
-            if (tulos) {
-                String[] kenttienTiedot = tiedotIkkuna.palautaKenttienTiedot();
-                // TODO: Varaus lisätään tietokantaan
+            List<VarauksetWrapper> varaukset = varausDAO.haeKaikkiWrapperVaraukset();
+            ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(varaukset);
+            varauksetPaneeli = new VarauksetPaneeli(fonttikoko, taulukonSisalto);
 
-                // Varaus lisätään taulukkoon
-                varauksenTiedot.paivitaKenttienArvot(kenttienTiedot);
-                taulukonSisalto.add(varauksenTiedot);
-            }
+            Hallintapaneeli hallintapaneeli = varauksetPaneeli.getHallintapaneeli();
+            Taulukkopaneeli<TaulukonData> taulukkopaneeli = varauksetPaneeli.getTaulukkopaneeli();
 
-        });
-        hallintapaneeli.getRajaaPainike().setOnAction(e -> {
-            // Varauksia rajataan
-            // TODO
+            // Lisää varaus
 
+            hallintapaneeli.getLisaaPainike().setOnAction(event -> {
+                TaulukonData uusiVaraus = new VarauksetWrapper(); // Tyhjä Konstruktori
+                VarauksenTiedotIkkuna tiedotIkkuna = new VarauksenTiedotIkkuna(uusiVaraus, "Lisää varaus");
+                tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
 
-            //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
-        });
-        hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
-            // Rajaukset poistetaan
-            // TODO
+                if (tulos)
+                {
+                    uusiVaraus.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                    try {
+                        varausDAO.lisaaVaraus((VarauksetWrapper) uusiVaraus);
+                        taulukonSisalto.add(uusiVaraus);
+                    }
+                    catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
 
+                /**
+                // Rajaa varauksia
+                hallintapaneeli.getRajaaPainike().setOnAction(event1 -> {
+                    RajausIkkuna rajausIkkuna = new RajausIkkuna();
+                    rajausIkkuna.setTitle("Rajaa varauksia hakusanalla");
 
-            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
-        });
+                    String hakusana = rajausIkkuna.naytaJaOdotaJaPalautaTulos();
+                    if (hakusana != null && !hakusana.isBlank()){
+                        try {
+                            List<VarauksetWrapper> rajatut = varausDAO.ra
+                        }
+                    }
+                }); */
 
-        Taulukkopaneeli<TaulukonData> taulukkopaneeli = varauksetPaneeli.getTaulukkopaneeli();
-        ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+                ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
-        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
-            // Varauksen tiedot näytetään
-            VarauksenTiedotIkkuna tiedotIkkuna = new VarauksenTiedotIkkuna(taulukkopaneeli.palautaRivinTiedot(),
-                    "Varauksen tiedot");
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            tiedotIkkuna.showAndWait();
-        });
-        kontekstivalikonKohdat.get(1).setOnAction(e -> {
-            // Kohteen tiedot näytetään
-            // TODO: selvitä kohteen tunnus, hae tietokannasta kohteen tiedot ja luo KohteenTiedotIkkuna
-            String kohteenTunnus = taulukkopaneeli.palautaRivinTiedot().palautaKenttienArvot()[1];
+                // Näytä tiedot
 
-            /* Luo kohteen tiedot sisältävä TaulukonData-olio ja syötä se KohteenTiedotIkkuna-olioon
-            TaulukonData kohteenTiedot = new KohteetWrapper();
-            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(kohteenTiedot,
-                    false, true, "Kohteen tiedot", new String[] {"", "Sulje"});
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            tiedotIkkuna.showAndWait();
-             */
-        });
-        kontekstivalikonKohdat.get(2).setOnAction(e -> {
-            // Asiakkaan tiedot näytetään
-            // TODO: selvitä asiakkaan sähköpostiosoite, hae tietokannasta asiakkaan tiedot
-            //  ja luo AsiakkaanTiedotIkkuna
+                kontekstivalikonKohdat.get(0).setOnAction(e -> {
+                    VarauksenTiedotIkkuna tiedotIkkuna = new VarauksenTiedotIkkuna(
+                            taulukkopaneeli.palautaRivinTiedot(), "Varauksen tiedot");
+                    tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                    tiedotIkkuna.showAndWait();
+                });
 
-            VarauksetWrapper varauksenTiedot = (VarauksetWrapper)taulukkopaneeli.palautaRivinTiedot();
-            String asiakkaanSahkoposti = varauksenTiedot.getAsiakkaanSahkoposti();
+                // Muokkaa varausta
+                kontekstivalikonKohdat.get(3).setOnAction(e -> {
+                    TaulukonData varauksentiedot = taulukkopaneeli.palautaRivinTiedot();
+                    VarauksenTiedotIkkuna tiedotIkkuna = new VarauksenTiedotIkkuna(varauksentiedot, "Muuta varauksen tietoja");
+                    tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                    boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+                    if  (tulos) {
+                        varauksentiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                        try {
+                            varausDAO.muokkaaVarausta((VarauksetWrapper) varauksentiedot);
+                            int index = taulukonSisalto.indexOf(varauksentiedot);
+                            if (index >= 0) {
+                               taulukonSisalto.set(index, varauksentiedot);
+                             }
+                      }
 
-            /* Luo asiakkaan tiedot sisältävä TaulukonData-olio ja syötä se AsiakkaanTiedotIkkuna-olioon
-            TaulukonData asiakkaanTiedot = new AsiakkaatWrapper();
-            AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(asiakkaanTiedot, "Asiakkaan tiedot");
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            tiedotIkkuna.showAndWait();
-             */
-        });
-        kontekstivalikonKohdat.get(3).setOnAction(e -> {
-            // Varauksen tietoja muutetaan
-            TaulukonData varauksenTiedot = taulukkopaneeli.palautaRivinTiedot();
-            VarauksenTiedotIkkuna tiedotIkkuna = new VarauksenTiedotIkkuna(varauksenTiedot,
-                    "Muuta varauksen tietoja");
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
-            if (tulos) {
-                String[] kenttienTiedot = tiedotIkkuna.palautaKenttienTiedot();
-                // TODO: Varauksen tietoja muutetaan tietokannassa.
+                        catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
 
-                // Varauksen tiedot muutetaan käyttöliittymän taulukossa.
-                varauksenTiedot.paivitaKenttienArvot(kenttienTiedot);
-            }
-
-        });
-        kontekstivalikonKohdat.get(4).setOnAction(e -> {
-            // Varaus poistetaan
-            Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
-                    "Haluatko varmasti poistaa varauksen " +
-                            taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
-            Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
-
-            if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // TODO: Varaus poistetaan tietokannasta.
+            // Poista varaus
+            kontekstivalikonKohdat.get(4).setOnAction(e -> {
+                TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
+                Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
+                        "Haluatko varmasti poistaa varauksen" + valittu.palautaKuvausteksti() + "?");
+                Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
+                if (tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
+                    try {
+                        varausDAO.poistaVaraus(Integer.parseInt(valittu.palautaTunniste()));
+                        taulukonSisalto.remove(valittu);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
 
 
+        }
 
-                // Varaus poistetaan käyttöliittymän taulukosta.
-                taulukonSisalto.remove(taulukkopaneeli.palautaRivinTiedot());
-            }
-        });
+        catch (SQLException e)
+        {
+            System.err.println("Tietokantayhteyden muodostaminen epäonnistui: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
 
     private void alustaAsiakkaatPaneeli() {
         try {
