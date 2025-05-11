@@ -122,7 +122,7 @@ public class LaskutDAO {
 
 
 
-
+/**
     // Koko laskun muokkaaminen
     public void muokkaaLaskua(LaskutWrapper lasku) throws SQLException {
         LaskutWrapper vanhaLasku = haeLasku(lasku.getLaskunumero());
@@ -282,4 +282,5 @@ public class LaskutDAO {
                 rs.getString("status")
         );
     }
+ */
 }

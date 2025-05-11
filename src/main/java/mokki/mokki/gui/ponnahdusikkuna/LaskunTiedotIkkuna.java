@@ -10,7 +10,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Luokka toteuttaa ikkunan, jolla näytetään ja hallitaan laskun tietoja.
@@ -19,27 +21,28 @@ public class LaskunTiedotIkkuna extends Stage {
     private BorderPane paapaneeli;
     private TaulukonData data;
     private ArrayList<TextField> tekstikenttalista;
+    private ArrayList<DatePicker> paivamaaravalitsinlista;
+    private ToggleGroup valintanapit;
     private boolean tulos = false;
     private String tyyppi;
 
     public LaskunTiedotIkkuna(TaulukonData data, String tyyppi) {
         this.data = data;
         this.tyyppi = tyyppi;
-        tekstikenttalista = new ArrayList<>();
         paapaneeli = new BorderPane();
         paapaneeli.setPadding(new Insets(20));
-        VBox ylapaneeli = new VBox();
-        GridPane ruudukkopaneeli = luoRuudukkopaneeli();
-        ylapaneeli.getChildren().add(ruudukkopaneeli);
-        VBox alapaneeli = new VBox();
-        alapaneeli.getChildren().add(luoPainikepaneeli());
-        paapaneeli.setTop(ylapaneeli);
+        tekstikenttalista = new ArrayList<>();
+        paivamaaravalitsinlista = new ArrayList<>();
+
+        HBox alapaneeli = luoPainikepaneeli();
+
+        paapaneeli.setTop(luoRuudukkopaneeli());
         paapaneeli.setBottom(alapaneeli);
 
-        Scene kehys = new Scene(paapaneeli);
+        Scene scene = new Scene(paapaneeli, 800, 600);
         this.initModality(Modality.APPLICATION_MODAL);
         this.setTitle(tyyppi);
-        this.setScene(kehys);
+        this.setScene(scene);
     }
 
     private GridPane luoRuudukkopaneeli() {
@@ -136,25 +139,25 @@ public class LaskunTiedotIkkuna extends Stage {
 
         // Päivämäärä
         Text paivamaaraOtsikko = new Text("Päivämäärä:");
-        TextField paivamaaraKentta = new TextField(kenttienArvot[7]);
+        DatePicker paivamaaraKentta = new DatePicker(LocalDate.now());
         if (tyyppi.equals("Laskun tiedot")) {
             paivamaaraKentta.setEditable(false);
             paivamaaraKentta.setFocusTraversable(false);
             paivamaaraKentta.setBackground(Background.fill(Color.GAINSBORO));
         }
-        tekstikenttalista.add(paivamaaraKentta);
+        paivamaaravalitsinlista.add(paivamaaraKentta);
         ruudukkopaneeli.add(paivamaaraOtsikko, 0, 7);
         ruudukkopaneeli.add(paivamaaraKentta, 1, 7);
 
         // Eräpäivä
         Text erapaivaOtsikko = new Text("Eräpäivä:");
-        TextField erapaivaKentta = new TextField(kenttienArvot[8]);
+        DatePicker erapaivaKentta = new DatePicker(LocalDate.now());
         if (tyyppi.equals("Laskun tiedot")) {
             erapaivaKentta.setEditable(false);
             erapaivaKentta.setFocusTraversable(false);
             erapaivaKentta.setBackground(Background.fill(Color.GAINSBORO));
         }
-        tekstikenttalista.add(erapaivaKentta);
+        paivamaaravalitsinlista.add(erapaivaKentta);
         ruudukkopaneeli.add(erapaivaOtsikko, 0, 8);
         ruudukkopaneeli.add(erapaivaKentta, 1, 8);
 
@@ -222,10 +225,41 @@ public class LaskunTiedotIkkuna extends Stage {
     }
 
     public String[] palautaKenttienTiedot() {
-        String[] tiedot = new String[tekstikenttalista.size()];
-        for (int i = 0; i < tekstikenttalista.size(); i++) {
-            tiedot[i] = tekstikenttalista.get(i).getText();
+        String[] tiedot;
+
+        if (tyyppi.equals("Laskun tiedot")) {
+            // Palautetaan laskun tiedot järjestyksessä
+            tiedot = new String[] {
+                    tekstikenttalista.get(0).getText(), // Laskunumero
+                    tekstikenttalista.get(1).getText(), // Tuote
+                    tekstikenttalista.get(2).getText(), // Nimi
+                    tekstikenttalista.get(3).getText(), // Sähköposti
+                    tekstikenttalista.get(4).getText(), // Osoite
+                    tekstikenttalista.get(5).getText(), // Viitenumero
+                    tekstikenttalista.get(6).getText(), // Veroton hinta
+                    paivamaaravalitsinlista.get(0).getValue().toString(), // Päivämäärä
+                    paivamaaravalitsinlista.get(1).getValue().toString(), // Eräpäivä
+                    tekstikenttalista.get(7).getText()  // Tila
+            };
+        } else if (tyyppi.equals("Muokkaa laskun tietoja") || tyyppi.equals("Lisää lasku")) {
+            // Palautetaan tiedot muokkausta tai lisäystä varten
+            tiedot = new String[] {
+                    tekstikenttalista.get(0).getText(), // Laskunumero
+                    tekstikenttalista.get(1).getText(), // Tuote
+                    tekstikenttalista.get(2).getText(), // Nimi
+                    tekstikenttalista.get(3).getText(), // Sähköposti
+                    tekstikenttalista.get(4).getText(), // Osoite
+                    tekstikenttalista.get(5).getText(), // Viitenumero
+                    tekstikenttalista.get(6).getText(), // Veroton hinta
+                    paivamaaravalitsinlista.get(0).getValue().toString(), // Päivämäärä
+                    paivamaaravalitsinlista.get(1).getValue().toString(), // Eräpäivä
+                    tekstikenttalista.get(7).getText()  // Tila
+            };
+        } else {
+            // Palautetaan tyhjä taulukko, jos tyyppiä ei tunnisteta
+            tiedot = new String[] {""};
         }
+
         return tiedot;
     }
 }

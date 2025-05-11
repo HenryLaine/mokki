@@ -391,7 +391,7 @@ public class Main extends Application {
         // Dummy-dataa
         ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
                 new LaskutWrapper(345, "Vuokraus: JOE001", "", 3245445,
-                        0, 100, 10, Date.valueOf("2025-05-16"), Date.valueOf("2025-06-30"),
+                        0, 100, 10, LocalDate.of(2025, 5, 5), LocalDate.of(2025, 12, 30),
                         "MikkoJokinen@gmail.com", "Testikatu 10, turku", "Mikko Jokinen",
                         "Avoin"
                 )
@@ -403,7 +403,7 @@ public class Main extends Application {
         hallintapaneeli.getLisaaPainike().setOnAction(e -> {
             TaulukonData uusiLasku =  new LaskutWrapper(
                     0, "Vuokraus: ", "", 0,
-                    0, 100, 10, null, null,
+                    0, 100, 10, LocalDate.now(), LocalDate.now().plusDays(30),
                     "", "", "", "Avoin"
             );
             LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");

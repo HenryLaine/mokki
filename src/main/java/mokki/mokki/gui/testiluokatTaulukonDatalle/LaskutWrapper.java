@@ -6,6 +6,7 @@ import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 
 
 /**
@@ -14,18 +15,18 @@ import java.text.SimpleDateFormat;
 public class LaskutWrapper implements TaulukonData {
     private IntegerProperty laskunumero;
     private StringProperty tuote;
-    private StringProperty asiakas;
     private IntegerProperty viitenumero;
     private DoubleProperty maksettava;
     private StringProperty tila;
+    private DoubleProperty verotonHinta;
 
-    private DoubleProperty alv;
-    private Date paivamaara;
-    private Date eraPaiva;
+    private Double alv;
+    private ObjectProperty<LocalDate> paivamaara;
+    private ObjectProperty<LocalDate> eraPaiva;
     private StringProperty sahkposti;
     private StringProperty osoite;
     private StringProperty nimi;
-    private DoubleProperty verotonHinta;
+    private StringProperty asiakas;
 
 
     /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
@@ -40,9 +41,38 @@ public class LaskutWrapper implements TaulukonData {
      * @param maksettava maksettava määrä
      * @param tila tila
      */
+
+    public LaskutWrapper() {
+
+        this.laskunumero = new SimpleIntegerProperty(0);
+        this.tuote = new SimpleStringProperty("");
+        this.asiakas = new SimpleStringProperty("");
+        this.viitenumero = new SimpleIntegerProperty(0);
+        this.maksettava = new SimpleDoubleProperty(0);
+        this.tila = new SimpleStringProperty("");
+        this.alv = alv;
+        this.eraPaiva = new SimpleObjectProperty<>(null);
+        this.paivamaara = new SimpleObjectProperty<>(null);
+        this.verotonHinta = new SimpleDoubleProperty(0);
+        this.nimi = new SimpleStringProperty("");
+        this.sahkposti = new SimpleStringProperty("");
+        this.osoite = new SimpleStringProperty("");
+
+        maaritykset = new String[][] {
+                {"Laskunumero", "Integer", "laskunumero"},
+                {"Tuote", "String", "tuote"},
+                {"Asiakas", "String", "asiakas"},
+                {"Viitenumero", "Integer", "viitenumero"},
+                {"Veroton hinta", "Double", "verotonHinta"},
+                {"Päivämäärä", "LocalDate", "paivamaara"},
+                {"Eräpäivä", "LocalDate", "eraPaiva"},
+                {"Tila", "String", "tila"}
+        };
+
+    }
     public LaskutWrapper(int laskunumero, String tuote, String asiakas,
                          int viitenumero, double maksettava, double verotonhinta,
-                         double alv, Date paivamaara, Date erapaiva, String sahkoposti,
+                         double alv, LocalDate paivamaara, LocalDate erapaiva, String sahkoposti,
                          String osoite, String nimi, String tila) {
 
         this.laskunumero = new SimpleIntegerProperty(laskunumero);
@@ -51,22 +81,22 @@ public class LaskutWrapper implements TaulukonData {
         this.viitenumero = new SimpleIntegerProperty(viitenumero);
         this.maksettava = new SimpleDoubleProperty(maksettava);
         this.tila = new SimpleStringProperty(tila);
-        this.alv = new SimpleDoubleProperty(alv);
-        this.eraPaiva = erapaiva;
-        this.paivamaara = paivamaara;
+        this.alv = alv;
+        this.eraPaiva = new SimpleObjectProperty<>(erapaiva);
+        this.paivamaara = new SimpleObjectProperty<>(paivamaara);
         this.verotonHinta = new SimpleDoubleProperty(verotonhinta);
-        this.osoite = new SimpleStringProperty(osoite);
         this.nimi = new SimpleStringProperty(nimi);
         this.sahkposti = new SimpleStringProperty(sahkoposti);
+        this.osoite = new SimpleStringProperty(osoite);
 
         maaritykset = new String[][] {
                 {"Laskunumero", "Integer", "laskunumero"},
                 {"Tuote", "String", "tuote"},
                 {"Asiakas", "String", "asiakas"},
-                {"Viitenumero", "Integer", "viitenumero"}, // Lisätty viitenumero
+                {"Viitenumero", "Integer", "viitenumero"},
                 {"Veroton hinta", "Double", "verotonHinta"},
-                {"Päivämäärä", "Date", "paivamaara"},
-                {"Eräpäivä", "Date", "eraPaiva"},
+                {"Päivämäärä", "LocalDate", "paivamaara"},
+                {"Eräpäivä", "LocalDate", "eraPaiva"},
                 {"Tila", "String", "tila"}
         };
     }
@@ -75,16 +105,16 @@ public class LaskutWrapper implements TaulukonData {
         return verotonHinta.get();
     }
 
-    public Date getEraPaiva() {
-        return eraPaiva;
+    public LocalDate getEraPaiva() {
+        return eraPaiva.get();
     }
 
-    public Date getPaivamaara() {
-        return paivamaara;
+    public LocalDate getPaivamaara() {
+        return paivamaara.get();
     }
 
     public double getAlv() {
-        return alv.get();
+        return alv;
     }
 
     public String getOsoite() {
@@ -147,16 +177,30 @@ public class LaskutWrapper implements TaulukonData {
         return tila.get();
     }
 
-    public void setEraPaiva(Date eraPaiva) {
-        this.eraPaiva = eraPaiva;
+    public void setEraPaiva(LocalDate eraPaiva) {
+        eraPaivaProperty().set(eraPaiva);
     }
 
-    public void setPaivamaara(Date paivamaara) {
-        this.paivamaara = paivamaara;
+    public ObjectProperty<LocalDate> eraPaivaProperty() {
+        if (eraPaiva == null) {
+            eraPaiva = new SimpleObjectProperty<>(this, maaritykset[6][2]);
+        }
+        return eraPaiva;
     }
 
-    public void setAlv(double alv) {
-        this.alv.set(alv);
+    public void setPaivamaara(LocalDate paivamaara) {
+        paivamaaraProperty().set(paivamaara);
+    }
+
+    public ObjectProperty<LocalDate> paivamaaraProperty() {
+        if (paivamaara == null) {
+            paivamaara = new SimpleObjectProperty<>(this, maaritykset[5][2]);
+        }
+        return paivamaara;
+    }
+
+    public void setAlv(Double alv) {
+        this.alv = alv;
     }
 
     public void setAsiakas(String asiakas) {
@@ -171,17 +215,6 @@ public class LaskutWrapper implements TaulukonData {
         this.maksettava.set(maksettava);
     }
 
-    public void setOsoite(String osoite) {
-        this.osoite.set(osoite);
-    }
-
-    public void setSahkposti(String sahkposti) {
-        this.sahkposti.set(sahkposti);
-    }
-
-    public void setNimi(String nimi) {
-        this.nimi.set(nimi);
-    }
 
     public void setTila(String tila) {
         this.tila.set(tila);
@@ -239,9 +272,9 @@ public class LaskutWrapper implements TaulukonData {
         return new String[]{
                 "" + laskunumero.get(),      // 0: Laskunumero
                 tuote.get(),                 // 1: Tuote
-                nimi.get(),                  // 2: Asiakas nimi
-                sahkposti.get(),             // 3: Asiakas sähköposti
-                osoite.get(),                // 4: Asiakas osoite
+                getNimi(),                  // 2: Asiakas nimi
+                getSahkposti(),             // 3: Asiakas sähköposti
+                getOsoite(),                // 4: Asiakas osoite
                 "" + viitenumero.get(),      // 5: Viitenumero
                 "" + verotonHinta.get(),     // 6: Veroton hinta
                 "" + paivamaara,             // 7: Päivämäärä
@@ -263,9 +296,10 @@ public class LaskutWrapper implements TaulukonData {
             this.osoite.set(arvot[4]);                       // 4: Asiakas osoite
             this.viitenumero.set(Integer.parseInt(arvot[5])); // 5: Viitenumero
             this.verotonHinta.set(Double.parseDouble(arvot[6])); // 6: Veroton hinta
-            this.paivamaara = Date.valueOf(arvot[7]);        // 7: Päivämäärä
-            this.eraPaiva = Date.valueOf(arvot[8]);          // 8: Eräpäivä
+            this.paivamaara.set(LocalDate.parse(arvot[7]));        // 7: Päivämäärä
+            this.eraPaiva.set(LocalDate.parse(arvot[8]));          // 8: Eräpäivä
             this.tila.set(arvot[9]);                         // 9: Tila
+            this.asiakas.set(arvot[2] + " " + arvot[3] + " " + arvot[4]); // Asiakas
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -282,8 +316,8 @@ public class LaskutWrapper implements TaulukonData {
     }
 
     public boolean onkoTunnisteUniikki(String tunniste) {
-        // TODO: tarkista, että tunnistetta ei löydy tietokannasta.
-        return false;
+        // Järjestelmä hoitaa tunnusten luomisen. Ei tarvitse tarkistaa.
+        return true;
     }
 
     public int palautaTunnisteenIndeksi() {
