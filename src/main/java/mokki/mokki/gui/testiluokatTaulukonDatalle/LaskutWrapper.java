@@ -65,7 +65,8 @@ public class LaskutWrapper implements TaulukonData {
                          double alv, LocalDate paivamaara, LocalDate erapaiva, String sahkoposti,
                          String osoite, String nimi, String tila) {
 
-        double alvSumma= verotonhinta*0.1;
+        double majoituksenAlv=0.1;
+        double alvSumma= verotonhinta*majoituksenAlv;
         this.laskunumero = new SimpleIntegerProperty(laskunumero);
         this.varaus = new SimpleIntegerProperty(varaus);
         this.asiakas = new SimpleStringProperty(nimi + " (" + sahkoposti + ")");
