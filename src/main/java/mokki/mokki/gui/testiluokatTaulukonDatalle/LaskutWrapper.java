@@ -67,7 +67,7 @@ public class LaskutWrapper implements TaulukonData {
 
         this.laskunumero = new SimpleIntegerProperty(laskunumero);
         this.varaus = new SimpleIntegerProperty(varaus);
-        this.asiakas = new SimpleStringProperty(nimi + " " + sahkoposti + " " + osoite);
+        this.asiakas = new SimpleStringProperty(nimi + " (" + sahkoposti + ")");
         this.viitenumero = new SimpleIntegerProperty(viitenumero);
         this.maksettava = new SimpleDoubleProperty(maksettava);
         this.tila = new SimpleStringProperty(tila);
