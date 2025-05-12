@@ -378,107 +378,138 @@ public class Main extends Application {
     }
     private void alustaLaskutPaneeli() {
         // Dummy-dataa
-        ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(
-                new LaskutWrapper(345, "Vuokraus: JOE001", "", 3245445,
-                        0, 100, 10, LocalDate.of(2025, 5, 5), LocalDate.of(2025, 12, 30),
-                        "MikkoJokinen@gmail.com", "Testikatu 10, turku", "Mikko Jokinen",
-                        "Avoin"
-                )
-        );
-        laskutPaneeli = new LaskutPaneeli(fonttikoko, taulukonSisalto);
+        try {
+            Connection conn = DatabaseManager.getConnection();
+            LaskutDAO laskutDAO = new LaskutDAO(conn);
+            List<LaskutWrapper> laskut = laskutDAO.haeKaikkiLaskut();
+            ObservableList<TaulukonData> taulukonSisalto = FXCollections.observableArrayList(laskut);
 
-        // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
-        Hallintapaneeli hallintapaneeli = laskutPaneeli.getHallintapaneeli();
-        hallintapaneeli.getLisaaPainike().setOnAction(e -> {
-            TaulukonData uusiLasku =  new LaskutWrapper(
-                    0, "Vuokraus: ", "", 0,
-                    0, 100, 10, LocalDate.now(), LocalDate.now().plusDays(30),
-                    "", "", "", "Avoin"
-            );
-            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
 
-            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
-            if (tulos) {
-                System.out.println(Arrays.toString(tiedotIkkuna.palautaKenttienTiedot()));
-                System.out.println(Arrays.toString(uusiLasku.palautaKenttienArvot()));
+            laskutPaneeli = new LaskutPaneeli(fonttikoko, taulukonSisalto);
 
-                uusiLasku.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
-                taulukonSisalto.add(uusiLasku);
-            }
-        });
+            // TODO: Aseta hallintapaneelin painikkeiden toiminnallisuus.
+            Hallintapaneeli hallintapaneeli = laskutPaneeli.getHallintapaneeli();
+            hallintapaneeli.getLisaaPainike().setOnAction(e -> {
+                TaulukonData uusiLasku = new LaskutWrapper(
+                        0, 0, "", 0,
+                        0, 100, 10, LocalDate.now(), LocalDate.now().plusDays(30),
+                        "", "", "", "Avoin"
+                );
+                LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");
+                tiedotIkkuna.asetaFonttikoko(fonttikoko);
 
-        hallintapaneeli.getRajaaPainike().setOnAction(e -> {
-            RajausIkkuna rajausIkkuna = new RajausIkkuna();
-            rajausIkkuna.setTitle("Rajaa laskuja päivämäärän mukaan");
-
-            String hakusana = rajausIkkuna.naytaJaOdotaJaPalautaTulos();
-            if (hakusana != null && !hakusana.isBlank()) {
-                // TODO: Hae rajatut laskut tietokannasta ja päivitä taulukon sisältö
-                hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET: " + hakusana);
-            }
-
-            //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
-        });
-        hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
-            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
-
-        });
-
-        Taulukkopaneeli<TaulukonData> taulukkopaneeli = laskutPaneeli.getTaulukkopaneeli();
-        ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
-
-        kontekstivalikonKohdat.getFirst().setOnAction(e -> {
-            // Laskun tiedot näytetään
-            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(
-                    taulukkopaneeli.palautaRivinTiedot(), "Laskun tiedot");
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            tiedotIkkuna.showAndWait();
-
-        });
-        kontekstivalikonKohdat.get(1).setOnAction(e -> {
-            // Laskun tietoja muutetaan
-            TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
-            LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muuta tiedot");
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
-            if (tulos) {
-                laskunTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
-                // TODO: Päivitä laskun tiedot tietokantaan.
-            }
-        });
-
-        kontekstivalikonKohdat.get(2).setOnAction(e -> {
-            // Lasku merkitään maksetuksi
-            TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
-            if (laskunTiedot instanceof LaskutWrapper) {
-                LaskutWrapper lasku = (LaskutWrapper) laskunTiedot;
-                lasku.setTila("Maksettu");
-
-                // Päivitä ObservableList
-                int index = taulukonSisalto.indexOf(lasku);
-                if (index >= 0) {
-                    taulukonSisalto.set(index, lasku); // Tämä pakottaa TableView:n päivityksen
+                boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+                if (tulos) {
+                    uusiLasku.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                    try {
+                    laskutDAO.lisaaLasku((LaskutWrapper) uusiLasku);
+                    taulukonSisalto.add(uusiLasku);
                 }
-            }
-            // TODO: Päivitä tietokantaan, että lasku on maksettu.
-        });
 
-        kontekstivalikonKohdat.get(3).setOnAction(e -> {
-            // Lasku poistetaan
-            Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
-                    "Haluatko varmasti poistaa laskun " +
-                            taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
-            Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
+                catch (SQLException ex)
+                {
+                    ex.printStackTrace();
+                }
+            }});
 
-            if(tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
-                // TODO: lasku poistetaan tietokannasta
+            hallintapaneeli.getRajaaPainike().setOnAction(e -> {
+                RajausIkkuna rajausIkkuna = new RajausIkkuna();
+                rajausIkkuna.setTitle("Rajaa laskuja päivämäärän mukaan");
 
-                // Lasku poistetaan taulukon sisällöstä
-                taulukonSisalto.remove(taulukkopaneeli.palautaRivinTiedot());
-            }
-        });
+                String hakusana = rajausIkkuna.naytaJaOdotaJaPalautaTulos();
+                if (hakusana != null && !hakusana.isBlank()) {
+                    // TODO: Hae rajatut laskut tietokannasta ja päivitä taulukon sisältö
+                    hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET: " + hakusana);
+                }
+
+                //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
+            });
+            hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
+                hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+
+            });
+
+            Taulukkopaneeli<TaulukonData> taulukkopaneeli = laskutPaneeli.getTaulukkopaneeli();
+            ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
+
+            kontekstivalikonKohdat.getFirst().setOnAction(e -> {
+                // Laskun tiedot näytetään
+                LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(
+                        taulukkopaneeli.palautaRivinTiedot(), "Laskun tiedot");
+                tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                tiedotIkkuna.showAndWait();
+
+            });
+            kontekstivalikonKohdat.get(1).setOnAction(e -> {
+                // Laskun tietoja muutetaan
+                TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
+                LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muuta tiedot");
+                tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
+                if (tulos) {
+                    laskunTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
+                    try {
+                        laskutDAO.muokkaaLaskua((LaskutWrapper) laskunTiedot);
+                        int index = taulukonSisalto.indexOf(laskunTiedot);
+                        if (index >= 0)
+                        {
+                            taulukonSisalto.set(index, laskunTiedot);
+                        }
+                    }
+
+                    catch (SQLException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            kontekstivalikonKohdat.get(2).setOnAction(e -> {
+                // Lasku merkitään maksetuksi
+                TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
+                if (laskunTiedot instanceof LaskutWrapper) {
+                    LaskutWrapper lasku = (LaskutWrapper) laskunTiedot;
+                    lasku.setTila("Maksettu");
+
+                    // Päivitä ObservableList
+                    int index = taulukonSisalto.indexOf(lasku);
+                    if (index >= 0) {
+                        taulukonSisalto.set(index, lasku); // Tämä pakottaa TableView:n päivityksen
+                    }
+                }
+                // TODO: Päivitä tietokantaan, että lasku on maksettu.
+            });
+
+            kontekstivalikonKohdat.get(3).setOnAction(e -> {
+                // Lasku poistetaan
+                TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
+                Vahvistusikkuna vahvistusikkuna = new Vahvistusikkuna("Vahvistus",
+                        "Haluatko varmasti poistaa laskun " +
+                                taulukkopaneeli.palautaRivinTiedot().palautaKuvausteksti() + "?");
+                Optional<ButtonType> tulos = vahvistusikkuna.showAndWait();
+
+                if (tulos.isPresent() && tulos.get() == vahvistusikkuna.getButtonTypes().getFirst()) {
+                    try {
+                    laskutDAO.poistaLasku(Integer.parseInt(valittu.palautaTunniste()));
+
+                    // Lasku poistetaan taulukon sisällöstä
+                    taulukonSisalto.remove(taulukkopaneeli.palautaRivinTiedot());
+                }
+
+                catch (SQLException ex)
+                {
+                    ex.printStackTrace();
+                }}
+            });
+        }
+
+        catch (SQLException ex)
+        {
+            ex.printStackTrace();
+        }
     }
+
+
 
     private void alustaRaportitPaneeli() {
         try {

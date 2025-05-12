@@ -33,7 +33,7 @@ public class LaskutDAO {
         String sql = "INSERT INTO Laskut(laskuID, tuote, asiakas, viitenumero, maksettava,status) VALUES(?,?,?,?,?,?)";
         try(PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1,lasku.getLaskunumero());
-            stmt.setString(2,lasku.getTuote());
+            stmt.setInt(2,lasku.getTuote());
             stmt.setString(3,lasku.getAsiakas());
             stmt.setInt(4,lasku.getViitenumero());
             stmt.setDouble(5,lasku.getMaksettava());
@@ -108,14 +108,13 @@ public class LaskutDAO {
     public void muokkaaLaskuaAsiakas(LaskutWrapper lasku) throws SQLException {
         String sql = "UPDATE Laskut SET tuote = ?, asiakas = ?, viitenumero = ?, maksettava = ?, status = ? WHERE laskuID = ?";
         try(PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, lasku.getTuote());
+            stmt.setInt(1, lasku.getTuote());
             stmt.setString(2,lasku.getAsiakas());
             stmt.setInt(3,lasku.getViitenumero());
             stmt.setDouble(4,lasku.getMaksettava());
             stmt.setString(5, lasku.getTila());
             stmt.setInt(6,lasku.getLaskunumero());
             stmt.executeUpdate();
-
         }
     }
 
@@ -156,7 +155,7 @@ public class LaskutDAO {
                 if (rs.next()) {
                     LaskutWrapper lasku = new LaskutWrapper(
                             rs.getInt("laskuID"),
-                            rs.getString("tuote"),
+                            rs.getInt("mokki"),
                             rs.getString("asiakas"),
                             rs.getInt("viitenumero"),
                             rs.getDouble("maksettava"),
@@ -225,19 +224,19 @@ public class LaskutDAO {
             ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 LaskutWrapper lasku = new LaskutWrapper(
-                        rs.getInt("laskuID"),
-                        rs.getString("tuote"),
-                        rs.getString("asiakas"),
-                        rs.getInt("viitenumero"),
-                        rs.getDouble("maksettava"),
-                        rs.getDouble("veroton_hinta"),
-                        rs.getDouble("alv"),
-                        rs.getDate("paivamaara").toLocalDate(),
-                        rs.getDate("erapaiva").toLocalDate(),
-                        rs.getString("sahkoposti"),
-                        rs.getString("osoite"),
-                        rs.getString("nimi"),
-                        rs.getString("status")
+                        rs.getInt("laskuID"), // ok
+                        rs.getInt("varaustunnus"), // Löytyy varaustunnuksena, pitäisi olla int
+                        rs.getString("asiakas"), // ei ole tietokannassa,
+                        rs.getInt("viitenumero"), // ok
+                        rs.getDouble("maksettava"), // ei löydy tietokannassa
+                        rs.getDouble("veroton_hinta"), // ok
+                        rs.getDouble("alv"), // ok
+                        rs.getDate("paivamaara").toLocalDate(), // ok
+                        rs.getDate("erapaiva").toLocalDate(), // ok
+                        rs.getString("sahkoposti"), // ok
+                        rs.getString("osoite"), // ok
+                        rs.getString("nimi"), //ok
+                        rs.getString("status") //ok
                 );
                         lista.add(lasku);
             }
@@ -267,7 +266,7 @@ public class LaskutDAO {
     private LaskutWrapper ResultSetToLasku(ResultSet rs) throws SQLException {
         return new LaskutWrapper(
                 rs.getInt("laskuID"),
-                rs.getString("tuote"),
+                rs.getInt("mokki"),
                 rs.getString("asiakas"),
                 rs.getInt("viitenumero"),
                 rs.getDouble("maksettava"),
