@@ -65,13 +65,14 @@ public class LaskutWrapper implements TaulukonData {
                          double alv, LocalDate paivamaara, LocalDate erapaiva, String sahkoposti,
                          String osoite, String nimi, String tila) {
 
+        double alvSumma= verotonhinta*0.1;
         this.laskunumero = new SimpleIntegerProperty(laskunumero);
         this.varaus = new SimpleIntegerProperty(varaus);
         this.asiakas = new SimpleStringProperty(nimi + " (" + sahkoposti + ")");
         this.viitenumero = new SimpleIntegerProperty(viitenumero);
-        this.maksettava = new SimpleDoubleProperty(maksettava);
+        this.maksettava = new SimpleDoubleProperty(alvSumma+verotonhinta);
         this.tila = new SimpleStringProperty(tila);
-        this.alv = new SimpleDoubleProperty(alv);
+        this.alv = new SimpleDoubleProperty(alvSumma);
         this.eraPaiva = new SimpleObjectProperty<>(erapaiva);
         this.paivamaara = new SimpleObjectProperty<>(paivamaara);
         this.verotonHinta = new SimpleDoubleProperty(verotonhinta);
@@ -135,7 +136,7 @@ public class LaskutWrapper implements TaulukonData {
     }
 
     public double getAlv() {
-        return Double.parseDouble((verotonHinta.multiply(0.1)).toString());
+        return alv.get();
     }
 
     public String getOsoite() {
@@ -187,7 +188,7 @@ public class LaskutWrapper implements TaulukonData {
      * @return maksettava määrä
      */
     public double getMaksettava() {
-        return Double.parseDouble((verotonHinta.add(alv)).toString());
+        return maksettava.get();
     }
 
     /**

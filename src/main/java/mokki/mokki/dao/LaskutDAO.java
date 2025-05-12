@@ -32,7 +32,7 @@ public class LaskutDAO {
     public void lisaaLasku(LaskutWrapper lasku)throws SQLException{
         String sql = "INSERT INTO Laskut(laskuID, varaustunnus, asiakas, viitenumero, maksettava,status, veroton_hinta, " +
                 "alv, paivamaara, erapaiva, osoite, nimi, sahkoposti) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1,lasku.getLaskunumero());
             stmt.setInt(2,lasku.getVaraus());
             stmt.setString(3,lasku.getAsiakas());
