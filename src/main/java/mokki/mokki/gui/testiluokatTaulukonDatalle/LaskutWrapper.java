@@ -318,7 +318,7 @@ public class LaskutWrapper implements TaulukonData {
             this.paivamaara.set(LocalDate.parse(arvot[7]));        // 7: Päivämäärä
             this.eraPaiva.set(LocalDate.parse(arvot[8]));          // 8: Eräpäivä
             this.tila.set(arvot[9]);                         // 9: Tila
-            this.asiakas.set(arvot[2] + " " + arvot[3] + " " + arvot[4]); // Asiakas
+            this.asiakas.set(arvot[2] + " (" + arvot[3] + ")"); // Asiakas
             return true;
         } catch (Exception e) {
             e.printStackTrace();

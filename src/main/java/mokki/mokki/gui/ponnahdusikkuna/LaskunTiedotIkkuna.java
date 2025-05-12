@@ -68,7 +68,7 @@ public class LaskunTiedotIkkuna extends Stage {
         ruudukkopaneeli.add(laskunumeroOtsikko, 0, 0);
         ruudukkopaneeli.add(laskunumeroKentta, 1, 0);
 
-        // Tuote
+        // Varaustunnus
         Text tuoteOtsikko = new Text("Varaustunnus:");
         TextField tuoteKentta = new TextField(kenttienArvot[1]);
         if (tyyppi.equals("Laskun tiedot")) {
@@ -145,7 +145,8 @@ public class LaskunTiedotIkkuna extends Stage {
         DatePicker paivamaaraKentta = new DatePicker(LocalDate.now());
         if (tyyppi.equals("Laskun tiedot")) {
             paivamaaraKentta.setEditable(false);
-            paivamaaraKentta.setFocusTraversable(false);
+            paivamaaraKentta.setDisable(true);
+
             paivamaaraKentta.setBackground(Background.fill(Color.GAINSBORO));
         }
         paivamaaravalitsinlista.add(paivamaaraKentta);
@@ -157,7 +158,7 @@ public class LaskunTiedotIkkuna extends Stage {
         DatePicker erapaivaKentta = new DatePicker(LocalDate.now());
         if (tyyppi.equals("Laskun tiedot")) {
             erapaivaKentta.setEditable(false);
-            erapaivaKentta.setFocusTraversable(false);
+            erapaivaKentta.setDisable(true);
             erapaivaKentta.setBackground(Background.fill(Color.GAINSBORO));
         }
         paivamaaravalitsinlista.add(erapaivaKentta);
