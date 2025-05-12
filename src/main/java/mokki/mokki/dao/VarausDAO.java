@@ -1,5 +1,4 @@
 package mokki.mokki.dao;
-import mokki.mokki.BackEnd.Varaus;
 import mokki.mokki.gui.testiluokatTaulukonDatalle.VarauksetWrapper;
 import java.sql.*;
 import java.util.ArrayList;
@@ -42,6 +41,46 @@ public class VarausDAO {
             stmt.executeUpdate();
         }
     }*/
+
+
+    public List<VarauksetWrapper> rajaaVaraukset(String hakusana) throws SQLException {
+        List<VarauksetWrapper> rajatutVaraukset = new ArrayList<>();
+
+        String sql = "SELECT * FROM Varaus WHERE " +
+                "varaustunnus LIKE ? OR " +
+                "aloitus_pvm LIKE ? OR " +
+                "paattymis_pvm LIKE ? OR " +
+                "henkilo_maara LIKE ?";
+                //"sahkoposti LIKE ? OR" +
+                //"mokkiID LIKE ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String likeHakusana = "%" + hakusana + "%";
+            stmt.setString(1, likeHakusana);
+            stmt.setString(2, likeHakusana);
+            stmt.setString(3, likeHakusana);
+            stmt.setString(4, likeHakusana);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    VarauksetWrapper varaus = new VarauksetWrapper(
+                            String.valueOf(rs.getInt("varaustunnus")),
+                            String.valueOf(rs.getInt("mokkiID")),
+                            rs.getString("nimi"),
+                            rs.getString("sahkoposti"),
+                            rs.getDate("aloitus_pvm").toLocalDate(),
+                            rs.getDate("paattymis_pvm").toLocalDate(),
+                            "Aktiivinen",
+                            ""
+                    );
+                    rajatutVaraukset.add(varaus);
+                }
+            }
+
+        }
+
+        return rajatutVaraukset;
+    }
 
     // varauksen muokkaaminen joka käyttää varauksetwrapper luokkaa
     public void muokkaaVarausta(VarauksetWrapper wrapper) throws SQLException {

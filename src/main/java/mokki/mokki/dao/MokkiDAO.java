@@ -115,7 +115,7 @@ public class MokkiDAO {
 
         String sql = "SELECT * FROM Mokki WHERE " +
                 "MokkiID LIKE ? OR " +
-                "henkilomaara LIKE ? OR " +
+                "henkilo_maara LIKE ? OR " +
                 "sijainti LIKE ? OR " +
                 "huomioitavaa LIKE ?";
 

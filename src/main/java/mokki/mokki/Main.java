@@ -89,6 +89,7 @@ public class Main extends Application {
             // Poista rajaukset
             hallintapaneeli.getPoistaRajauksetPainike().setOnAction(e -> {
                 try {
+                    taulukonSisalto.clear();
                     List<KohteetWrapper> kaikki = mokkiDAO.haeMokit();
                     taulukonSisalto.setAll(kaikki);
                     hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
@@ -185,7 +186,7 @@ public class Main extends Application {
                 }
             });
 
-                /**
+
                 // Rajaa varauksia
                 hallintapaneeli.getRajaaPainike().setOnAction(event1 -> {
                     RajausIkkuna rajausIkkuna = new RajausIkkuna();
@@ -194,10 +195,32 @@ public class Main extends Application {
                     String hakusana = rajausIkkuna.naytaJaOdotaJaPalautaTulos();
                     if (hakusana != null && !hakusana.isBlank()){
                         try {
-                            List<VarauksetWrapper> rajatut = varausDAO.ra
+                            List<VarauksetWrapper> rajatut = varausDAO.rajaaVaraukset(hakusana);
+                            taulukonSisalto.clear();
+                            taulukonSisalto.addAll(rajatut);
+                            hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET: " + hakusana);
+                        }
+
+                        catch (SQLException ex)
+                        {
+                            ex.printStackTrace();
                         }
                     }
-                }); */
+                });
+
+                // Poista rajaukset
+
+                hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
+                    try {
+                        taulukonSisalto.clear();
+                        List<VarauksetWrapper> kaikki = varausDAO.haeKaikkiWrapperVaraukset();
+                        taulukonSisalto.setAll(kaikki);
+                        hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
+                    }
+                    catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                });
 
                 ArrayList<MenuItem> kontekstivalikonKohdat = taulukkopaneeli.getKontekstivalikonKohdat();
 
@@ -310,6 +333,7 @@ public class Main extends Application {
             });
 
             hallintapaneeli.getPoistaRajauksetPainike().setOnAction(e -> {
+                taulukonSisalto.clear();
                 taulukonSisalto.addAll(asiakkaat);
                 hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
             });
@@ -449,7 +473,8 @@ public class Main extends Application {
                 if (tulos) {
                     laskunTiedot.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
                     try {
-                        laskutDAO.muokkaaLaskua((LaskutWrapper) laskunTiedot);
+                        LaskutWrapper uusiData = (LaskutWrapper) laskunTiedot;
+                        laskutDAO.muokkaaLaskua(uusiData);
                         int index = taulukonSisalto.indexOf(laskunTiedot);
                         if (index >= 0)
                         {
