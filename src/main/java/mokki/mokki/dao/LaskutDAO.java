@@ -147,7 +147,7 @@ public class LaskutDAO {
         }
 
         String sql = "UPDATE Laskut SET veroton_hinta = ?, alv = ?, paivamaara = ?, erapaiva = ?, status = ?, " +
-                "sahkoposti = ?, osoite = ?, nimi = ? WHERE laskuID = ?";
+                "sahkoposti = ?, osoite = ?, nimi = ?, varaustunnus = ?, WHERE laskuID = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDouble(1, lasku.getVerotonHinta() != 0.0 ? lasku.getVerotonHinta() : vanhaLasku.getVerotonHinta());
@@ -158,15 +158,16 @@ public class LaskutDAO {
             stmt.setString(6, lasku.getSahkposti() != null ? lasku.getSahkposti() : vanhaLasku.getSahkposti());
             stmt.setString(7, lasku.getOsoite() != null ? lasku.getOsoite() : vanhaLasku.getOsoite());
             stmt.setString(8, lasku.getNimi() != null ? lasku.getNimi() : vanhaLasku.getNimi());
-            stmt.setInt(9, lasku.getLaskunumero());
+            stmt.setInt(9, lasku.getVaraus() != 0 ? lasku.getVaraus() : vanhaLasku.getVaraus());
+            stmt.setInt(10, lasku.getLaskunumero());
             stmt.executeUpdate();
         }
     }
     //hae vain yksi lasku
-    public LaskutWrapper haeLasku(int laskuID) throws SQLException {
+    public LaskutWrapper haeLasku(int laskutunnus) throws SQLException {
         String sql = "SELECT * FROM Laskut WHERE laskuID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, laskuID);
+            stmt.setInt(1, laskutunnus);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     LaskutWrapper lasku = new LaskutWrapper(

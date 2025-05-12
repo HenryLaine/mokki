@@ -465,7 +465,7 @@ public class Main extends Application {
             kontekstivalikonKohdat.get(1).setOnAction(e -> {
                 // Laskun tietoja muutetaan
                 TaulukonData laskunTiedot = taulukkopaneeli.palautaRivinTiedot();
-                LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muuta tiedot");
+                LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(laskunTiedot, "Muokkaa laskun tietoja");
                 tiedotIkkuna.asetaFonttikoko(fonttikoko);
                 boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
                 if (tulos) {
