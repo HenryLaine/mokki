@@ -416,7 +416,7 @@ public class Main extends Application {
             hallintapaneeli.getLisaaPainike().setOnAction(e -> {
                 TaulukonData uusiLasku = new LaskutWrapper(
                         0, 0, "", 0,
-                        0, 0, 10, LocalDate.now(), LocalDate.now().plusDays(30),
+                        0, 0, 0, LocalDate.now(), LocalDate.now().plusDays(30),
                         "", "", "", "Avoin"
                 );
                 LaskunTiedotIkkuna tiedotIkkuna = new LaskunTiedotIkkuna(uusiLasku, "Lisää lasku");
