@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS Laskut (
     asiakas VARCHAR(100),
     maksettava DOUBLE,
     veroton_hinta DECIMAL(10,2),
-    alv DECIMAL(5,2),
+    alv DOUBLE(5,2),
     paivamaara DATE,
     erapaiva DATE,
     osoite VARCHAR(100),
@@ -69,3 +69,22 @@ CREATE TABLE IF NOT EXISTS Laskut (
     FOREIGN KEY (sahkoposti) REFERENCES Asiakas(sahkoposti) ON DELETE SET NULL,
     FOREIGN KEY (varaustunnus) REFERENCES Varaus(varaustunnus) ON DELETE SET NULL
 );
+
+CREATE OR REPLACE VIEW AsiakasTiedotView AS
+SELECT
+    a.sahkoposti,
+    a.asiakastyyppi,
+    y.nimi AS nimi,
+    y.osoite AS osoite
+FROM Asiakas a
+         JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti
+
+UNION
+
+SELECT
+    a.sahkoposti,
+    a.asiakastyyppi,
+    yr.nimi AS nimi,
+    yr.osoite AS osoite
+FROM Asiakas a
+         JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti;

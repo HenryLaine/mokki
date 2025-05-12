@@ -327,6 +327,10 @@ public class LaskutWrapper implements TaulukonData {
             this.tila.set(arvot[9]);                         // 9: Tila
             this.asiakas.set(arvot[2] + " (" + arvot[3] + ")"); // Asiakas
 
+            double verotonHinta = Double.parseDouble(arvot[6]);
+            double alv = verotonHinta * 0.1; 
+            this.alv.set(alv);
+            this.maksettava.set(verotonHinta + alv);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
