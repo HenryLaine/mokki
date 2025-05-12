@@ -171,7 +171,7 @@ public class LaskutDAO {
                 if (rs.next()) {
                     LaskutWrapper lasku = new LaskutWrapper(
                             rs.getInt("laskuID"),
-                            rs.getInt("mokki"),
+                            rs.getInt("varaustunnus"),
                             rs.getString("asiakas"),
                             rs.getInt("viitenumero"),
                             rs.getDouble("maksettava"),

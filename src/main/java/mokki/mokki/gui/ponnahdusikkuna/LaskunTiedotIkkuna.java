@@ -234,7 +234,7 @@ public class LaskunTiedotIkkuna extends Stage {
         if (tyyppi.equals("Laskun tiedot")) {
             // Palautetaan laskun tiedot järjestyksessä
             tiedot = new String[] {
-                    tekstikenttalista.get(0).getText(), // Laskunumero
+                    //tekstikenttalista.get(0).getText(), // Laskunumero
                     tekstikenttalista.get(1).getText(), // Tuote
                     tekstikenttalista.get(2).getText(), // Nimi
                     tekstikenttalista.get(3).getText(), // Sähköposti
