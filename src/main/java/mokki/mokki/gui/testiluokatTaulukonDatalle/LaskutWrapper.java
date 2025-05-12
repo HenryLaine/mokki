@@ -18,7 +18,7 @@ public class LaskutWrapper implements TaulukonData {
     private StringProperty tila;
     private DoubleProperty verotonHinta;
 
-    private Double alv;
+    private DoubleProperty alv;
     private ObjectProperty<LocalDate> paivamaara;
     private ObjectProperty<LocalDate> eraPaiva;
     private StringProperty sahkposti;
@@ -71,7 +71,7 @@ public class LaskutWrapper implements TaulukonData {
         this.viitenumero = new SimpleIntegerProperty(viitenumero);
         this.maksettava = new SimpleDoubleProperty(maksettava);
         this.tila = new SimpleStringProperty(tila);
-        this.alv = alv;
+        this.alv = new SimpleDoubleProperty(alv);
         this.eraPaiva = new SimpleObjectProperty<>(erapaiva);
         this.paivamaara = new SimpleObjectProperty<>(paivamaara);
         this.verotonHinta = new SimpleDoubleProperty(verotonhinta);
@@ -85,6 +85,8 @@ public class LaskutWrapper implements TaulukonData {
                 {"Asiakas", "String", "asiakas"},
                 {"Viitenumero", "Integer", "viitenumero"},
                 {"Veroton hinta", "Double", "verotonHinta"},
+                {"ALV", "Double", "alv"},
+                {"Maksettava hinta", "Double", "maksettava"},
                 {"Päivämäärä", "LocalDate", "paivamaara"},
                 {"Eräpäivä", "LocalDate", "eraPaiva"},
                 {"Tila", "String", "tila"}
@@ -101,7 +103,7 @@ public class LaskutWrapper implements TaulukonData {
         this.varaus = new SimpleIntegerProperty(varaus);
         this.viitenumero = new SimpleIntegerProperty(viitenumero);
         this.tila = new SimpleStringProperty(tila);
-        this.alv = alv;
+        this.alv = new SimpleDoubleProperty(alv);
         this.eraPaiva = new SimpleObjectProperty<>(erapaiva);
         this.paivamaara = new SimpleObjectProperty<>(paivamaara);
         this.verotonHinta = new SimpleDoubleProperty(verotonhinta);
@@ -218,8 +220,8 @@ public class LaskutWrapper implements TaulukonData {
         return paivamaara;
     }
 
-    public void setAlv(Double alv) {
-        this.alv = alv;
+    public void setAlv(double alv) {
+        this.alv.set(alv);
     }
 
     public void setAsiakas(String asiakas) {
@@ -322,6 +324,7 @@ public class LaskutWrapper implements TaulukonData {
             this.eraPaiva.set(LocalDate.parse(arvot[8]));          // 8: Eräpäivä
             this.tila.set(arvot[9]);                         // 9: Tila
             this.asiakas.set(arvot[2] + " (" + arvot[3] + ")"); // Asiakas
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
