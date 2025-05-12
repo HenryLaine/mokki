@@ -147,7 +147,7 @@ public class LaskutDAO {
         }
 
         String sql = "UPDATE Laskut SET veroton_hinta = ?, alv = ?, paivamaara = ?, erapaiva = ?, status = ?, " +
-                "sahkoposti = ?, osoite = ?, nimi = ?, varaustunnus = ?, WHERE laskuID = ?";
+                "sahkoposti = ?, osoite = ?, nimi = ?, varaustunnus = ? WHERE laskuID = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDouble(1, lasku.getVerotonHinta() != 0.0 ? lasku.getVerotonHinta() : vanhaLasku.getVerotonHinta());

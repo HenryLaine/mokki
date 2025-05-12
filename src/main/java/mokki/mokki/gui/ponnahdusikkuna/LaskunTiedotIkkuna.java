@@ -57,7 +57,6 @@ public class LaskunTiedotIkkuna extends Stage {
         Text laskunumeroOtsikko = new Text("Laskunumero:");
         TextField laskunumeroKentta = new TextField(kenttienArvot[0]);
         laskunumeroKentta.setEditable(false);
-        laskunumeroKentta.setText("0");
         laskunumeroKentta.setBackground(Background.fill(Color.GAINSBORO));
         if (tyyppi.equals("Laskun tiedot")) {
             laskunumeroKentta.setEditable(false);
@@ -229,12 +228,15 @@ public class LaskunTiedotIkkuna extends Stage {
     }
 
     public String[] palautaKenttienTiedot() {
-        String[] tiedot;
+        String[] tiedot = new String[tekstikenttalista.size()];
+        for (int i = 0; i < tekstikenttalista.size(); i++) {
+            tiedot[i] = tekstikenttalista.get(i).getText();
+        }
 
         if (tyyppi.equals("Laskun tiedot")) {
             // Palautetaan laskun tiedot järjestyksessä
             tiedot = new String[] {
-                    //tekstikenttalista.get(0).getText(), // Laskunumero
+                    tekstikenttalista.get(0).getText(), // Laskunumero
                     tekstikenttalista.get(1).getText(), // Tuote
                     tekstikenttalista.get(2).getText(), // Nimi
                     tekstikenttalista.get(3).getText(), // Sähköposti
@@ -249,7 +251,7 @@ public class LaskunTiedotIkkuna extends Stage {
             // Palautetaan tiedot muokkausta tai lisäystä varten
             tiedot = new String[] {
                     tekstikenttalista.get(0).getText(), // Laskunumero
-                    tekstikenttalista.get(1).getText(), // Tuote
+                    tekstikenttalista.get(1).getText(), // Varausnumero
                     tekstikenttalista.get(2).getText(), // Nimi
                     tekstikenttalista.get(3).getText(), // Sähköposti
                     tekstikenttalista.get(4).getText(), // Osoite

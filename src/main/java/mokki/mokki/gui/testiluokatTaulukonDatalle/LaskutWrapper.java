@@ -316,27 +316,16 @@ public class LaskutWrapper implements TaulukonData {
     public boolean paivitaKenttienArvot(String[] arvot) {
         try {
             this.laskunumero.set(Integer.parseInt(arvot[0])); // 0: Laskunumero
-            System.out.println("Eka toimii");
             this.varaus.set(Integer.parseInt(arvot[1]));                        // 1: Varaus
-            System.out.println("Toka toimii");
             this.nimi.set(arvot[2]);                         // 2: Asiakas nimi
-            System.out.println("Kolmas toimii");
             this.sahkposti.set(arvot[3]);                    // 3: Asiakas sähköposti
-            System.out.println("Neljäs toimii");
             this.osoite.set(arvot[4]);                       // 4: Asiakas osoite
-            System.out.println("Viides toimii");
             this.viitenumero.set(Integer.parseInt(arvot[5])); // 5: Viitenumero
-            System.out.println("Kuudes toimii");
             this.verotonHinta.set(Double.parseDouble(arvot[6])); // 6: Veroton hintaD
-            System.out.println("Seitsemäs toimii");
             this.paivamaara.set(LocalDate.parse(arvot[7]));        // 7: Päivämäärä
-            System.out.println("Kasi toimii");
             this.eraPaiva.set(LocalDate.parse(arvot[8]));          // 8: Eräpäivä
-            System.out.println("Ysi toimii");
             this.tila.set(arvot[9]);                         // 9: Tila
-            System.out.println("Kymppi toimii");
             this.asiakas.set(arvot[2] + " (" + arvot[3] + ")"); // Asiakas
-            System.out.println("Vika toimii");
 
             double verotonHinta = Double.parseDouble(arvot[6]);
             double alv = verotonHinta * 0.1; 
