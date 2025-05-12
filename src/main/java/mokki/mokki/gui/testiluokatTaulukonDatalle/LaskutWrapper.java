@@ -133,7 +133,7 @@ public class LaskutWrapper implements TaulukonData {
     }
 
     public double getAlv() {
-        return alv;
+        return Double.parseDouble((verotonHinta.multiply(0.1)).toString());
     }
 
     public String getOsoite() {
@@ -185,7 +185,7 @@ public class LaskutWrapper implements TaulukonData {
      * @return maksettava määrä
      */
     public double getMaksettava() {
-        return maksettava.get();
+        return Double.parseDouble((verotonHinta.add(alv)).toString());
     }
 
     /**
