@@ -256,6 +256,9 @@ public class LaskutWrapper implements TaulukonData {
     }
 
 
+
+
+
     /**
      * Metodi palauttaa taulukkomääritykset.
      * @return taulukkomääritykset

@@ -425,16 +425,14 @@ public class Main extends Application {
                 boolean tulos = tiedotIkkuna.naytaJaOdotaJaPalautaTulos();
                 if (tulos) {
                     uusiLasku.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
-                    try {
-                    laskutDAO.lisaaLasku((LaskutWrapper) uusiLasku);
-                    taulukonSisalto.add(uusiLasku);
-                }
 
-                catch (SQLException ex)
-                {
-                    ex.printStackTrace();
-                }
-            }});
+                    try {
+                        laskutDAO.lisaaLasku((LaskutWrapper) uusiLasku); // DAO päivittää myös ID:n
+                        taulukonSisalto.add(uusiLasku);  // Nyt laskulla on oikea ID
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }});
 
             hallintapaneeli.getRajaaPainike().setOnAction(e -> {
                 RajausIkkuna rajausIkkuna = new RajausIkkuna();

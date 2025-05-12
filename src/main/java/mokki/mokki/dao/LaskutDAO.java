@@ -47,6 +47,13 @@ public class LaskutDAO {
             stmt.setString(12, lasku.getNimi());
             stmt.setString(13, lasku.getSahkposti());
             stmt.executeUpdate();
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    lasku.setLaskunumero(generatedKeys.getInt(1)); // Päivitä olioon ID
+                }
+            }
+
         }
     }
 
