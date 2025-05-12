@@ -69,7 +69,7 @@ public class LaskunTiedotIkkuna extends Stage {
         ruudukkopaneeli.add(laskunumeroKentta, 1, 0);
 
         // Tuote
-        Text tuoteOtsikko = new Text("Tuote:");
+        Text tuoteOtsikko = new Text("Varaustunnus:");
         TextField tuoteKentta = new TextField(kenttienArvot[1]);
         if (tyyppi.equals("Laskun tiedot")) {
             tuoteKentta.setEditable(false);

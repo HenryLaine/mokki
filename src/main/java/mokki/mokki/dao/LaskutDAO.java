@@ -33,7 +33,7 @@ public class LaskutDAO {
         String sql = "INSERT INTO Laskut(laskuID, tuote, asiakas, viitenumero, maksettava,status) VALUES(?,?,?,?,?,?)";
         try(PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1,lasku.getLaskunumero());
-            stmt.setInt(2,lasku.getTuote());
+            stmt.setInt(2,lasku.getVaraus());
             stmt.setString(3,lasku.getAsiakas());
             stmt.setInt(4,lasku.getViitenumero());
             stmt.setDouble(5,lasku.getMaksettava());
@@ -108,7 +108,7 @@ public class LaskutDAO {
     public void muokkaaLaskuaAsiakas(LaskutWrapper lasku) throws SQLException {
         String sql = "UPDATE Laskut SET tuote = ?, asiakas = ?, viitenumero = ?, maksettava = ?, status = ? WHERE laskuID = ?";
         try(PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, lasku.getTuote());
+            stmt.setInt(1, lasku.getVaraus());
             stmt.setString(2,lasku.getAsiakas());
             stmt.setInt(3,lasku.getViitenumero());
             stmt.setDouble(4,lasku.getMaksettava());

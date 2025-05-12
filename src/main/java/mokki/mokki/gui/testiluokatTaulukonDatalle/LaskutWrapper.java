@@ -12,7 +12,7 @@ import java.time.LocalDate;
  */
 public class LaskutWrapper implements TaulukonData {
     private IntegerProperty laskunumero;
-    private IntegerProperty tuote;
+    private IntegerProperty varaus;
     private IntegerProperty viitenumero;
     private DoubleProperty maksettava;  //
     private StringProperty tila;
@@ -32,10 +32,10 @@ public class LaskutWrapper implements TaulukonData {
 
 
 
-    public LaskutWrapper(int varaustunnus, int viitenumero) {
+    public LaskutWrapper(int varaus, int viitenumero) {
 
         this.laskunumero = new SimpleIntegerProperty(0);
-        this.tuote = new SimpleIntegerProperty(0);
+        this.varaus = new SimpleIntegerProperty(0);
         this.asiakas = new SimpleStringProperty("");
         this.viitenumero = new SimpleIntegerProperty(0);
         this.maksettava = new SimpleDoubleProperty(0);
@@ -50,7 +50,7 @@ public class LaskutWrapper implements TaulukonData {
 
         maaritykset = new String[][] {
                 {"Laskunumero", "Integer", "laskunumero"},
-                {"Tuote", "Integer", "tuote"},
+                {"Varaustunnus", "Integer", "varaus"},
                 {"Asiakas", "String", "asiakas"},
                 {"Viitenumero", "Integer", "viitenumero"},
                 {"Veroton hinta", "Double", "verotonHinta"},
@@ -66,7 +66,7 @@ public class LaskutWrapper implements TaulukonData {
                          String osoite, String nimi, String tila) {
 
         this.laskunumero = new SimpleIntegerProperty(laskunumero);
-        this.tuote = new SimpleIntegerProperty(varaus);
+        this.varaus = new SimpleIntegerProperty(varaus);
         this.asiakas = new SimpleStringProperty(nimi + " " + sahkoposti + " " + osoite);
         this.viitenumero = new SimpleIntegerProperty(viitenumero);
         this.maksettava = new SimpleDoubleProperty(maksettava);
@@ -81,7 +81,7 @@ public class LaskutWrapper implements TaulukonData {
 
         maaritykset = new String[][] {
                 {"Laskunumero", "Integer", "laskunumero"},
-                {"Tuote", "Integer", "tuote"},
+                {"Varaustunnus", "Integer", "varaus"},
                 {"Asiakas", "String", "asiakas"},
                 {"Viitenumero", "Integer", "viitenumero"},
                 {"Veroton hinta", "Double", "verotonHinta"},
@@ -98,7 +98,7 @@ public class LaskutWrapper implements TaulukonData {
                          String osoite, String nimi, String tila) {
 
         this.laskunumero = new SimpleIntegerProperty(laskunumero);
-        this.tuote = new SimpleIntegerProperty(varaus);
+        this.varaus = new SimpleIntegerProperty(varaus);
         this.viitenumero = new SimpleIntegerProperty(viitenumero);
         this.tila = new SimpleStringProperty(tila);
         this.alv = alv;
@@ -160,8 +160,8 @@ public class LaskutWrapper implements TaulukonData {
      * Metodi palauttaa tuote-kentän arvon.
      * @return tuote
      */
-    public int getTuote() {
-        return tuote.get();
+    public int getVaraus() {
+        return varaus.get();
     }
 
     /**
@@ -239,8 +239,8 @@ public class LaskutWrapper implements TaulukonData {
         this.tila.set(tila);
     }
 
-    public void setTuote(int tuote) {
-        this.tuote.set(tuote);
+    public void setTuote(int varaus) {
+        this.varaus.set(varaus);
     }
 
     public void setViitenumero(int viitenumero) {
@@ -290,7 +290,7 @@ public class LaskutWrapper implements TaulukonData {
         // Palautetaan kentät määritettyjen taulukkomääritysten mukaisesti
         return new String[]{
                 "" + laskunumero.get(),      // 0: Laskunumero
-                "" + tuote.get(),                 // 1: Tuote
+                "" + varaus.get(),                 // 1: Varaus
                 getNimi(),                  // 2: Asiakas nimi
                 getSahkposti(),             // 3: Asiakas sähköposti
                 getOsoite(),                // 4: Asiakas osoite
@@ -309,7 +309,7 @@ public class LaskutWrapper implements TaulukonData {
     public boolean paivitaKenttienArvot(String[] arvot) {
         try {
             this.laskunumero.set(Integer.parseInt(arvot[0])); // 0: Laskunumero
-            this.tuote.set(Integer.parseInt(arvot[1]));                        // 1: Tuote
+            this.varaus.set(Integer.parseInt(arvot[1]));                        // 1: Varaus
             this.nimi.set(arvot[2]);                         // 2: Asiakas nimi
             this.sahkposti.set(arvot[3]);                    // 3: Asiakas sähköposti
             this.osoite.set(arvot[4]);                       // 4: Asiakas osoite
