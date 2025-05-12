@@ -30,7 +30,7 @@ public class LaskutDAO {
 
     // tämä blokki tässä käyttää laskutwrapper luokkaa ja tämä siis lisää laskun
     public void lisaaLasku(LaskutWrapper lasku)throws SQLException{
-        String sql = "INSERT INTO Laskut(laskuID, tuote, asiakas, viitenumero, maksettava,status) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO Laskut(laskuID, varaustunnus, asiakas, viitenumero, maksettava,status) VALUES(?,?,?,?,?,?)";
         try(PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1,lasku.getLaskunumero());
             stmt.setInt(2,lasku.getVaraus());

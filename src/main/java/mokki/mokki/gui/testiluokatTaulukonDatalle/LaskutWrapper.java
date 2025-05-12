@@ -111,7 +111,7 @@ public class LaskutWrapper implements TaulukonData {
 
         maaritykset = new String[][] {
                 {"Laskunumero", "Integer", "laskunumero"},
-                {"Tuote", "String", "tuote"},
+                {"Varaustunnus", "String", "varaus"},
                 {"Viitenumero", "Integer", "viitenumero"},
                 {"Veroton hinta", "Double", "verotonHinta"},
                 {"Päivämäärä", "LocalDate", "paivamaara"},
