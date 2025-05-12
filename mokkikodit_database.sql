@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS Varaus (
 CREATE TABLE IF NOT EXISTS Laskut (
     laskuID INT AUTO_INCREMENT PRIMARY KEY,
     asiakas VARCHAR(100),
-    maksettava INT,
+    maksettava DOUBLE,
     veroton_hinta DECIMAL(10,2),
     alv DECIMAL(5,2),
     paivamaara DATE,

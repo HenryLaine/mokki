@@ -25,7 +25,10 @@ public class RaportitDAO {
         String sql = """
             SELECT
               m.mokkiID AS kohde,
-              COUNT(v.varaustunnus) AS varausten_maara,
+              SUM(CASE
+                 WHEN v.aloitus_pvm <= ? AND v.paattymis_pvm >= ? THEN 1
+                 ELSE 0
+                 END) AS varausten_maara,
               SUM(CASE
                       WHEN v.aloitus_pvm <= ? AND v.paattymis_pvm >= ?
                       THEN DATEDIFF(LEAST(v.paattymis_pvm, ?), GREATEST(v.aloitus_pvm, ?)) + 1
@@ -80,7 +83,7 @@ public class RaportitDAO {
             java.sql.Date loppupvm = java.sql.Date.valueOf(loppu);
 
             int i = 1;
-            for (int j = 0; j < 17; j++) { // 9 kertaa 4 päivämäärää (<=, >=, LEAST, GREATEST)
+            for (int j = 0; j < 18; j++) { // 9 kertaa 4 päivämäärää (<=, >=, LEAST, GREATEST)
                 stmt.setDate(i++, loppupvm);
                 stmt.setDate(i++, alkupvm);
             }

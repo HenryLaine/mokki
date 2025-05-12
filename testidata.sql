@@ -1,16 +1,16 @@
 USE mokkikodit;
 -- MÖKIT
 INSERT IGNORE INTO Mokki (sijainti, hinta, huoneita, huoneala, henkilo_maara, huomioitavaa) VALUES
-('Levi', 150.00,3, 80, 6, 'Sisältää poreammeen'),
-('Ylläs', 200.00, 5, 100, 8, NULL),
-('Ruka', 180.00,3, 90, 6, 'Lemmikkieläimet sallittu'),
-('Tahko', 160.00,4, 85, 5, NULL),
-('Vuokatti', 140.00,5, 75, 4, 'Rantasauna käytettävissä'),
-('Himos', 170.00,6, 95, 7, 'Sisältää ulkoporeammeen ja grillikatoksen'),
-('Salla', 130.00,3, 70, 4, NULL),
-('Pyhä', 155.00,4, 82, 5, 'Savuton mökki'),
-('Iso-Syöte', 165.00,5, 88, 6, NULL),
-('Koli', 175.00,7, 92, 7, 'Soveltuu etätyöhön – nopea nettiyhteys');
+                                                                                                ('Levi', 150.00,3, 80, 6, 'Sisältää poreammeen'),
+                                                                                                ('Ylläs', 200.00, 5, 100, 8, NULL),
+                                                                                                ('Ruka', 180.00,3, 90, 6, 'Lemmikkieläimet sallittu'),
+                                                                                                ('Tahko', 160.00,4, 85, 5, NULL),
+                                                                                                ('Vuokatti', 140.00,5, 75, 4, 'Rantasauna käytettävissä'),
+                                                                                                ('Himos', 170.00,6, 95, 7, 'Sisältää ulkoporeammeen ja grillikatoksen'),
+                                                                                                ('Salla', 130.00,3, 70, 4, NULL),
+                                                                                                ('Pyhä', 155.00,4, 82, 5, 'Savuton mökki'),
+                                                                                                ('Iso-Syöte', 165.00,5, 88, 6, NULL),
+                                                                                                ('Koli', 175.00,7, 92, 7, 'Soveltuu etätyöhön – nopea nettiyhteys');
 
 -- ASIAKKAAT: Yritykset
 INSERT IGNORE INTO Asiakas (sahkoposti, asiakastyyppi) VALUES
@@ -160,24 +160,14 @@ INSERT IGNORE INTO Varaus (aloitus_pvm, paattymis_pvm, henkilo_maara, sahkoposti
 
 
 -- Laskut
-INSERT INTO Laskut (veroton_hinta, alv, paivamaara, erapaiva, status, viitenumero, sahkoposti, osoite, nimi, varaustunnus) VALUES
-(900.00, 90.00, '2024-01-04', '2024-01-18', 'Avoin', '100001', 'matti@example.com', 'Katuosoite 1, Helsinki', 'Matti Meikäläinen', 1),
-(1000.00, 100.00, '2024-01-15', '2024-01-29', 'Avoin', '100002', 'yritys1@example.com', 'Yrityskatu 1, Helsinki', 'Yritys 1', 2),
-(1080.00, 108.00, '2024-01-22', '2024-02-05', 'Avoin', '100003', 'yritys2@example.com', 'Yrityskatu 2, Espoo', 'Yritys 2', 3),
-(960.00, 96.00, '2024-01-28', '2024-02-11', 'Avoin', '100004', 'maija@example.com', 'Katuosoite 2, Espoo', 'Maija Virtanen', 4),
-(980.00, 98.00, '2024-02-10', '2024-02-24', 'Avoin', '100005', 'yritys3@example.com', 'Yrityskatu 3, Vantaa', 'Yritys 3', 5),
-(1020.00, 102.00, '2024-02-18', '2024-03-03', 'Avoin', '100006', 'yritys4@example.com', 'Yrityskatu 4, Turku', 'Yritys 4', 6),
-(960.00, 96.00, '2024-03-05', '2024-03-19', 'Avoin', '100007', 'kalle@example.com', 'Katuosoite 3, Vantaa', 'Kalle Korhonen', 7),
-(1040.00, 104.00, '2024-03-14', '2024-03-28', 'Avoin', '100008', 'yritys5@example.com', 'Yrityskatu 5, Tampere', 'Yritys 5', 8),
-(840.00, 84.00, '2024-03-25', '2024-04-08', 'Avoin', '100009', 'yritys6@example.com', 'Yrityskatu 6, Oulu', 'Yritys 6', 9),
-(1080.00, 108.00, '2024-04-02', '2024-04-16', 'Avoin', '100010', 'laura@example.com', 'Katuosoite 4, Turku', 'Laura Lahtinen', 10),
-(1050.00, 105.00, '2024-04-14', '2024-04-28', 'Avoin', '100011', 'yritys7@example.com', 'Yrityskatu 7, Jyväskylä', 'Yritys 7', 11),
-(945.00, 94.50, '2024-04-25', '2024-05-09', 'Avoin', '100012', 'yritys8@example.com', 'Yrityskatu 8, Kuopio', 'Yritys 8', 12),
-(1020.00, 102.00, '2024-05-06', '2024-05-20', 'Avoin', '100013', 'antti@example.com', 'Katuosoite 5, Tampere', 'Antti Nieminen', 13),
-(1040.00, 104.00, '2024-05-15', '2024-05-29', 'Avoin', '100014', 'yritys9@example.com', 'Yrityskatu 9, Lahti', 'Yritys 9', 14),
-(1120.00, 112.00, '2024-05-26', '2024-06-09', 'Avoin', '100015', 'yritys10@example.com', 'Yrityskatu 10, Pori', 'Yritys 10', 15),
-(1000.00, 100.00, '2024-06-05', '2024-06-19', 'Avoin', '100016', 'elina@example.com', 'Katuosoite 6, Oulu', 'Elina Salonen', 16),
-(1050.00, 105.00, '2024-06-16', '2024-06-30', 'Avoin', '100017', 'jari@example.com', 'Katuosoite 7, Jyväskylä', 'Jari Heikkinen', 17),
-(990.00, 99.00, '2024-06-27', '2024-07-11', 'Avoin', '100018', 'tiina@example.com', 'Katuosoite 8, Kuopio', 'Tiina Lehtinen', 18),
-(1010.00, 101.00, '2024-07-08', '2024-07-22', 'Avoin', '100019', 'pekka@example.com', 'Katuosoite 9, Lahti', 'Pekka Mäkelä', 19),
-(1050.00, 105.00, '2024-07-19', '2024-08-02', 'Avoin', '100020', 'sari@example.com', 'Katuosoite 10, Pori', 'Sari Aalto', 20);
+INSERT INTO Laskut (asiakas, maksettava, veroton_hinta, alv, paivamaara, erapaiva, status, viitenumero, sahkoposti, osoite, nimi, varaustunnus) VALUES
+("yritys1", 1100.00, 1000.00, 100.00, '2024-02-01', '2024-02-15', 'Avoin', '100002', 'yritys1@example.com', 'Yrityskatu 1, Helsinki', 'Yritys 1', 4),
+("maija", 1650.00, 1500.00, 150.00, '2024-02-03', '2024-02-17', 'Maksettu', '100003', 'maija@example.com', 'Katuosoite 2, Espoo', 'Maija Virtanen',6),
+("yritys3", 2200.00, 2000.00, 200.00, '2024-02-05', '2024-02-19', 'Avoin', '100004', 'yritys3@example.com', 'Yrityskatu 3, Vantaa', 'Yritys 3', 8),
+("kalle", 770.00, 700.00, 70.00, '2024-02-06', '2024-02-20', 'Myöhässä', '100005', 'kalle@example.com', 'Katuosoite 3, Vantaa', 'Kalle Korhonen', 10),
+("yritys5", 1320.00, 1200.00, 120.00, '2024-02-07', '2024-02-21', 'Avoin', '100006', 'yritys5@example.com', 'Yrityskatu 5, Tampere', 'Yritys 5', 11),
+("laura", 990.00, 900.00, 90.00, '2024-02-08', '2024-02-22', 'Maksettu', '100007', 'laura@example.com', 'Katuosoite 4, Turku', 'Laura Lahtinen', 15),
+("yritys7", 1430.00, 1300.00, 130.00, '2024-02-10', '2024-02-24', 'Avoin', '100008', 'yritys7@example.com', 'Yrityskatu 7, Jyväskylä', 'Yritys 7', 16),
+("elina", 1980.00, 1800.00, 180.00, '2024-02-11', '2024-02-25', 'Myöhässä', '100009', 'elina@example.com', 'Katuosoite 6, Oulu', 'Elina Salonen', 17),
+("yritys9", 880.00, 800.00, 80.00, '2024-02-12', '2024-02-26', 'Avoin', '100010', 'yritys9@example.com', 'Yrityskatu 9, Lahti', 'Yritys 9', 19),
+("sari", 1100.00, 1000.00, 100.00, '2024-02-13', '2024-02-27', 'Maksettu', '100011', 'sari@example.com', 'Katuosoite 10, Pori', 'Sari Aalto', 21);

@@ -4,8 +4,6 @@ package mokki.mokki.gui.testiluokatTaulukonDatalle;
 import javafx.beans.property.*;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
 
@@ -34,7 +32,7 @@ public class LaskutWrapper implements TaulukonData {
 
 
 
-    public LaskutWrapper() {
+    public LaskutWrapper(int varaustunnus, int viitenumero) {
 
         this.laskunumero = new SimpleIntegerProperty(0);
         this.tuote = new SimpleIntegerProperty(0);
@@ -42,7 +40,7 @@ public class LaskutWrapper implements TaulukonData {
         this.viitenumero = new SimpleIntegerProperty(0);
         this.maksettava = new SimpleDoubleProperty(0);
         this.tila = new SimpleStringProperty("");
-        this.alv = alv;
+        this.alv = this.alv;
         this.eraPaiva = new SimpleObjectProperty<>(null);
         this.paivamaara = new SimpleObjectProperty<>(null);
         this.verotonHinta = new SimpleDoubleProperty(0);
@@ -83,7 +81,7 @@ public class LaskutWrapper implements TaulukonData {
 
         maaritykset = new String[][] {
                 {"Laskunumero", "Integer", "laskunumero"},
-                {"Tuote", "String", "tuote"},
+                {"Tuote", "Integer", "tuote"},
                 {"Asiakas", "String", "asiakas"},
                 {"Viitenumero", "Integer", "viitenumero"},
                 {"Veroton hinta", "Double", "verotonHinta"},
