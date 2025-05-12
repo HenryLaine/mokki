@@ -1,16 +1,16 @@
 USE mokkikodit;
 -- MÖKIT
 INSERT IGNORE INTO Mokki (sijainti, hinta, huoneita, huoneala, henkilo_maara, huomioitavaa) VALUES
-                                                                                                ('Levi', 150.00,3, 80, 6, 'Sisältää poreammeen'),
-                                                                                                ('Ylläs', 200.00, 5, 100, 8, NULL),
-                                                                                                ('Ruka', 180.00,3, 90, 6, 'Lemmikkieläimet sallittu'),
-                                                                                                ('Tahko', 160.00,4, 85, 5, NULL),
-                                                                                                ('Vuokatti', 140.00,5, 75, 4, 'Rantasauna käytettävissä'),
-                                                                                                ('Himos', 170.00,6, 95, 7, 'Sisältää ulkoporeammeen ja grillikatoksen'),
-                                                                                                ('Salla', 130.00,3, 70, 4, NULL),
-                                                                                                ('Pyhä', 155.00,4, 82, 5, 'Savuton mökki'),
-                                                                                                ('Iso-Syöte', 165.00,5, 88, 6, NULL),
-                                                                                                ('Koli', 175.00,7, 92, 7, 'Soveltuu etätyöhön – nopea nettiyhteys');
+    ('Levi', 150.00,3, 80, 6, 'Sisältää poreammeen'),
+    ('Ylläs', 200.00, 5, 100, 8, NULL),
+    ('Ruka', 180.00,3, 90, 6, 'Lemmikkieläimet sallittu'),
+    ('Tahko', 160.00,4, 85, 5, NULL),
+    ('Vuokatti', 140.00,5, 75, 4, 'Rantasauna käytettävissä'),
+    ('Himos', 170.00,6, 95, 7, 'Sisältää ulkoporeammeen ja grillikatoksen'),
+    ('Salla', 130.00,3, 70, 4, NULL),
+    ('Pyhä', 155.00,4, 82, 5, 'Savuton mökki'),
+    ('Iso-Syöte', 165.00,5, 88, 6, NULL),
+    ('Koli', 175.00,7, 92, 7, 'Soveltuu etätyöhön – nopea nettiyhteys');
 
 -- ASIAKKAAT: Yritykset
 INSERT IGNORE INTO Asiakas (sahkoposti, asiakastyyppi) VALUES

@@ -46,20 +46,21 @@ public class VarausDAO {
     public List<VarauksetWrapper> rajaaVaraukset(String hakusana) throws SQLException {
         List<VarauksetWrapper> rajatutVaraukset = new ArrayList<>();
 
-        String sql = "SELECT * FROM Varaus WHERE " +
-                "varaustunnus LIKE ? OR " +
-                "aloitus_pvm LIKE ? OR " +
-                "paattymis_pvm LIKE ? OR " +
-                "henkilo_maara LIKE ?";
-                //"sahkoposti LIKE ? OR" +
-                //"mokkiID LIKE ?";
+        String sql = "SELECT v.*, a.nimi, a.sahkoposti FROM Varaus v " +
+                "JOIN AsiakasTiedotView a ON v.sahkoposti = a.sahkoposti " +
+                "WHERE CAST(v.varaustunnus AS CHAR) LIKE ? OR " +
+                "CAST(v.mokkiID AS CHAR) LIKE ? OR " +
+                "CAST(v.henkilo_maara AS CHAR) LIKE ? OR " +
+                "v.aloitus_pvm LIKE ? OR " +
+                "v.paattymis_pvm LIKE ? OR " +
+                "a.sahkoposti LIKE ? OR " +
+                "a.nimi LIKE ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             String likeHakusana = "%" + hakusana + "%";
-            stmt.setString(1, likeHakusana);
-            stmt.setString(2, likeHakusana);
-            stmt.setString(3, likeHakusana);
-            stmt.setString(4, likeHakusana);
+            for (int i = 1; i <= 7; i++) {
+                stmt.setString(i, likeHakusana);
+            }
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -78,7 +79,6 @@ public class VarausDAO {
             }
 
         }
-
         return rajatutVaraukset;
     }
 
@@ -96,7 +96,7 @@ public class VarausDAO {
 
         }
 
-        }
+    }
 
 
 

@@ -28,25 +28,6 @@ CREATE TABLE IF NOT EXISTS Yritysasiakas (
     FOREIGN KEY (sahkoposti) REFERENCES Asiakas(sahkoposti) ON DELETE CASCADE
 );
 
-CREATE OR REPLACE VIEW AsiakasTiedotView AS
-SELECT 
-    a.sahkoposti,
-    a.asiakastyyppi,
-    y.nimi AS nimi,
-    y.osoite AS osoite
-FROM Asiakas a
-JOIN Yksityisasiakas y ON a.sahkoposti = y.sahkoposti
-
-UNION
-
-SELECT 
-    a.sahkoposti,
-    a.asiakastyyppi,
-    yr.nimi AS nimi,
-    yr.osoite AS osoite
-FROM Asiakas a
-JOIN Yritysasiakas yr ON a.sahkoposti = yr.sahkoposti;
-
 -- Taulu: Mökki
 CREATE TABLE IF NOT EXISTS Mokki (
     mokkiID INT AUTO_INCREMENT PRIMARY KEY,
