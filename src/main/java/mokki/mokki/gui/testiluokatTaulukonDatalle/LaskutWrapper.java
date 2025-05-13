@@ -11,13 +11,13 @@ import java.time.LocalDate;
  * Wrapper-luokka laskujen tiedoille. Luokka on tarkoitettu taulukkopaneeliin syötettävän tiedon tyypiksi.
  */
 public class LaskutWrapper implements TaulukonData {
+
     private IntegerProperty laskunumero;
     private IntegerProperty varaus;
     private IntegerProperty viitenumero;
     private DoubleProperty maksettava;  //
     private StringProperty tila;
     private DoubleProperty verotonHinta;
-
     private DoubleProperty alv;
     private ObjectProperty<LocalDate> paivamaara;
     private ObjectProperty<LocalDate> eraPaiva;
@@ -26,12 +26,19 @@ public class LaskutWrapper implements TaulukonData {
     private StringProperty nimi;
     private StringProperty asiakas; //
 
-
-    /** Taulukkomääritykset, joita tarvitaan taulukon luomisessa */
+    /**
+     * Taulukkomääritykset, joita tarvitaan taulukon luomisessa.
+     * Määrittää jokaisen kentän nimen, tyypin ja avaimen.
+     */
     private String[][] maaritykset;
 
-
-
+    /**
+     * Konstruktori, joka luo uuden LaskutWrapper-olion käyttäen varausnumeroa ja viitenumeroa.
+     * Muut kentät alustetaan oletusarvoilla.
+     *
+     * @param varaus Varausnumero.
+     * @param viitenumero Viitenumero.
+     */
     public LaskutWrapper(int varaus, int viitenumero) {
 
         this.laskunumero = new SimpleIntegerProperty(0);
@@ -48,6 +55,7 @@ public class LaskutWrapper implements TaulukonData {
         this.sahkposti = new SimpleStringProperty("");
         this.osoite = new SimpleStringProperty("");
 
+        // Alustetaan taulukkomääritykset
         maaritykset = new String[][] {
                 {"Laskunumero", "Integer", "laskunumero"},
                 {"Varaustunnus", "Integer", "varaus"},
@@ -60,6 +68,25 @@ public class LaskutWrapper implements TaulukonData {
         };
 
     }
+
+    /**
+     * Konstruktori, joka luo uuden LaskutWrapper-olion kaikilla annetuilla tiedoilla.
+     * Laskee automaattisesti maksettavan summan käyttäen arvonlisäveroa (10%).
+     *
+     * @param laskunumero Laskunumero.
+     * @param varaus Varausnumero.
+     * @param asiakas Asiakkaan nimi ja sähköposti.
+     * @param viitenumero Viitenumero.
+     * @param maksettava Maksettava summa.
+     * @param verotonhinta Veroton hinta.
+     * @param alv Arvonlisäveron määrä.
+     * @param paivamaara Laskun päivämäärä.
+     * @param erapaiva Laskun eräpäivä.
+     * @param sahkoposti Asiakkaan sähköposti.
+     * @param osoite Asiakkaan osoite.
+     * @param nimi Asiakkaan nimi.
+     * @param tila Laskun tila.
+     */
     public LaskutWrapper(int laskunumero, Integer varaus, String asiakas,
                          int viitenumero, double maksettava, double verotonhinta,
                          double alv, LocalDate paivamaara, LocalDate erapaiva, String sahkoposti,
@@ -81,6 +108,7 @@ public class LaskutWrapper implements TaulukonData {
         this.sahkposti = new SimpleStringProperty(sahkoposti);
         this.osoite = new SimpleStringProperty(osoite);
 
+        // Alustetaan taulukkomääritykset
         maaritykset = new String[][] {
                 {"Laskunumero", "Integer", "laskunumero"},
                 {"Varaustunnus", "Integer", "varaus"},
@@ -95,65 +123,72 @@ public class LaskutWrapper implements TaulukonData {
         };
     }
 
-
-    public LaskutWrapper(int laskunumero, Integer varaus,
-                         int viitenumero, double verotonhinta,
-                         double alv, LocalDate paivamaara, LocalDate erapaiva, String sahkoposti,
-                         String osoite, String nimi, String tila) {
-
-        this.laskunumero = new SimpleIntegerProperty(laskunumero);
-        this.varaus = new SimpleIntegerProperty(varaus);
-        this.viitenumero = new SimpleIntegerProperty(viitenumero);
-        this.tila = new SimpleStringProperty(tila);
-        this.alv = new SimpleDoubleProperty(alv);
-        this.eraPaiva = new SimpleObjectProperty<>(erapaiva);
-        this.paivamaara = new SimpleObjectProperty<>(paivamaara);
-        this.verotonHinta = new SimpleDoubleProperty(verotonhinta);
-        this.nimi = new SimpleStringProperty(nimi);
-        this.sahkposti = new SimpleStringProperty(sahkoposti);
-        this.osoite = new SimpleStringProperty(osoite);
-
-        maaritykset = new String[][] {
-                {"Laskunumero", "Integer", "laskunumero"},
-                {"Varaustunnus", "String", "varaus"},
-                {"Viitenumero", "Integer", "viitenumero"},
-                {"Veroton hinta", "Double", "verotonHinta"},
-                {"Päivämäärä", "LocalDate", "paivamaara"},
-                {"Eräpäivä", "LocalDate", "eraPaiva"},
-                {"Tila", "String", "tila"}
-        };
-    }
-
+    /**
+     * Metodi palauttaa verottoman hinnan.
+     *
+     * @return veroton hinta
+     */
     public double getVerotonHinta() {
         return verotonHinta.get();
     }
 
+    /**
+     * Metodi palauttaa eräpäivän.
+     *
+     * @return eräpäivä
+     */
     public LocalDate getEraPaiva() {
         return eraPaiva.get();
     }
 
+    /**
+     * Metodi palauttaa laskun päivämäärän.
+     *
+     * @return päivämäärä
+     */
     public LocalDate getPaivamaara() {
         return paivamaara.get();
     }
 
+    /**
+     * Metodi palauttaa arvonlisäveron määrän.
+     *
+     * @return ALV
+     */
     public double getAlv() {
         return alv.get();
     }
 
+    /**
+     * Metodi palauttaa asiakkaan osoitteen.
+     *
+     * @return osoite
+     */
     public String getOsoite() {
         return osoite.get();
     }
 
+    /**
+     * Metodi palauttaa asiakkaan sähköpostiosoitteen.
+     *
+     * @return sähköposti
+     */
     public String getSahkposti() {
         return sahkposti.get();
     }
 
+    /**
+     * Metodi palauttaa asiakkaan nimen.
+     *
+     * @return nimi
+     */
     public String getNimi() {
         return nimi.get();
     }
 
     /**
-     * Metodi palauttaa laskunumero-kentän arvon.
+     * Metodi palauttaa laskunumeron.
+     *
      * @return laskunumero
      */
     public int getLaskunumero() {
@@ -161,15 +196,17 @@ public class LaskutWrapper implements TaulukonData {
     }
 
     /**
-     * Metodi palauttaa tuote-kentän arvon.
-     * @return tuote
+     * Metodi palauttaa varausnumeron.
+     *
+     * @return varausnumero
      */
     public int getVaraus() {
         return varaus.get();
     }
 
     /**
-     * Metodi palauttaa asiakas-kentän arvon.
+     * Metodi palauttaa asiakkaan tiedot yhdistettynä (nimi ja sähköposti).
+     *
      * @return asiakas
      */
     public String getAsiakas() {
@@ -177,15 +214,18 @@ public class LaskutWrapper implements TaulukonData {
     }
 
     /**
-     * Metodi palauttaa viitenumero-kentän arvon.
+     * Metodi palauttaa viitenumeron.
+     *
      * @return viitenumero
      */
     public int getViitenumero() {
         return viitenumero.get();
     }
 
+
     /**
-     * Metodi palauttaa maksettava-kentän arvon.
+     * Metodi palauttaa maksettavan kokonaissumman.
+     *
      * @return maksettava määrä
      */
     public double getMaksettava() {
@@ -193,17 +233,29 @@ public class LaskutWrapper implements TaulukonData {
     }
 
     /**
-     * Metodi palauttaa tila-kentän arvon.
+     * Metodi palauttaa laskun tilan (Avoin, Maksetu, Myöhässä).
+     *
      * @return tila
      */
     public String getTila() {
         return tila.get();
     }
 
+    /**
+     * Asettaa eräpäivän.
+     *
+     * @param eraPaiva Eräpäivä, joka asetetaan.
+     */
     public void setEraPaiva(LocalDate eraPaiva) {
         eraPaivaProperty().set(eraPaiva);
     }
 
+    /**
+     * Palauttaa eräpäiväominaisuuden (property).
+     * Jos ominaisuus on null, se alustetaan.
+     *
+     * @return Eräpäiväominaisuus (property).
+     */
     public ObjectProperty<LocalDate> eraPaivaProperty() {
         if (eraPaiva == null) {
             eraPaiva = new SimpleObjectProperty<>(this, maaritykset[6][2]);
@@ -211,10 +263,21 @@ public class LaskutWrapper implements TaulukonData {
         return eraPaiva;
     }
 
+    /**
+     * Asettaa laskun päivämäärän.
+     *
+     * @param paivamaara Päivämäärä, joka asetetaan.
+     */
     public void setPaivamaara(LocalDate paivamaara) {
         paivamaaraProperty().set(paivamaara);
     }
 
+    /**
+     * Palauttaa päivämääräominaisuuden (property).
+     * Jos ominaisuus on null, se alustetaan.
+     *
+     * @return Päivämääräominaisuus (property).
+     */
     public ObjectProperty<LocalDate> paivamaaraProperty() {
         if (paivamaara == null) {
             paivamaara = new SimpleObjectProperty<>(this, maaritykset[5][2]);
@@ -222,46 +285,88 @@ public class LaskutWrapper implements TaulukonData {
         return paivamaara;
     }
 
+    /**
+     * Asettaa arvonlisäveron (ALV).
+     *
+     * @param alv Arvonlisävero, joka asetetaan.
+     */
     public void setAlv(double alv) {
         this.alv.set(alv);
     }
 
+    /**
+     * Asettaa asiakkaan tiedot.
+     *
+     * @param asiakas Asiakkaan nimi ja mahdolliset muut tiedot.
+     */
     public void setAsiakas(String asiakas) {
         this.asiakas.set(asiakas);
     }
 
+    /**
+     * Asettaa laskun numeron.
+     *
+     * @param laskunumero Laskunumero, joka asetetaan.
+     */
     public void setLaskunumero(int laskunumero) {
         this.laskunumero.set(laskunumero);
     }
 
+
+    /**
+     * Asettaa maksettavan kokonaissumman.
+     *
+     * @param maksettava Maksettava summa, joka asetetaan.
+     */
     public void setMaksettava(double maksettava) {
         this.maksettava.set(maksettava);
     }
 
-
+    /**
+     * Asettaa laskun tilan.
+     *
+     * @param tila Laskun tila, joka asetetaan.
+     */
     public void setTila(String tila) {
         this.tila.set(tila);
     }
 
+    /**
+     * Asettaa varausnumeron.
+     *
+     * @param varaus Varausnumero, joka asetetaan.
+     */
     public void setTuote(int varaus) {
         this.varaus.set(varaus);
     }
 
+    /**
+     * Asettaa viitenumeron.
+     *
+     * @param viitenumero Viitenumero, joka asetetaan.
+     */
     public void setViitenumero(int viitenumero) {
         this.viitenumero.set(viitenumero);
     }
 
+    /**
+     * Asettaa taulukkomääritykset.
+     *
+     * @param maaritykset Taulukon määritykset, jotka asetetaan.
+     */
     public void setMaaritykset(String[][] maaritykset) {
         this.maaritykset = maaritykset;
     }
 
+
+    /**
+     * Asettaa verottoman hinnan.
+     *
+     * @param verotonHinta Veroton hinta, joka asetetaan.
+     */
     public void setVerotonHinta(double verotonHinta) {
         this.verotonHinta.set(verotonHinta);
     }
-
-
-
-
 
     /**
      * Metodi palauttaa taulukkomääritykset.
@@ -272,7 +377,7 @@ public class LaskutWrapper implements TaulukonData {
     }
 
     /**
-     * Metodi palauttaa tietokokonaisuuden tunnisteen eli laskun numeron.
+     * Metodi palauttaa tietokokonaisuuden tunnisteen eli laskunumeron.
      *
      * @return tunniste
      */
@@ -291,6 +396,7 @@ public class LaskutWrapper implements TaulukonData {
 
     /**
      * Metodi palauttaa kenttien arvot merkkijonolistana.
+     *
      * @return kenttien arvot
      */
     public String[] palautaKenttienArvot() {
@@ -309,10 +415,22 @@ public class LaskutWrapper implements TaulukonData {
         };
     }
 
+    /**
+     * Tarkistaa, ovatko annetut arvot hyväksyttäviä.
+     *
+     * @param arvot arvoehdokkaat merkkijonoina.
+     * @return true, jos arvot ovat hyväksyttäviä, muulloin false.
+     */
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
         return true;
     }
 
+    /**
+     * Päivittää kenttien arvot annetun taulukon perusteella.
+     *
+     * @param arvot Uudet arvot.
+     * @return True, jos päivitys onnistui, muuten false.
+     */
     public boolean paivitaKenttienArvot(String[] arvot) {
         try {
             this.laskunumero.set(Integer.parseInt(arvot[0])); // 0: Laskunumero
@@ -327,6 +445,7 @@ public class LaskutWrapper implements TaulukonData {
             this.tila.set(arvot[9]);                         // 9: Tila
             this.asiakas.set(arvot[2] + " (" + arvot[3] + ")"); // Asiakas
 
+            // Lasketaan ALV ja maksettava summa
             double verotonHinta = Double.parseDouble(arvot[6]);
             double alv = verotonHinta * 0.1; 
             this.alv.set(alv);
@@ -338,7 +457,14 @@ public class LaskutWrapper implements TaulukonData {
         }
     }
 
-
+    /**
+     * Tarkistaa, mitkä annetun arvotaulukon arvot ovat hyväksyttäviä.
+     * Tässä toteutuksessa kaikki arvot katsotaan hyväksyttäviksi, joten totuusarvolista
+     * sisältää vain arvoja `true`.
+     *
+     * @param arvot Merkkijonotaulukko, joka sisältää tarkistettavat arvot.
+     * @return Taulukko, jossa jokainen arvo on merkitty hyväksyttäväksi (true).
+     */
     public boolean[] mitkaArvotHyvaksyttavia(String[] arvot) {
         boolean[] totuusarvolista = new boolean[arvot.length];
         for (int i = 0; i < arvot.length; i++) {
@@ -347,11 +473,24 @@ public class LaskutWrapper implements TaulukonData {
         return totuusarvolista;
     }
 
+    /**
+     * Tarkistaa, onko annetun tunnisteen arvo uniikki.
+     * Tässä toteutuksessa tunnisteen tarkistusta ei suoriteta, koska järjestelmä hoitaa tunnusten luomisen.
+     *
+     * @param tunniste Merkkijono, joka edustaa tarkastettavaa tunnistetta.
+     * @return Aina true, koska uniikkiustarkistusta ei tarvita.
+     */
     public boolean onkoTunnisteUniikki(String tunniste) {
         // Järjestelmä hoitaa tunnusten luomisen. Ei tarvitse tarkistaa.
         return true;
     }
 
+    /**
+     * Palauttaa tunnisteen indeksin.
+     * Tässä toteutuksessa tunnisteen indeksi on aina 0.
+     *
+     * @return Tunnisteen indeksi (aina 0).
+     */
     public int palautaTunnisteenIndeksi() {
         return 0;
     }

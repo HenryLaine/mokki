@@ -18,33 +18,49 @@ import java.util.Date;
  * Luokka toteuttaa ikkunan, jolla näytetään ja hallitaan laskun tietoja.
  */
 public class LaskunTiedotIkkuna extends Stage {
-    private BorderPane paapaneeli;
-    private TaulukonData data;
-    private ArrayList<TextField> tekstikenttalista;
-    private ArrayList<DatePicker> paivamaaravalitsinlista;
-    private ToggleGroup valintanapit;
-    private boolean tulos = false;
-    private String tyyppi;
+    private BorderPane paapaneeli;  // Pääpaneeli, johon kaikki komponentit lisätään
+    private TaulukonData data; // Laskun tiedot, jotka näytetään ja mahdollisesti muokataan
+    private ArrayList<TextField> tekstikenttalista; // Lista kaikista tekstikentistä
+    private ArrayList<DatePicker> paivamaaravalitsinlista;  // Lista kaikista päivämäärävalitsimista
+    private boolean tulos = false; // Tulos, joka ilmaisee, hyväksyikö käyttäjä muutokset
+    private String tyyppi; // Ikkunan tyyppi, kuten "Laskun tiedot", "Muokkaa laskun tietoja" tai "Lisää lasku".
 
+
+    /**
+     * Konstruktori luo uuden ikkunan annetun tiedon perusteella.
+     *
+     * @param data   TaulukonData-olio, joka sisältää laskun tiedot.
+     * @param tyyppi Ikkunan tyyppi, kuten "Laskun tiedot", "Muokkaa laskun tietoja" tai "Lisää lasku".
+     */
     public LaskunTiedotIkkuna(TaulukonData data, String tyyppi) {
         this.data = data;
         this.tyyppi = tyyppi;
-        paapaneeli = new BorderPane();
-        paapaneeli.setPadding(new Insets(20));
-        tekstikenttalista = new ArrayList<>();
-        paivamaaravalitsinlista = new ArrayList<>();
+        paapaneeli = new BorderPane();  // Luo pääpaneelin
+        paapaneeli.setPadding(new Insets(20)); // Aseta pääpaneelin sisämarginaalit
+        tekstikenttalista = new ArrayList<>();  // Alusta tekstikenttien lista
+        paivamaaravalitsinlista = new ArrayList<>(); // Alusta päivämäärävalitsimien lista
 
+        // Näytettävä alapaneeli ikkunassa (napit).
         HBox alapaneeli = luoPainikepaneeli();
 
+        // Lisää ruudukkopaneeli (lomake) ikkunan yläosaan
         paapaneeli.setTop(luoRuudukkopaneeli());
+
+        // Lisää alapaneeli (napit) ikkunan alaosaan
         paapaneeli.setBottom(alapaneeli);
 
+        // Luo Scene ja aseta se tälle ikkunalle
         Scene scene = new Scene(paapaneeli, 800, 600);
         this.initModality(Modality.APPLICATION_MODAL);
         this.setTitle(tyyppi);
         this.setScene(scene);
     }
 
+    /**
+     * Luo ruudukkopaneelin, jossa on laskun tietokentät.
+     *
+     * @return GridPane-olio, joka sisältää laskun tietokentät.
+     */
     private GridPane luoRuudukkopaneeli() {
         GridPane ruudukkopaneeli = new GridPane();
         ruudukkopaneeli.setHgap(10);
@@ -58,6 +74,8 @@ public class LaskunTiedotIkkuna extends Stage {
         TextField laskunumeroKentta = new TextField(kenttienArvot[0]);
         laskunumeroKentta.setEditable(false);
         laskunumeroKentta.setBackground(Background.fill(Color.GAINSBORO));
+
+        // Jos tyyppi on "Laskun tiedot", kenttä ei ole muokattavissa
         if (tyyppi.equals("Laskun tiedot")) {
             laskunumeroKentta.setEditable(false);
             laskunumeroKentta.setFocusTraversable(false);
@@ -70,6 +88,8 @@ public class LaskunTiedotIkkuna extends Stage {
         // Varaustunnus
         Text tuoteOtsikko = new Text("Varaustunnus:");
         TextField tuoteKentta = new TextField(kenttienArvot[1]);
+
+        // Jos tyyppi on "Laskun tiedot", kenttä ei ole muokattavissa
         if (tyyppi.equals("Laskun tiedot")) {
             tuoteKentta.setEditable(false);
             tuoteKentta.setFocusTraversable(false);
@@ -82,6 +102,8 @@ public class LaskunTiedotIkkuna extends Stage {
         // Nimi
         Text nimiOtsikko = new Text("Nimi:");
         TextField nimiKentta = new TextField(kenttienArvot[2]);
+
+        // Jos tyyppi on "Laskun tiedot", kenttä ei ole muokattavissa
         if (tyyppi.equals("Laskun tiedot")) {
             nimiKentta.setEditable(false);
             nimiKentta.setFocusTraversable(false);
@@ -94,6 +116,8 @@ public class LaskunTiedotIkkuna extends Stage {
         // Sähköposti
         Text sahkopostiOtsikko = new Text("Sähköposti:");
         TextField sahkopostiKentta = new TextField(kenttienArvot[3]);
+
+        // Jos tyyppi on "Laskun tiedot", kenttä ei ole muokattavissa
         if (tyyppi.equals("Laskun tiedot")) {
             sahkopostiKentta.setEditable(false);
             sahkopostiKentta.setFocusTraversable(false);
@@ -106,6 +130,8 @@ public class LaskunTiedotIkkuna extends Stage {
         // Osoite
         Text osoiteOtsikko = new Text("Osoite:");
         TextField osoiteKentta = new TextField(kenttienArvot[4]);
+
+        // Jos tyyppi on "Laskun tiedot", kenttä ei ole muokattavissa
         if (tyyppi.equals("Laskun tiedot")) {
             osoiteKentta.setEditable(false);
             osoiteKentta.setFocusTraversable(false);
@@ -118,6 +144,8 @@ public class LaskunTiedotIkkuna extends Stage {
         // Viitenumero
         Text viitenumeroOtsikko = new Text("Viitenumero:");
         TextField viitenumeroKentta = new TextField(kenttienArvot[5]);
+
+        // Jos tyyppi on "Laskun tiedot", kenttä ei ole muokattavissa
         if (tyyppi.equals("Laskun tiedot")) {
             viitenumeroKentta.setEditable(false);
             viitenumeroKentta.setFocusTraversable(false);
@@ -130,6 +158,8 @@ public class LaskunTiedotIkkuna extends Stage {
         // Veroton hinta
         Text verotonHintaOtsikko = new Text("Veroton hinta:");
         TextField verotonHintaKentta = new TextField(kenttienArvot[6]);
+
+        // Jos tyyppi on "Laskun tiedot", kenttä ei ole muokattavissa
         if (tyyppi.equals("Laskun tiedot")) {
             verotonHintaKentta.setEditable(false);
             verotonHintaKentta.setFocusTraversable(false);
@@ -141,8 +171,12 @@ public class LaskunTiedotIkkuna extends Stage {
 
         // Päivämäärä
         Text paivamaaraOtsikko = new Text("Päivämäärä:");
+
         LocalDate pvm= LocalDate.parse(kenttienArvot[7]);
         DatePicker paivamaaraKentta = new DatePicker(pvm);
+
+
+        // Jos tyyppi on "Laskun tiedot", kenttä ei ole muokattavissa
         if (tyyppi.equals("Laskun tiedot")) {
             paivamaaraKentta.setEditable(false);
             paivamaaraKentta.setDisable(true);
@@ -157,6 +191,9 @@ public class LaskunTiedotIkkuna extends Stage {
         Text erapaivaOtsikko = new Text("Eräpäivä:");
         LocalDate erapvm= LocalDate.parse(kenttienArvot[8]);
         DatePicker erapaivaKentta = new DatePicker(erapvm);
+
+
+        // Jos tyyppi on "Laskun tiedot", kenttä ei ole muokattavissa
         if (tyyppi.equals("Laskun tiedot")) {
             erapaivaKentta.setEditable(false);
             erapaivaKentta.setDisable(true);
@@ -169,6 +206,8 @@ public class LaskunTiedotIkkuna extends Stage {
         // Tila
         Text tilaOtsikko = new Text("Tila:");
         TextField tilaKentta = new TextField(kenttienArvot[9]);
+
+        // Jos tyyppi on "Laskun tiedot", kenttä ei ole muokattavissa
         if (tyyppi.equals("Laskun tiedot")) {
             tilaKentta.setEditable(false);
             tilaKentta.setFocusTraversable(false);
@@ -181,21 +220,30 @@ public class LaskunTiedotIkkuna extends Stage {
         return ruudukkopaneeli;
     }
 
+    /**
+     * Luo alapaneelin, jossa on painikkeet.
+     *
+     * @return HBox-olio, joka sisältää painikkeet.
+     */
     private HBox luoPainikepaneeli() {
         HBox painikepaneeli = new HBox(20);
         painikepaneeli.setPadding(new Insets(20, 0, 0, 0));
+
+        // Jos ikkunan tyyppi on "Laskun tiedot", näytetään vain "Sulje"-painike
         if (tyyppi.equals("Laskun tiedot")) {
             Button suljePainike = new Button("Sulje");
             suljePainike.setMinWidth(100);
             painikepaneeli.getChildren().add(suljePainike);
             suljePainike.setOnAction(e -> this.close());
         } else {
+            // Jos ikkunan tyyppi on "Lisää lasku" tai "Muokkaa tietoja", näytetään kaksi painiketta
             Button hyvaksyPainike = new Button(tyyppi.equals("Lisää lasku") ? "Lisää lasku" : "Muuta tiedot");
             Button peruutaPainike = new Button("Peruuta");
             hyvaksyPainike.setMinWidth(100);
             peruutaPainike.setMinWidth(100);
             painikepaneeli.getChildren().addAll(hyvaksyPainike, peruutaPainike);
 
+            // Hyväksy-painikkeen toiminta: tarkista arvot ja sulje ikkuna
             hyvaksyPainike.setOnAction(e -> {
                 boolean arvotHyvaksyttavia = data.ovatkoArvotHyvaksyttavia(palautaKenttienTiedot());
                 if (arvotHyvaksyttavia) {
@@ -203,6 +251,7 @@ public class LaskunTiedotIkkuna extends Stage {
                     tulos = true;
                     this.close();
                 } else {
+                    // Näytä virheilmoitus, jos arvot eivät ole hyväksyttäviä
                     Alert virhe = new Alert(Alert.AlertType.ERROR);
                     virhe.setTitle("Virhe");
                     virhe.setHeaderText("Tietokenttävirhe");
@@ -211,6 +260,7 @@ public class LaskunTiedotIkkuna extends Stage {
                 }
             });
 
+            // Peruuta-painikkeen toiminta: sulje ikkuna ilman muutoksia
             peruutaPainike.setOnAction(e -> {
                 tulos = false;
                 this.close();
@@ -220,21 +270,37 @@ public class LaskunTiedotIkkuna extends Stage {
         return painikepaneeli;
     }
 
+    /**
+     * Näyttää ikkunan ja palauttaa käyttäjän valinnan tuloksen.
+     *
+     * @return True, jos käyttäjä vahvisti toimenpiteen, muuten false.
+     */
     public boolean naytaJaOdotaJaPalautaTulos() {
         this.showAndWait();
         return tulos;
     }
 
+    /**
+     * Asettaa ikkunan fonttikoon.
+     *
+     * @param fonttikoko Fonttikoko pikseleinä.
+     */
     public void asetaFonttikoko(int fonttikoko) {
         paapaneeli.setStyle("-fx-font-size:" + fonttikoko + "px;");
     }
 
+    /**
+     * Palauttaa tietokenttien arvot taulukkona.
+     *
+     * @return String-taulukko, joka sisältää tietokenttien arvot.
+     */
     public String[] palautaKenttienTiedot() {
         String[] tiedot = new String[tekstikenttalista.size()];
         for (int i = 0; i < tekstikenttalista.size(); i++) {
             tiedot[i] = tekstikenttalista.get(i).getText();
         }
 
+        // Palauta arvot eri järjestyksessä ikkunatyypin perusteella
         if (tyyppi.equals("Laskun tiedot")) {
             // Palautetaan laskun tiedot järjestyksessä
             tiedot = new String[] {
