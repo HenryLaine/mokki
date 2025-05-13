@@ -15,16 +15,23 @@ public class VarausDAO {
     }
 
     // tämä blokki tässä käyttää varauksetwrapper luokkaa ja tämä siis lisää varauksen
-    public void lisaaVaraus(VarauksetWrapper w) throws SQLException {
+    public void lisaaVaraus(VarauksetWrapper varaus) throws SQLException {
         String sql = "INSERT INTO Varaus (aloitus_pvm, paattymis_pvm, henkilo_maara, sahkoposti,mokkiID) VALUES(?,?,?,?,?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setDate(1, java.sql.Date.valueOf(w.getAlkaa()));
-            stmt.setDate(2, java.sql.Date.valueOf(w.getPaattyy()));
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setDate(1, java.sql.Date.valueOf(varaus.getAlkaa()));
+            stmt.setDate(2, java.sql.Date.valueOf(varaus.getPaattyy()));
             stmt.setInt(3, 1);
-            stmt.setString(4, w.getAsiakkaanSahkoposti());
-            stmt.setInt(5, Integer.parseInt(w.getKohteenTunnus()));
+            stmt.setString(4, varaus.getAsiakkaanSahkoposti());
+            stmt.setInt(5, Integer.parseInt(varaus.getKohteenTunnus()));
             stmt.executeUpdate();
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    varaus.setTunnus(String.valueOf(generatedKeys.getInt(1))); // Päivitä olioon ID
+                }
+            }
         }
+
     }
 
 

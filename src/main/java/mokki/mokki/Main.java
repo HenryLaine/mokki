@@ -427,8 +427,8 @@ public class Main extends Application {
                     uusiLasku.paivitaKenttienArvot(tiedotIkkuna.palautaKenttienTiedot());
 
                     try {
-                        laskutDAO.lisaaLasku((LaskutWrapper) uusiLasku); // DAO päivittää myös ID:n
-                        taulukonSisalto.add(uusiLasku);  // Nyt laskulla on oikea ID
+                        laskutDAO.lisaaLasku((LaskutWrapper) uusiLasku);
+                        taulukonSisalto.add(uusiLasku);
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
