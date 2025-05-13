@@ -5,6 +5,8 @@ import javafx.beans.property.*;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -422,7 +424,34 @@ public class LaskutWrapper implements TaulukonData {
      * @return true, jos arvot ovat hyväksyttäviä, muulloin false.
      */
     public boolean ovatkoArvotHyvaksyttavia(String[] arvot) {
-        return true;
+        try {
+            // Tarkistetaan asiakkaan nimi
+            String nimi = arvot[2];
+            if (nimi.isEmpty()) return false;
+
+
+            // Tarkistetaan sähköposti
+            String sahkoposti = arvot[3];
+            if (sahkoposti.isEmpty() || !sahkoposti.contains("@")) return false;
+
+            // Tarkistetaan osoite (ei saa olla tyhjä)
+            String osoite = arvot[4];
+            if (osoite.isEmpty()) return false;
+
+            // Tarkistetaan viitenumero
+            int viitenumero = Integer.parseInt(arvot[5]);
+            if (viitenumero <= 0) return false;
+
+            // Tarkistetaan veroton hinta
+            double verotonHinta = Double.parseDouble(arvot[6]);
+            if (verotonHinta <= 0) return false;
+
+            // Kaikki tarkistukset läpäisty
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Palautetaan false, jos tapahtuu virhe
+        }
     }
 
     /**
