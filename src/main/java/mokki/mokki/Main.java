@@ -610,22 +610,6 @@ public class Main extends Application {
 
     }
 
-            /* Luo kohteen tiedot sisältävä TaulukonData-olio ja syötä se KohteenTiedotIkkuna-olioon
-            TaulukonData kohteenTiedot = new KohteetWrapper();
-            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(kohteenTiedot,
-                    false, true, "Kohteen tiedot", new String[] {"", "Sulje"});
-            tiedotIkkuna.asetaFonttikoko(fonttikoko);
-            tiedotIkkuna.showAndWait();
-
-
-
-        kontekstivalikonKohdat.get(1).setOnAction(e -> {
-            // Kohteen varaukset näytetään
-            // TODO: Siiry Varaukset-välilehdelle ja aseta rajaukseksi kohteen tunnus.
-
-        });
-    }*/
-
     public static void main(String[] args) {
         DatabaseCreator.ensureDatabaseExists();
         DatabaseInitializer.initializeDatabase();
