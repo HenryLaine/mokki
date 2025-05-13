@@ -62,6 +62,7 @@ public class Main extends Application {
                         mokkiDAO.lisaaMokki((KohteetWrapper) uusiKohde);
                         taulukonSisalto.add(uusiKohde);
                     } catch (SQLException ex) {
+                        new Virheikkuna("Tietokantavirhe", "Laitoitko johonkin tekstikenttään tietoa, joka ei ollut vielä tietokannassa?").show();
                         ex.printStackTrace();
                     }
                 }
@@ -94,6 +95,7 @@ public class Main extends Application {
                     taulukonSisalto.setAll(kaikki);
                     hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
                 } catch (SQLException ex) {
+                    new Virheikkuna("Tietokantavirhe", "Laitoitko johonkin tekstikenttään tietoa, joka ei ollut vielä tietokannassa?").show();
                     ex.printStackTrace();
                 }
             });
@@ -124,6 +126,7 @@ public class Main extends Application {
                             taulukonSisalto.set(index, kohteenTiedot);
                         }
                     } catch (SQLException ex) {
+                        new Virheikkuna("Tietokantavirhe", "Laitoitko johonkin tekstikenttään tietoa, joka ei ollut vielä tietokannassa?").show();
                         ex.printStackTrace();
                     }
                 }
@@ -181,6 +184,7 @@ public class Main extends Application {
                         taulukonSisalto.add(uusiVaraus);
                     }
                     catch (SQLException ex) {
+                        new Virheikkuna("Tietokantavirhe", "Laitoitko johonkin tekstikenttään tietoa, joka ei ollut vielä tietokannassa?").show();
                         ex.printStackTrace();
                     }
                 }
@@ -203,6 +207,7 @@ public class Main extends Application {
 
                         catch (SQLException ex)
                         {
+                            new Virheikkuna("Tietokantavirhe", "Laitoitko johonkin tekstikenttään tietoa, joka ei ollut vielä tietokannassa?").show();
                             ex.printStackTrace();
                         }
                     }
@@ -218,6 +223,7 @@ public class Main extends Application {
                         hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
                     }
                     catch (SQLException ex) {
+                        new Virheikkuna("Tietokantavirhe", "Laitoitko johonkin tekstikenttään tietoa, joka ei ollut vielä tietokannassa?").show();
                         ex.printStackTrace();
                     }
                 });
@@ -273,6 +279,7 @@ public class Main extends Application {
                       }
 
                         catch (SQLException ex) {
+                            new Virheikkuna("Tietokantavirhe", "Laitoitko johonkin tekstikenttään tietoa, joka ei ollut vielä tietokannassa?").show();
                             ex.printStackTrace();
                         }
                     }
@@ -329,7 +336,7 @@ public class Main extends Application {
                         taulukonSisalto.add(uusiAsiakas);
                     } catch (SQLException ex) {
                         ex.printStackTrace();
-                        // Voit näyttää virheilmoituksen käyttöliittymässä
+                        new Virheikkuna("Tietokantavirhe", "Laitoitko johonkin tekstikenttään tietoa, joka ei ollut vielä tietokannassa?").show();
                     }
                 }
             });
@@ -420,7 +427,7 @@ public class Main extends Application {
         } catch (SQLException e) {
             System.err.println("Tietokantayhteyden muodostaminen epäonnistui: " + e.getMessage());
             e.printStackTrace();
-            // TODO: Näytä virheilmoitus käyttöliittymässä, jos tarvitaan
+            new Virheikkuna("Tietokantavirhe", "Tietokantayhteyden muodostaminen epäonnistui").show();
         }
     }
     private void alustaLaskutPaneeli() {
@@ -470,6 +477,7 @@ public class Main extends Application {
                         taulukonSisalto.addAll(rajatut);
                         hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET: " + hakusana);
                     } catch (SQLException ex) {
+                        new Virheikkuna("Tietokantavirhe", "Laitoitko johonkin tekstikenttään tietoa, joka ei ollut vielä tietokannassa?").show();
                         throw new RuntimeException(ex);
                     }
                 }
@@ -513,6 +521,7 @@ public class Main extends Application {
 
                     catch (SQLException ex)
                     {
+                        new Virheikkuna("Tietokantavirhe", "Laitoitko johonkin tekstikenttään tietoa, joka ei ollut vielä tietokannassa?").show();
                         ex.printStackTrace();
                     }
                 }
@@ -564,6 +573,7 @@ public class Main extends Application {
 
         catch (SQLException ex)
         {
+            new Virheikkuna("Tietokantavirhe", "Virhe tietokannassa").show();
             ex.printStackTrace();
         }
     }
@@ -595,6 +605,7 @@ public class Main extends Application {
                     try {
                         haeJaPaivitaRaportti(taulukonSisalto, hallintapaneeli);
                     } catch (SQLException e) {
+                        new Virheikkuna("Tietokantavirhe", "Tietokantavirhe").show();
                         e.printStackTrace();
                     }
                 });
@@ -603,6 +614,7 @@ public class Main extends Application {
                     try {
                         haeJaPaivitaRaportti(taulukonSisalto, hallintapaneeli);
                     } catch (SQLException e) {
+                        new Virheikkuna("Tietokantavirhe", "Tietokantavirhe").show();
                         e.printStackTrace();
                     }
                 });
@@ -637,7 +649,8 @@ public class Main extends Application {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Voit halutessasi näyttää virheilmoituksen myös käyttöliittymässä
+            e.printStackTrace();
+            new Virheikkuna("Tietokantavirhe", "Tietokantavirhe").show();
         }
     }
 
@@ -657,6 +670,7 @@ public class Main extends Application {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Virhe haettaessa raporttia tietokannasta.");
+            new Virheikkuna("Tietokantavirhe", "Virhe haettaessa raporttia tietokannasta.").show();
         }
 
     }
