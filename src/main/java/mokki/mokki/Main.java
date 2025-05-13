@@ -397,7 +397,7 @@ public class Main extends Application {
         } catch (SQLException e) {
             System.err.println("Tietokantayhteyden muodostaminen epäonnistui: " + e.getMessage());
             e.printStackTrace();
-
+            // TODO: Näytä virheilmoitus käyttöliittymässä, jos tarvitaan
         }
     }
     private void alustaLaskutPaneeli() {
@@ -502,6 +502,7 @@ public class Main extends Application {
                     LaskutWrapper lasku = (LaskutWrapper) laskunTiedot;
                     lasku.setTila("Maksettu");
 
+                    // Päivitä ObservableList
                     int index = taulukonSisalto.indexOf(lasku);
                     if (index >= 0) {
                         taulukonSisalto.set(index, lasku); // Tämä pakottaa TableView:n päivityksen

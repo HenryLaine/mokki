@@ -141,7 +141,8 @@ public class LaskunTiedotIkkuna extends Stage {
 
         // Päivämäärä
         Text paivamaaraOtsikko = new Text("Päivämäärä:");
-        DatePicker paivamaaraKentta = new DatePicker(LocalDate.now());
+        LocalDate pvm= LocalDate.parse(kenttienArvot[7]);
+        DatePicker paivamaaraKentta = new DatePicker(pvm);
         if (tyyppi.equals("Laskun tiedot")) {
             paivamaaraKentta.setEditable(false);
             paivamaaraKentta.setDisable(true);
@@ -154,7 +155,8 @@ public class LaskunTiedotIkkuna extends Stage {
 
         // Eräpäivä
         Text erapaivaOtsikko = new Text("Eräpäivä:");
-        DatePicker erapaivaKentta = new DatePicker(LocalDate.now());
+        LocalDate erapvm= LocalDate.parse(kenttienArvot[8]);
+        DatePicker erapaivaKentta = new DatePicker(erapvm);
         if (tyyppi.equals("Laskun tiedot")) {
             erapaivaKentta.setEditable(false);
             erapaivaKentta.setDisable(true);

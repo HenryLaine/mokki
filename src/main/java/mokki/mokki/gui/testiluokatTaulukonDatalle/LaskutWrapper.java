@@ -303,8 +303,8 @@ public class LaskutWrapper implements TaulukonData {
                 getOsoite(),                // 4: Asiakas osoite
                 "" + viitenumero.get(),      // 5: Viitenumero
                 "" + verotonHinta.get(),     // 6: Veroton hinta
-                "" + paivamaara,             // 7: Päivämäärä
-                "" + eraPaiva,               // 8: Eräpäivä
+                "" + paivamaara.get(),             // 7: Päivämäärä
+                "" + eraPaiva.get(),               // 8: Eräpäivä
                 tila.get()                   // 9: Tila
         };
     }
