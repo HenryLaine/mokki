@@ -271,36 +271,21 @@ public class KohteenTiedotIkkuna extends Stage {
      * @return tekstikenttien tiedot
      */
     public String[] palautaKenttienTiedot() {
-        String[] tiedot;
-        if (!tekstialueKaytossa) {
-            tiedot = new String[tekstikenttalista.size()];
-            for (int i = 0; i < tiedot.length; i++) {
-                if (i == 0) {
-                    tiedot[i] = "";
-                }
-                else if (data.getMaaritykset()[i][1].equals("Double")) {
-                    tiedot[i] = tekstikenttalista.get(i).getText().replaceAll(",", ".");
-                }
-                else {
-                    tiedot[i] = tekstikenttalista.get(i).getText();
-                }
-            }
+        if (tekstikenttalista.size() < 6) {
+            return new String[] {""};
         }
-        else {
-            tiedot = new String[tekstikenttalista.size() + 1];
-            for (int i = 0; i < tiedot.length - 1; i++) {
-                if (i == 0) {
-                    tiedot[i] = "";
-                }
-                else if (data.getMaaritykset()[i][1].equals("Double")) {
-                    tiedot[i] = tekstikenttalista.get(i).getText().replaceAll(",", ".");
-                }
-                else {
-                    tiedot[i] = tekstikenttalista.get(i).getText();
-                }
-            }
-            tiedot[tiedot.length - 1] = tekstialue.getText();
-        }
+        String pintaAla = tekstikenttalista.get(3).getText().replace(",", ".");
+        String hinta = tekstikenttalista.get(4).getText().replace(",", ".");
+
+        String[] tiedot = new String[] {
+                tekstikenttalista.get(0).getText(), // Tunnus
+                tekstikenttalista.get(1).getText(), // Sijainti
+                tekstikenttalista.get(2).getText(), // Huoneita
+                pintaAla, // Pinta-ala
+                hinta, // Hinta
+                tekstikenttalista.get(5).getText(), // Henkilömäärä
+                tekstialue.getText()                // Huomioitavaa
+        };
 
         return tiedot;
     }

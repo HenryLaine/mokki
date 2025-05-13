@@ -593,6 +593,8 @@ public class Main extends Application {
                         if (valittu != null) {
                             String kohteenTunnus = valittu.palautaTunniste();
                             System.out.println("Näytetään tiedot kohteesta: " + kohteenTunnus);
+
+
                         }
                     });
                 }
