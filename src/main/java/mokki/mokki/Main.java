@@ -598,7 +598,15 @@ public class Main extends Application {
 
                             String kohteenTunnus = valittu.palautaTunniste();
                             System.out.println("Näytetään tiedot kohteesta: " + kohteenTunnus);
-
+                        }
+                    });
+                    kontekstivalikonKohdat.get(1).setOnAction(e -> {
+                        TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
+                        if (valittu != null) {
+                            VarauksenTiedotIkkuna varausIkkuna = new VarauksenTiedotIkkuna(
+                                    valittu, "Varauksen tiedot");
+                            varausIkkuna.asetaFonttikoko(fonttikoko);
+                            varausIkkuna.showAndWait();
 
                         }
                     });
