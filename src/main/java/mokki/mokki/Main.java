@@ -591,6 +591,11 @@ public class Main extends Application {
                     kontekstivalikonKohdat.get(0).setOnAction(e -> {
                         TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
                         if (valittu != null) {
+                            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(
+                                    valittu, false, true, "Kohteen tiedot", new String[]{"", "Sulje"});
+                            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                            tiedotIkkuna.showAndWait();
+
                             String kohteenTunnus = valittu.palautaTunniste();
                             System.out.println("Näytetään tiedot kohteesta: " + kohteenTunnus);
 
