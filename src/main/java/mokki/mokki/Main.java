@@ -233,6 +233,29 @@ public class Main extends Application {
                     tiedotIkkuna.showAndWait();
                 });
 
+                kontekstivalikonKohdat.get(1).setOnAction(e -> {
+                    TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
+                    if (valittu != null) {
+                        KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(
+                                valittu, false, true, "Kohteen tiedot", new String[]{"", "Sulje"});
+                        tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                        tiedotIkkuna.showAndWait();
+
+                        String kohteenTunnus = valittu.palautaTunniste();
+                        System.out.println("Näytetään tiedot kohteesta: " + kohteenTunnus);
+                    }
+                });
+
+                kontekstivalikonKohdat.get(2).setOnAction(e -> {
+                    TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
+                    if (valittu != null) {
+                        AsiakkaanTiedotIkkuna tiedotIkkuna = new AsiakkaanTiedotIkkuna(
+                                valittu, "Asiakkaan tiedot");
+                        tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                        tiedotIkkuna.showAndWait();
+                    }
+                });
+
                 // Muokkaa varausta
                 kontekstivalikonKohdat.get(3).setOnAction(e -> {
                     TaulukonData varauksentiedot = taulukkopaneeli.palautaRivinTiedot();
@@ -591,9 +614,22 @@ public class Main extends Application {
                     kontekstivalikonKohdat.get(0).setOnAction(e -> {
                         TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
                         if (valittu != null) {
+                            KohteenTiedotIkkuna tiedotIkkuna = new KohteenTiedotIkkuna(
+                                    valittu, false, true, "Kohteen tiedot", new String[]{"", "Sulje"});
+                            tiedotIkkuna.asetaFonttikoko(fonttikoko);
+                            tiedotIkkuna.showAndWait();
+
                             String kohteenTunnus = valittu.palautaTunniste();
                             System.out.println("Näytetään tiedot kohteesta: " + kohteenTunnus);
-
+                        }
+                    });
+                    kontekstivalikonKohdat.get(1).setOnAction(e -> {
+                        TaulukonData valittu = taulukkopaneeli.palautaRivinTiedot();
+                        if (valittu != null) {
+                            VarauksenTiedotIkkuna varausIkkuna = new VarauksenTiedotIkkuna(
+                                    valittu, "Varauksen tiedot");
+                            varausIkkuna.asetaFonttikoko(fonttikoko);
+                            varausIkkuna.showAndWait();
 
                         }
                     });
