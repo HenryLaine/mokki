@@ -1,5 +1,9 @@
 package mokki.mokki.dao;
 
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import mokki.mokki.gui.testiluokatTaulukonDatalle.LaskutWrapper;
 import mokki.mokki.gui.testiluokatTaulukonDatalle.VarauksetWrapper;
 
@@ -150,6 +154,75 @@ public class LaskutDAO {
 
         }
         return lista;
+    }
+    public List<LaskutWrapper> rajaaLaskut(String hakusana) throws SQLException {
+        List<LaskutWrapper> rajatutLaskut = new ArrayList<>();
+
+        String sql = "SELECT * FROM Laskut WHERE " +
+                "CAST(laskuID AS CHAR) LIKE ? OR " +
+                "CAST(varaustunnus AS CHAR) LIKE ? OR " +
+                "nimi LIKE ? OR " +
+                "sahkoposti LIKE ? OR " +
+                "osoite LIKE ? OR " +
+                "status LIKE ? OR " +
+                "CAST(veroton_hinta AS CHAR) LIKE ? OR " +
+                "CAST(alv AS CHAR) LIKE ? OR " +
+                "CAST(paivamaara AS CHAR) LIKE ? OR " +
+                "CAST(erapaiva AS CHAR) LIKE ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String likeHakusana = "%" + hakusana + "%";
+            for (int i = 1; i <= 10; i++) {
+                stmt.setString(i, likeHakusana);
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int laskuID = rs.getInt("laskuID");
+                    int varaustunnus = rs.getInt("varaustunnus");
+                    String nimi = rs.getString("nimi");
+                    String sahkoposti = rs.getString("sahkoposti");
+                    String osoite = rs.getString("osoite");
+                    String tila = rs.getString("status");
+                    double verotonHinta = rs.getDouble("veroton_hinta");
+                    double alv = rs.getDouble("alv");
+                    LocalDate paivamaara = rs.getDate("paivamaara").toLocalDate();
+                    LocalDate erapaiva = rs.getDate("erapaiva").toLocalDate();
+                    int viitenumero = laskuID; // Oletetaan että laskuID toimii viitenumerona tässä
+                    double maksettava = verotonHinta + verotonHinta * 0.1; // ALV lasketaan wrapperissa uudelleen
+
+                    LaskutWrapper wrapper = new LaskutWrapper(
+                            laskuID,
+                            varaustunnus,
+                            nimi,
+                            viitenumero,
+                            maksettava,
+                            verotonHinta,
+                            alv,
+                            paivamaara,
+                            erapaiva,
+                            sahkoposti,
+                            osoite,
+                            nimi,
+                            tila
+                    );
+
+                    rajatutLaskut.add(wrapper);
+                }
+            }
+        }
+
+        return rajatutLaskut;
+    }
+
+    public void paivitaLaskunStatus(int laskuID, String uusiStatus) throws SQLException {
+        String sql = "UPDATE Laskut SET status = ? WHERE laskuID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, uusiStatus);
+            stmt.setInt(2, laskuID);
+            stmt.executeUpdate();
+        }
     }
 
     // Apumetodi: ResultSet -> Lasku

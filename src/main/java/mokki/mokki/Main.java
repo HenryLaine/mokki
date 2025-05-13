@@ -436,17 +436,25 @@ public class Main extends Application {
 
             hallintapaneeli.getRajaaPainike().setOnAction(e -> {
                 RajausIkkuna rajausIkkuna = new RajausIkkuna();
-                rajausIkkuna.setTitle("Rajaa laskuja päivämäärän mukaan");
+                rajausIkkuna.setTitle("Rajaa laskuja hakusanan mukaan");
 
                 String hakusana = rajausIkkuna.naytaJaOdotaJaPalautaTulos();
                 if (hakusana != null && !hakusana.isBlank()) {
-                    // TODO: Hae rajatut laskut tietokannasta ja päivitä taulukon sisältö
-                    hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET: " + hakusana);
+                    try {
+                        List<LaskutWrapper> rajatut = laskutDAO.rajaaLaskut(hakusana);
+
+                        taulukonSisalto.clear();
+                        taulukonSisalto.addAll(rajatut);
+                        hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET: " + hakusana);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
 
-                //hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t" + "rajausteksti");
             });
             hallintapaneeli.getPoistaRajauksetPainike().setOnAction(event -> {
+                taulukonSisalto.clear();
+                taulukonSisalto.addAll(laskut);
                 hallintapaneeli.getRajauksetTeksti().setText("RAJAUKSET:\t\t\t");
 
             });
@@ -494,13 +502,17 @@ public class Main extends Application {
                     LaskutWrapper lasku = (LaskutWrapper) laskunTiedot;
                     lasku.setTila("Maksettu");
 
-                    // Päivitä ObservableList
                     int index = taulukonSisalto.indexOf(lasku);
                     if (index >= 0) {
                         taulukonSisalto.set(index, lasku); // Tämä pakottaa TableView:n päivityksen
                     }
+                    try {
+                        laskutDAO.paivitaLaskunStatus(lasku.getLaskunumero(), "Maksettu");
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-                // TODO: Päivitä tietokantaan, että lasku on maksettu.
+
             });
 
             kontekstivalikonKohdat.get(3).setOnAction(e -> {
