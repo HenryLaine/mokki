@@ -1,26 +1,16 @@
 package mokki.mokki.dao;
 
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+
 import mokki.mokki.gui.testiluokatTaulukonDatalle.LaskutWrapper;
-import mokki.mokki.gui.testiluokatTaulukonDatalle.VarauksetWrapper;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 /*
  * Tietokantayhteyden ottaminen ja laskuihin liittyvien sql kyselyiden tekeminen.
- * Luokka lisää laskuja, muokkaa laskuja, poistaa laskuja sekä raportoi laskuja.
-*/
-
-
-/* Lisäilin metodeja jotka sopivat laskutwrapperin kanssa, koska vanhat näyttää siltä, että
-ne käyttävät lasku luokka
+ * Luokka lisää laskuja, muokkaa laskuja, poistaa laskuja.
 */
 
 public class LaskutDAO {
@@ -224,24 +214,4 @@ public class LaskutDAO {
             stmt.executeUpdate();
         }
     }
-
-    // Apumetodi: ResultSet -> Lasku
-    private LaskutWrapper ResultSetToLasku(ResultSet rs) throws SQLException {
-        return new LaskutWrapper(
-                rs.getInt("laskuID"),
-                rs.getInt("mokki"),
-                rs.getString("asiakas"),
-                rs.getInt("viitenumero"),
-                rs.getDouble("maksettava"),
-                rs.getDouble("veroton_hinta"),
-                rs.getDouble("alv"),
-                rs.getDate("paivamaara").toLocalDate(),
-                rs.getDate("erapaiva").toLocalDate(),
-                rs.getString("sahkoposti"),
-                rs.getString("osoite"),
-                rs.getString("nimi"),
-                rs.getString("status")
-        );
-    }
-
 }

@@ -397,7 +397,7 @@ public class Main extends Application {
         } catch (SQLException e) {
             System.err.println("Tietokantayhteyden muodostaminen epäonnistui: " + e.getMessage());
             e.printStackTrace();
-            // TODO: Näytä virheilmoitus käyttöliittymässä, jos tarvitaan
+
         }
     }
     private void alustaLaskutPaneeli() {
