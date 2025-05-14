@@ -8,9 +8,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import mokki.mokki.dao.AsiakasDAO;
+import mokki.mokki.database.DatabaseManager;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
+import mokki.mokki.gui.testiluokatTaulukonDatalle.AsiakkaatWrapper;
 import mokki.mokki.gui.testiluokatTaulukonDatalle.VarauksetWrapper;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -182,12 +187,19 @@ public class VarauksenTiedotIkkuna extends Stage {
                     //  ja päivitä asiakkaan nimi -kenttä
 
                     String syotettySahkopostiosoite = tekstikentta1.getText().strip();
-                    if (((VarauksetWrapper) data).onkoAsiakasTietokannassa(syotettySahkopostiosoite)) {
-                        // Etsi asiakkaan nimi ja syötä se tekstikenttään
-                        tekstikentta2.setText("Asiakkaan nimi");
-                    }
-                    else {
+                    try {
+                        Connection conn = DatabaseManager.getConnection();
+                        AsiakasDAO asiakasDAO = new AsiakasDAO(conn);
+                        AsiakkaatWrapper asiakas = asiakasDAO.haeAsiakas(syotettySahkopostiosoite);
+                        if (asiakas != null) {
+                            tekstikentta2.setText(asiakas.getNimi());
+                        }
+                        else {
+                            tekstikentta2.setText("[Asiakasta ei löydy]");
+                        }
+                    } catch (SQLException ex) {
                         tekstikentta2.setText("[Asiakasta ei löydy]");
+                        ex.printStackTrace();
                     }
                 });
                 tekstikenttalista.add(tekstikentta1);
