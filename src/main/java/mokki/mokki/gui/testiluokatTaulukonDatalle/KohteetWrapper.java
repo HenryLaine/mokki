@@ -1,7 +1,6 @@
 package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 import javafx.beans.property.*;
-import mokki.mokki.BackEnd.Mokki;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 /**
