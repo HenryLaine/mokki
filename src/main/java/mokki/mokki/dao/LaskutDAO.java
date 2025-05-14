@@ -1,7 +1,7 @@
 package mokki.mokki.dao;
 
 
-import mokki.mokki.gui.testiluokatTaulukonDatalle.LaskutWrapper;
+import mokki.mokki.gui.TaulukkoWrapper.LaskutWrapper;
 
 import java.sql.*;
 import java.time.LocalDate;

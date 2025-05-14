@@ -11,8 +11,8 @@ import javafx.stage.Stage;
 import mokki.mokki.dao.AsiakasDAO;
 import mokki.mokki.database.DatabaseManager;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
-import mokki.mokki.gui.testiluokatTaulukonDatalle.AsiakkaatWrapper;
-import mokki.mokki.gui.testiluokatTaulukonDatalle.VarauksetWrapper;
+import mokki.mokki.gui.TaulukkoWrapper.AsiakkaatWrapper;
+import mokki.mokki.gui.TaulukkoWrapper.VarauksetWrapper;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package mokki.mokki.gui.testiluokatTaulukonDatalle;
+package mokki.mokki.gui.TaulukkoWrapper;
 
 import mokki.mokki.dao.AsiakasDAO;
 import mokki.mokki.database.DatabaseManager;

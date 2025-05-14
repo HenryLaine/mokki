@@ -1,6 +1,6 @@
 package mokki.mokki.dao;
 
-import mokki.mokki.gui.testiluokatTaulukonDatalle.RaportitWrapper;
+import mokki.mokki.gui.TaulukkoWrapper.RaportitWrapper;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

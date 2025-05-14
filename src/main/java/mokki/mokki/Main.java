@@ -15,16 +15,14 @@ import mokki.mokki.gui.Valilehtipaneeli;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 import mokki.mokki.gui.paapaneeli.*;
 import mokki.mokki.gui.ponnahdusikkuna.*;
-import mokki.mokki.gui.testiluokatTaulukonDatalle.*;
+import mokki.mokki.gui.TaulukkoWrapper.*;
 import mokki.mokki.dao.*;
 import mokki.mokki.database.*;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

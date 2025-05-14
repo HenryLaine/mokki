@@ -1,12 +1,10 @@
-package mokki.mokki.gui.testiluokatTaulukonDatalle;
+package mokki.mokki.gui.TaulukkoWrapper;
 
 
 import javafx.beans.property.*;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**

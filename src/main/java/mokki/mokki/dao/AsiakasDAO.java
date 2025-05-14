@@ -1,6 +1,6 @@
 package mokki.mokki.dao;
 
-import mokki.mokki.gui.testiluokatTaulukonDatalle.AsiakkaatWrapper;
+import mokki.mokki.gui.TaulukkoWrapper.AsiakkaatWrapper;
 
 import java.sql.*;
 import java.util.ArrayList;

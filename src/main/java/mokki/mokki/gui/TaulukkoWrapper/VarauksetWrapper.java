@@ -1,4 +1,4 @@
-package mokki.mokki.gui.testiluokatTaulukonDatalle;
+package mokki.mokki.gui.TaulukkoWrapper;
 
 import javafx.beans.property.*;
 import mokki.mokki.dao.AsiakasDAO;

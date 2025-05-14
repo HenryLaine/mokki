@@ -1,5 +1,5 @@
 package mokki.mokki.dao;
-import mokki.mokki.gui.testiluokatTaulukonDatalle.VarauksetWrapper;
+import mokki.mokki.gui.TaulukkoWrapper.VarauksetWrapper;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
