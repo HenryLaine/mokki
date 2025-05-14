@@ -328,37 +328,64 @@ public class VarauksenTiedotIkkuna extends Stage {
                 VarauksetWrapper data = (VarauksetWrapper)this.data;
 
                 // Tarkistetaan, että kohde löytyy tietokannasta.
-                if (!data.onkoKohdeTietokannassa(tekstikenttalista.get(1).getText().strip())) {
-                    String otsikko = "Kohdevirhe";
-                    String virheteksti = "Kohdetta ei löydy tietokannasta tunnuksella "
-                            + tekstikenttalista.get(1).getText().strip() + ". Lisää kohde ennen varauksen lisäämistä.";
-                    Virheikkuna virheikkuna = new Virheikkuna(otsikko, virheteksti);
-                    virheikkuna.show();
-                }
-                // Tarkistetaan, että asiakkaan sähköpostiosoite löytyy tietokannasta.
-                else if(!data.onkoAsiakasTietokannassa(tekstikenttalista.get(2).getText().strip())) {
-                    String otsikko = "Sähköpostiosoitevirhe";
-                    String virheteksti = "Asiakasta ei löydy tietokannasta sähköpostiosoitteella "
-                            + tekstikenttalista.get(2).getText().strip() + ". Lisää asiakas ennen varauksen lisäämistä.";
-                    Virheikkuna virheikkuna = new Virheikkuna(otsikko, virheteksti);
-                    virheikkuna.show();
-                }
-                // Tarkistetaan, että päättymispäivä ei ole ennen alkamispäivää.
-                else if (paivamaaravalitsinlista.get(0).getValue().isAfter(
-                        paivamaaravalitsinlista.get(1).getValue())) {
-                    String otsikko = "Päivämäärävirhe";
-                    String virheteksti = "Varauksen päättymispäivä ei voi olla ennen varauksen alkamispäivää. " +
-                            "Tarkista valitut päivämäärät.";
-                    Virheikkuna virheikkuna = new Virheikkuna(otsikko, virheteksti);
-                    virheikkuna.show();
-                }
-                // Kaikki arvot ovat hyväksyttäviä, joten ikkuna voidaan sulkea.
-                else {
-                    tulos = true;
-                    // Päivitetään samalla asiakkaan nimi ja sähköpostiosoite
-                    data.setAsiakkaanSahkoposti(tekstikenttalista.get(2).getText().strip());
-                    data.setAsiakkaanNimi(tekstikenttalista.get(3).getText().strip());
-                    this.close();
+                try {
+                    if (!data.onkoKohdeTietokannassa(Integer.valueOf(tekstikenttalista.get(1).getText().strip()))) {
+                        String otsikko = "Kohdevirhe";
+                        String virheteksti = "Kohdetta ei löydy tietokannasta tunnuksella "
+                                + tekstikenttalista.get(1).getText().strip() + ". Lisää kohde ennen varauksen lisäämistä.";
+                        Virheikkuna virheikkuna = new Virheikkuna(otsikko, virheteksti);
+                        virheikkuna.show();
+                    }
+                    // Tarkistetaan, että asiakkaan sähköpostiosoite löytyy tietokannasta.
+                    else {
+                        try {
+                            if(!data.onkoAsiakasTietokannassa(tekstikenttalista.get(2).getText().strip())) {
+                                String otsikko = "Sähköpostiosoitevirhe";
+                                String virheteksti = "Asiakasta ei löydy tietokannasta sähköpostiosoitteella "
+                                        + tekstikenttalista.get(2).getText().strip() + ". Lisää asiakas ennen varauksen lisäämistä.";
+                                Virheikkuna virheikkuna = new Virheikkuna(otsikko, virheteksti);
+                                virheikkuna.show();
+                            }
+                            // Tarkistetaan, että päättymispäivä ei ole ennen alkamispäivää.
+                            else if (paivamaaravalitsinlista.get(0).getValue().isAfter(
+                                    paivamaaravalitsinlista.get(1).getValue())) {
+                                String otsikko = "Päivämäärävirhe";
+                                String virheteksti = "Varauksen päättymispäivä ei voi olla ennen varauksen alkamispäivää. " +
+                                        "Tarkista valitut päivämäärät.";
+                                Virheikkuna virheikkuna = new Virheikkuna(otsikko, virheteksti);
+                                virheikkuna.show();
+                            }
+                            // Kaikki arvot ovat hyväksyttäviä, joten ikkuna voidaan sulkea.
+                            else {
+                                tulos = true;
+
+                                String syotettySahkopostiosoite = tekstikenttalista.get(2).getText().strip();
+                                try {
+                                    Connection conn = DatabaseManager.getConnection();
+                                    AsiakasDAO asiakasDAO = new AsiakasDAO(conn);
+                                    AsiakkaatWrapper asiakas = asiakasDAO.haeAsiakas(syotettySahkopostiosoite);
+                                    if (asiakas != null) {
+                                        tekstikenttalista.get(3).setText(asiakas.getNimi());
+                                    }
+                                    else {
+                                        tekstikenttalista.get(3).setText("");
+                                    }
+                                } catch (SQLException ex) {
+                                    tekstikenttalista.get(3).setText("");
+                                    ex.printStackTrace();
+                                }
+
+                                // Päivitetään samalla asiakkaan nimi ja sähköpostiosoite
+                                data.setAsiakkaanSahkoposti(tekstikenttalista.get(2).getText().strip());
+                                data.setAsiakkaanNimi(tekstikenttalista.get(3).getText().strip());
+                                this.close();
+                            }
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
                 }
             });
             peruutaPainike.setOnAction(e -> {

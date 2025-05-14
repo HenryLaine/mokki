@@ -190,19 +190,16 @@ public class AsiakkaatWrapper implements TaulukonData {
 
 
     public boolean onkoTunnisteUniikki(String tunniste) {
-        if (sahkoposti.get().equals(tunniste)) {
-            return true;
-        } else {
-            try {
-                Connection conn = DatabaseManager.getConnection();
-                asiakasDAO=new AsiakasDAO(conn);
-                return asiakasDAO.onkoSahkopostiUniikki(tunniste);
-            } catch (SQLException e) {
-                // Kirjaa virhe ja oletetaan ettei ole uniikki
-                e.printStackTrace();
-                return false;
-            }
+        try {
+            Connection conn = DatabaseManager.getConnection();
+            asiakasDAO=new AsiakasDAO(conn);
+            return asiakasDAO.onkoSahkopostiUniikki(tunniste);
+        } catch (SQLException e) {
+            // Kirjaa virhe ja oletetaan ettei ole uniikki
+            e.printStackTrace();
+            return false;
         }
+
     }
 
     public int palautaTunnisteenIndeksi() {

@@ -1,8 +1,13 @@
 package mokki.mokki.gui.testiluokatTaulukonDatalle;
 
 import javafx.beans.property.*;
+import mokki.mokki.dao.AsiakasDAO;
+import mokki.mokki.dao.MokkiDAO;
+import mokki.mokki.database.DatabaseManager;
 import mokki.mokki.gui.alipaneeli.TaulukonData;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 /**
@@ -286,9 +291,13 @@ public class VarauksetWrapper implements TaulukonData {
      * @param asiakkaanSahkoposti asiakkaan sähköpostiosoite
      * @return true, jos löytyy; false muussa tapauksessa
      */
-    public boolean onkoAsiakasTietokannassa(String asiakkaanSahkoposti) {
-        // TODO:
-        return true;
+    public boolean onkoAsiakasTietokannassa(String asiakkaanSahkoposti) throws SQLException {
+        Connection conn = DatabaseManager.getConnection();
+        AsiakasDAO dao=new AsiakasDAO(conn);
+        if (dao.haeAsiakas(asiakkaanSahkoposti) != null) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -296,9 +305,13 @@ public class VarauksetWrapper implements TaulukonData {
      * @param kohteenTunnus kohteen tunnus
      * @return true, jos löytyy; false muussa tapauksessa
      */
-    public boolean onkoKohdeTietokannassa(String kohteenTunnus) {
-        // TODO:
-        return true;
+    public boolean onkoKohdeTietokannassa(Integer kohteenTunnus) throws SQLException {
+        Connection conn=DatabaseManager.getConnection();
+        MokkiDAO mokkidao=new MokkiDAO(conn);
+        if(mokkidao.haeMokki(kohteenTunnus) != null){
+            return true;
+        }
+        return false;
     }
 
 
